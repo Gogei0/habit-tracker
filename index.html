@@ -19,8 +19,8 @@
     }
     body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text-primary);min-height:100vh;overflow-x:hidden}
 
-    .header{display:flex;justify-content:space-between;align-items:center;padding:1.5rem 2rem;background:#fff;border-bottom:1px solid var(--border)}
-    .logo{font-size:1.75rem;font-weight:800;color:var(--primary);font-style:italic;letter-spacing:-.5px}
+    .header{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1.5rem 2rem;background:#fff;border-bottom:1px solid var(--border)}
+    .logo{font-size:1.75rem;font-weight:800;color:var(--primary);font-style:italic;letter-spacing:0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:.18em;line-height:1.15}
     .nav-icons{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap}
     .nav-icon{
       width:22px;height:22px;cursor:pointer;color:var(--text-secondary);transition:all .2s;position:relative;
@@ -908,7 +908,7 @@
         backdrop-filter:blur(14px);
         box-shadow:0 8px 22px rgba(124,45,18,.07);
       }
-      .logo{font-size:1.35rem;letter-spacing:0}
+      .logo{font-size:1.35rem;letter-spacing:0;max-width:calc(100vw - 240px)}
       .nav-icons{gap:.42rem;flex-wrap:nowrap}
       .nav-icon{
         width:42px;height:42px;padding:.58rem;box-sizing:border-box;
@@ -1400,7 +1400,7 @@
   </div>
 
   <header class="header">
-    <div class="logo">feelwrite</div>
+    <div class="logo" id="appNameLogo">feelwrite</div>
     <div class="nav-icons">
       <svg class="nav-icon" onclick="openShop()" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-label="Shop">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18l-2 12H5L3 7zm3 0a3 3 0 016 0m6 0a3 3 0 00-6 0"></path>
@@ -1560,7 +1560,7 @@
         </div>
 
         <div class="form-group" id="dateGroup" style="display:none;">
-          <label class="form-label">Due Date</label>
+          <label class="form-label">Due Date (optional)</label>
           <input type="date" id="taskDate" class="form-input">
         </div>
         <div class="form-group" id="taskTypeGroup" style="display:none;">
@@ -1695,7 +1695,7 @@
           </div>
         </div>
         <div class="form-group" id="editDateGroup" style="display:none;">
-          <label class="form-label">Due Date</label>
+          <label class="form-label">Due Date (optional)</label>
           <input type="date" class="form-input" id="editItemDate">
         </div>
         <div class="form-group" id="editTaskTypeGroup" style="display:none;">
@@ -1960,6 +1960,12 @@
       </div>
       <div class="modal-body">
         <div class="form-group">
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label class="form-label" for="appNameInput">App Name</label>
+            <input type="text" id="appNameInput" class="form-input" placeholder="feelwrite" maxlength="40" autocomplete="off">
+            <button class="create-btn" onclick="saveAppNameSetting()" style="margin-top:.75rem;">Save Name</button>
+          </div>
+
           <button class="create-btn secondary" onclick="exportData()">Export Data</button>
 
           <div class="form-group" style="margin-top:1rem;">
@@ -2020,6 +2026,7 @@
   <script>
     // --- State ---
     let state = {
+      appName: 'feelwrite',
       xp: 0,
       level: 1,
       levelStartXp: 0,  // total-XP value at start of current level
@@ -2043,7 +2050,7 @@
       editingItemType: null, // 'habit' | 'extra' | 'onetime'
       manualXpLog: [],
 
-      // completionData[dateStr] = { items: { "H:123": true }, xp: { "H:123": 12 }, taskCoinRolls: { "T:123": {...} }, perfectBonusGiven: bool, perfectBonusXp: number, lootboxes: { normal: bool, perfect: bool } }
+      // completionData[dateStr] = { items: { "H:123": true }, xp: { "H:123": 12 }, taskCoinRolls: { "T:123": {...} }, habitCoinReward: {...}, perfectBonusGiven: bool, perfectBonusXp: number, lootboxes: { normal: bool, perfect: bool } }
       completionData: {},
 
       currentWeekStart: new Date(),
@@ -2194,6 +2201,7 @@
       state.currentWeekStart.setDate(today.getDate() - today.getDay());
 
       loadData();
+      updateAppNameUi();
       ensureShopState();
 
       setInterval(updateTimeLeft, 1000);
@@ -2564,7 +2572,7 @@
     // --- Completion storage ---
     function ensureDay(dateStr){
       if(!state.completionData[dateStr]){
-        state.completionData[dateStr]={ items:{}, xp:{}, taskCoinRolls:{}, perfectBonusGiven:false, perfectBonusXp:0, lootboxes:{ normal:false, perfect:false } };
+        state.completionData[dateStr]={ items:{}, xp:{}, taskCoinRolls:{}, habitCoinReward:null, perfectBonusGiven:false, perfectBonusXp:0, lootboxes:{ normal:false, perfect:false } };
       } else {
         const d=state.completionData[dateStr];
         if(!d.items){
@@ -2573,10 +2581,17 @@
             if(k==='xp'||k==='perfectBonusGiven') return;
             if(typeof d[k]==='boolean') items[`H:${k}`]=d[k];
           });
-          state.completionData[dateStr]={ items, xp:{}, taskCoinRolls:{}, perfectBonusGiven:false, perfectBonusXp:0, lootboxes:{ normal:false, perfect:false } };
+          state.completionData[dateStr]={ items, xp:{}, taskCoinRolls:{}, habitCoinReward:null, perfectBonusGiven:false, perfectBonusXp:0, lootboxes:{ normal:false, perfect:false } };
         } else {
           d.xp = d.xp || {};
           if(!d.taskCoinRolls || typeof d.taskCoinRolls !== 'object') d.taskCoinRolls = {};
+          if(d.habitCoinReward && typeof d.habitCoinReward === 'object'){
+            d.habitCoinReward.habitId = Number(d.habitCoinReward.habitId);
+            d.habitCoinReward.coins = Math.max(1, Math.min(3, Math.floor(Number(d.habitCoinReward.coins) || 1)));
+            d.habitCoinReward.awarded = !!d.habitCoinReward.awarded;
+          } else {
+            d.habitCoinReward = null;
+          }
           if(typeof d.perfectBonusGiven!=='boolean') d.perfectBonusGiven=false;
           d.perfectBonusXp = Math.max(0, Math.floor(Number(d.perfectBonusXp) || 0));
           if(!d.lootboxes || typeof d.lootboxes !== 'object') d.lootboxes = {};
@@ -2886,6 +2901,39 @@ function normalizeStreakFreezeState(sourceData){
       const lo = Math.ceil(min);
       const hi = Math.floor(max);
       return Math.floor(Math.random() * (hi - lo + 1)) + lo;
+    }
+    function rollHabitCoinAmount(){
+      const roll = Math.random();
+      if(roll < 0.50) return 1;
+      if(roll < 0.85) return 2;
+      return 3;
+    }
+    function getDailyHabitCoinReward(dateStr){
+      const day = ensureDay(dateStr);
+      const date = new Date(`${dateStr}T00:00:00`);
+      if(Number.isNaN(date.getTime())) return null;
+      const scheduled = getScheduledHabits(date);
+      if(!scheduled.length){
+        if(day.habitCoinReward && !day.habitCoinReward.awarded) day.habitCoinReward = null;
+        return day.habitCoinReward || null;
+      }
+
+      const selectedStillExists = day.habitCoinReward
+        && scheduled.some(h=>Number(h.id)===Number(day.habitCoinReward.habitId));
+      if(day.habitCoinReward && day.habitCoinReward.awarded) return day.habitCoinReward;
+      if(!selectedStillExists){
+        const selected = scheduled[randomInt(0, scheduled.length - 1)];
+        day.habitCoinReward = {
+          habitId: Number(selected.id),
+          coins: rollHabitCoinAmount(),
+          awarded: false
+        };
+      }
+      return day.habitCoinReward;
+    }
+    function getHabitCoinRewardForHabit(dateStr, habitId){
+      const reward = getDailyHabitCoinReward(dateStr);
+      return reward && Number(reward.habitId)===Number(habitId) ? reward : null;
     }
     function weightedPick(options){
       if(!Array.isArray(options) || options.length===0) return null;
@@ -3218,11 +3266,7 @@ function calculatePerfectBonus(streak){
             : formatDate(new Date());
         }
       } else {
-        if(!task.dueDate){
-          task.dueDate = task.createdAt
-            ? formatDate(new Date(task.createdAt))
-            : formatDate(new Date());
-        }
+        if(!task.dueDate) delete task.dueDate;
       }
     }
     function getTaskCompletionDateKey(task, fallbackDateStr){
@@ -3347,6 +3391,7 @@ function calculatePerfectBonus(streak){
     function renderHabitsByCategory(){
       const viewDate=new Date(habitsViewDate);
       const ds=formatDate(viewDate);
+      getDailyHabitCoinReward(ds);
 
       const byCategory={};
       state.categories.forEach(cat=>{
@@ -3423,11 +3468,11 @@ function calculatePerfectBonus(streak){
         .sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
 
       const todayTasks = oneTimeTasks
-        .filter(t => !t.completed && t.dueDate === todayISO)
+        .filter(t => !t.completed && (t.dueDate === todayISO || !t.dueDate))
         .sort((a,b)=>a.createdAt - b.createdAt);
 
       const openTasks = oneTimeTasks
-        .filter(t => !t.completed)
+        .filter(t => !t.completed && t.dueDate !== todayISO && !!t.dueDate)
         .sort((a,b)=>new Date(a.dueDate) - new Date(b.dueDate));
 
       let html = '';
@@ -3436,7 +3481,7 @@ function calculatePerfectBonus(streak){
         ? `<div class="habit-list">${todayTasks.map(t=>renderItemRow(t,'onetime',t.completed)).join('')}</div>`
         : `<div class="empty-state" style="padding:1.5rem;"><div class="empty-state-icon">📌</div><p>No tasks due today.</p></div>`;
 
-      html += `<div class="section-title" style="margin-top:1.5rem;">All Open Tasks (any due date)</div>`;
+      html += `<div class="section-title" style="margin-top:1.5rem;">All Open Tasks (dated)</div>`;
       html += openTasks.length
         ? `<div class="habit-list">${openTasks.map(t=>renderItemRow(t,'onetime',t.completed)).join('')}</div>`
         : `<div class="empty-state" style="padding:1.5rem;"><div class="empty-state-icon">✅</div><p>No open tasks.</p></div>`;
@@ -3485,7 +3530,6 @@ function calculatePerfectBonus(streak){
       const taskStoredRoll = (isOneTime && oneTimeTaskType==='one_time')
         ? getTaskCoinRoll(item.id, taskCompletionDateKey)
         : null;
-
       const streak = getDisplayStreak(item, type, ds);
       let displayStreak = streak;
       if((type==='habit' || type==='extra') && !completed && ds===todayStr()){
@@ -3522,6 +3566,7 @@ function calculatePerfectBonus(streak){
             <div class="habit-name">${escapeHtml(item.name)}</div>
             <div class="habit-meta">
               ${isOneTime && dueDate ? `<span>Due: ${dueDate.toLocaleDateString()}</span>` : ''}
+              ${isOneTime && oneTimeTaskType==='one_time' && !dueDate ? `<span style="color:var(--text-secondary)">No due date</span>` : ''}
               ${isOneTime ? `<span class="task-difficulty-badge ${taskDifficulty}">${taskDifficultyMeta.label}</span>` : ''}
               ${isOneTime && oneTimeTaskType==='always' ? `<span style="color:var(--text-secondary)">Always Task</span>` : ''}
               ${isOneTime && isOverdue ? `<span style="color:var(--danger)">Overdue</span>` : ''}
@@ -3635,9 +3680,16 @@ function calculatePerfectBonus(streak){
         const gained = calcStreakXp(item.xp, newStreak);
         state.xp += gained;
         setAwardedXp(type, id, ds, gained);
+        const habitCoinReward = (type==='habit') ? getHabitCoinRewardForHabit(ds, id) : null;
+        const habitCoins = habitCoinReward && !habitCoinReward.awarded ? habitCoinReward.coins : 0;
+        if(habitCoins>0){
+          habitCoinReward.awarded = true;
+          state.coins += habitCoins;
+          animateCoinGain(habitCoins);
+        }
 
         createConfetti();
-        showToast(`+${gained} XP (Streak x${newStreak})`);
+        showToast(habitCoins>0 ? `+${gained} XP, +${habitCoins} Coins (Streak x${newStreak})` : `+${gained} XP (Streak x${newStreak})`);
 
         checkLevelUp();
         recalcAllStreaks();
@@ -3653,6 +3705,10 @@ function calculatePerfectBonus(streak){
 
         const day=ensureDay(ds);
         delete day.xp[keyFor(type,id)];
+        if(type==='habit' && day.habitCoinReward && Number(day.habitCoinReward.habitId)===Number(id) && day.habitCoinReward.awarded){
+          state.coins = Math.max(0, state.coins - day.habitCoinReward.coins);
+          day.habitCoinReward.awarded = false;
+        }
         if(type==='habit') revokePerfectBonusIfNoLongerPerfect(ds);
         recomputeLevelFromTotalXp();
 
@@ -3745,8 +3801,8 @@ const newItem={
       } else if(state.currentTab==='onetime'){
         newItem.taskType=taskType;
         if(taskType==='one_time'){
-          if(!dueDate){ showToast('Please select a due date'); return; }
-          newItem.dueDate=dueDate;
+          if(dueDate) newItem.dueDate=dueDate;
+          else delete newItem.dueDate;
           delete newItem.anchorDate;
         } else {
           delete newItem.dueDate;
@@ -3824,7 +3880,7 @@ const newItem={
         yesterdayGroup.style.display='none';
         document.getElementById('editTaskType').value=normalizeTaskType(item.taskType);
         document.getElementById('editTaskDifficulty').value=normalizeTaskDifficulty(item.difficulty);
-        document.getElementById('editItemDate').value=item.dueDate || formatDate(new Date());
+        document.getElementById('editItemDate').value=item.dueDate || '';
         updateEditTaskTypeUi();
       }
 
@@ -3867,7 +3923,9 @@ const newItem={
         const oldCompletionDateKey = getTaskCompletionDateKey(item, todayStr());
         item.taskType = normalizeTaskType(document.getElementById('editTaskType').value);
         if(item.taskType==='one_time'){
-          item.dueDate = document.getElementById('editItemDate').value || item.dueDate || formatDate(new Date());
+          const nextDueDate = document.getElementById('editItemDate').value;
+          if(nextDueDate) item.dueDate = nextDueDate;
+          else delete item.dueDate;
           delete item.anchorDate;
         } else {
           delete item.dueDate;
@@ -3928,6 +3986,12 @@ const newItem={
         if(d.items && Object.prototype.hasOwnProperty.call(d.items, key)) delete d.items[key];
         if(d.xp && Object.prototype.hasOwnProperty.call(d.xp, key)) delete d.xp[key];
         if(d.taskCoinRolls && Object.prototype.hasOwnProperty.call(d.taskCoinRolls, key)) delete d.taskCoinRolls[key];
+        if(type==='habit' && d.habitCoinReward && Number(d.habitCoinReward.habitId)===Number(id)){
+          if(d.habitCoinReward.awarded){
+            state.coins = Math.max(0, state.coins - d.habitCoinReward.coins);
+          }
+          d.habitCoinReward = null;
+        }
       });
 
       showToast('Deleted');
@@ -3979,7 +4043,7 @@ const newItem={
     }
 
     function setDefaultTaskDate(){
-      document.getElementById('taskDate').value = formatDate(new Date());
+      document.getElementById('taskDate').value = '';
     }
 
     // --- Category Manager ---
@@ -4772,6 +4836,7 @@ const newItem={
 
         const scheduled = state.habits.filter(h => shouldHabitExistOnDate(h, date));
         const dayObj = ensureDay(ds);
+        getDailyHabitCoinReward(ds);
 
         const oneTimes = state.oneTimeTasks.filter(t => !isAlwaysTask(t) && t.dueDate === ds);
 
@@ -4873,6 +4938,12 @@ const newItem={
         const gained = calcStreakXp(h.xp, computeHabitStreakForDate(h, 'habit', completionDate));
         state.xp += gained;
         setAwardedXp('habit', habitId, dateStr, gained);
+        const habitCoinReward = getHabitCoinRewardForHabit(dateStr, habitId);
+        if(habitCoinReward && !habitCoinReward.awarded){
+          habitCoinReward.awarded = true;
+          state.coins += habitCoinReward.coins;
+          animateCoinGain(habitCoinReward.coins);
+        }
         awardPerfectBonusIfNeeded(dateStr);
       } else {
         const raw = getAwardedXpRaw('habit', habitId, dateStr);
@@ -4883,6 +4954,10 @@ const newItem={
 
         const day=ensureDay(dateStr);
         delete day.xp[keyFor('habit',habitId)];
+        if(day.habitCoinReward && Number(day.habitCoinReward.habitId)===Number(habitId) && day.habitCoinReward.awarded){
+          state.coins = Math.max(0, state.coins - day.habitCoinReward.coins);
+          day.habitCoinReward.awarded = false;
+        }
         revokePerfectBonusIfNoLongerPerfect(dateStr);
         recomputeLevelFromTotalXp();
       }
@@ -5154,10 +5229,34 @@ const newItem={
 
     function openSettings(){
       document.getElementById('settingsModal').classList.add('active');
+      updateAppNameUi();
       updateSelectedSaveFileUi();
       updateSupabaseSyncUi();
     }
     function closeSettings(){ document.getElementById('settingsModal').classList.remove('active'); }
+
+    function normalizeAppName(value){
+      return sanitizeShopText(value, 40) || 'feelwrite';
+    }
+
+    function updateAppNameUi(){
+      state.appName = normalizeAppName(state.appName);
+      const logo = document.getElementById('appNameLogo');
+      const input = document.getElementById('appNameInput');
+      document.title = `${state.appName} - Habit Tracker`;
+      if(logo){
+        logo.textContent = state.appName;
+        logo.title = state.appName;
+      }
+      if(input) input.value = state.appName;
+    }
+
+    function saveAppNameSetting(){
+      state.appName = normalizeAppName(document.getElementById('appNameInput')?.value);
+      updateAppNameUi();
+      saveData();
+      showToast('Name saved');
+    }
 
     function updateSelectedSaveFileUi(){
       const label=document.getElementById('selectedExternalFileName');
@@ -5390,6 +5489,7 @@ const newItem={
     }
 
     function normalizeStateAfterExternalLoad(sourceData){
+      state.appName = normalizeAppName(state.appName);
       state.currentTab = 'habits';
       state.completionData = state.completionData || {};
       state.restDays = state.restDays || {};
@@ -5422,6 +5522,7 @@ const newItem={
     }
 
     function refreshAppAfterExternalLoad(){
+      updateAppNameUi();
       switchTab('habits');
       renderMain();
       updateStats();
@@ -5513,6 +5614,7 @@ const newItem={
           state = { ...state, ...parsed };
 
           // normalize structures
+          state.appName = normalizeAppName(state.appName);
           state.completionData = state.completionData || {};
           state.restDays = state.restDays || {};
           state.habits = state.habits || [];
@@ -5546,6 +5648,7 @@ state.habits.forEach(h=>{
           checkAchievements();
 
           saveData();
+          updateAppNameUi();
           renderMain();
           updateStats();
           updateRestDayButton();
@@ -5581,6 +5684,7 @@ state.habits.forEach(h=>{
         const parsed=JSON.parse(saved);
         state = { ...state, ...parsed };
 
+        state.appName = normalizeAppName(state.appName);
         state.currentWeekStart = new Date(state.currentWeekStart || new Date());
         state.statsWeekOffset = 0;
         state.currentTab = 'habits';
