@@ -1,0 +1,7 @@
+*.json
+Data*.json
+feelwrite-data*.json
+*.log
+.DS_Store
+Thumbs.db
+
