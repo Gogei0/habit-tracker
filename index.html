@@ -55,9 +55,34 @@
     .coin-display.pulse{animation:coinPulse .45s ease}
     .coin-icon{font-size:1rem}
     .coin-float{
-      position:fixed;z-index:9998;pointer-events:none;font-size:1.1rem;
+      position:fixed;z-index:9998;pointer-events:none;font-size:.9rem;font-weight:900;color:#78350f;
+      padding:.2rem .5rem;border-radius:999px;background:linear-gradient(135deg,#fef3c7,#fbbf24);
+      border:1px solid rgba(245,158,11,.55);box-shadow:0 10px 24px rgba(245,158,11,.22);
       animation:coinFloatUp .9s ease forwards;
-      filter:drop-shadow(0 8px 10px rgba(245,158,11,.25));
+      will-change:transform,opacity;
+    }
+    .coin-rain-coin{
+      position:fixed;left:var(--x,50vw);top:-56px;width:var(--size,24px);height:var(--size,24px);
+      z-index:9998;pointer-events:none;animation:coinRainFall var(--duration,1400ms) cubic-bezier(.55,.02,.92,.48) var(--delay,0ms) forwards;
+      contain:layout paint;will-change:transform,opacity;
+    }
+    .coin-rain-coin::before{
+      content:'';position:absolute;inset:0;border-radius:50%;
+      background:
+        radial-gradient(circle at 35% 28%,#fff7c2 0 12%,transparent 13%),
+        radial-gradient(circle at 50% 50%,#fde68a 0 35%,#fbbf24 36% 66%,#d97706 67% 100%);
+      border:2px solid #92400e;
+    }
+    .coin-rain-coin::after{
+      content:'C';position:absolute;inset:18%;display:grid;place-items:center;border-radius:50%;
+      color:#92400e;font-size:calc(var(--size,24px) * .36);font-weight:900;line-height:1;
+      border:1px solid rgba(146,64,14,.38);background:rgba(255,251,235,.28);
+    }
+    .coin-rain-spark{
+      position:fixed;left:var(--x,50vw);top:-30px;width:var(--size,7px);height:var(--size,7px);
+      z-index:9997;pointer-events:none;border-radius:999px;background:#fde68a;
+      animation:coinSparkFall var(--duration,1050ms) ease-in var(--delay,0ms) forwards;
+      contain:layout paint;will-change:transform,opacity;
     }
     @keyframes coinPulse{
       0%{transform:scale(1)}
@@ -68,6 +93,19 @@
       0%{transform:translate3d(0,0,0) scale(.9);opacity:0}
       15%{opacity:1}
       100%{transform:translate3d(var(--tx,0),-52px,0) scale(1.15);opacity:0}
+    }
+    @keyframes coinRainFall{
+      0%{transform:translate3d(0,-72px,0) rotate(-18deg) scale(.74);opacity:0}
+      12%{transform:translate3d(0,-54px,0) rotate(8deg) scale(.78);opacity:1}
+      38%{transform:translate3d(6px,12vh,0) rotate(96deg) scale(.86);opacity:1}
+      72%{transform:translate3d(-8px,56vh,0) rotate(240deg) scale(.96);opacity:1}
+      100%{transform:translate3d(var(--dx,0),calc(100vh + 92px),0) rotate(var(--rz,360deg)) scale(1);opacity:0}
+    }
+    @keyframes coinSparkFall{
+      0%{transform:translate3d(0,-42px,0) scale(.4);opacity:0}
+      18%{transform:translate3d(0,-26px,0) scale(.7);opacity:1}
+      70%{transform:translate3d(6px,52vh,0) scale(.45);opacity:1}
+      100%{transform:translate3d(var(--dx,0),calc(100vh + 36px),0) scale(.1);opacity:0}
     }
 
     /* Total XP big + Today's XP small (swapped) */
@@ -142,8 +180,74 @@
     .rest-btn:hover{transform:translateY(-2px)}
 
     .task-tabs{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap}
-    .task-tab{padding:.5rem 1rem;border-radius:20px;border:2px solid var(--border);background:#fff;font-family:inherit;font-weight:800;cursor:pointer;transition:all .2s;font-size:.875rem}
-    .task-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .task-tab{
+      --tab-progress:0deg;--tab-track:var(--border);--tab-fill:var(--primary);--tab-bg:#fff;
+      padding:.5rem 1rem;border-radius:20px;border:2px solid transparent;
+      background:linear-gradient(var(--tab-bg),var(--tab-bg)) padding-box, conic-gradient(var(--tab-fill) var(--tab-progress), var(--tab-track) 0deg) border-box;
+      color:var(--text-primary);font-family:inherit;font-weight:800;cursor:pointer;transition:all .2s;font-size:.875rem;position:relative
+    }
+    .task-tab.active{
+      --tab-bg:var(--primary);--tab-track:rgba(255,255,255,.45);--tab-fill:#111827;
+      color:#fff;box-shadow:0 10px 18px rgba(249,115,22,.18)
+    }
+    .task-tab.complete{--tab-fill:var(--success);box-shadow:0 8px 16px rgba(34,197,94,.14)}
+    .task-tab.active.complete{--tab-fill:#111827;box-shadow:0 10px 18px rgba(17,24,39,.18)}
+
+    .quest-shell{display:grid;gap:1rem}
+    .quest-period-tabs{
+      display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;
+      padding:.35rem;border:1px solid #ffedd5;border-radius:18px;background:rgba(255,255,255,.9);
+      box-shadow:0 10px 22px rgba(31,41,55,.05)
+    }
+    .quest-period-btn{
+      border:none;border-radius:14px;background:transparent;color:#9a3412;padding:.62rem .8rem;
+      font-family:inherit;font-weight:900;cursor:pointer;transition:all .2s var(--ease)
+    }
+    .quest-period-btn:hover{background:#fff7ed;transform:translateY(-1px)}
+    .quest-period-btn.active{background:linear-gradient(135deg,var(--primary),#fb923c);color:#fff;box-shadow:0 10px 18px rgba(249,115,22,.2)}
+    .quest-board-head{
+      display:flex;align-items:center;justify-content:space-between;gap:.8rem;flex-wrap:wrap;
+      padding:.9rem 1rem;border:1px solid #fed7aa;border-radius:18px;background:
+        radial-gradient(circle at 8% 12%,rgba(251,146,60,.14),rgba(251,146,60,0) 34%),
+        linear-gradient(135deg,#fff7ed,#fff 62%);
+    }
+    .quest-board-title{display:flex;align-items:center;gap:.55rem;font-weight:900;color:#7c2d12}
+    .quest-board-title span:first-child{width:34px;height:34px;border-radius:12px;background:#fff;border:1px solid #fed7aa;display:grid;place-items:center;color:var(--primary)}
+    .quest-board-sub{margin-top:.15rem;font-size:.78rem;font-weight:800;color:#9a3412}
+    .quest-board-score{padding:.46rem .72rem;border-radius:999px;background:#fff;border:1px solid #fed7aa;color:#9a3412;font-size:.78rem;font-weight:900;white-space:nowrap}
+    .quest-section{display:grid;gap:.65rem}
+    .quest-section-head{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding-bottom:.38rem;border-bottom:2px solid var(--quest-color,#f97316)}
+    .quest-section-title{font-size:.82rem;font-weight:900;color:#111827;letter-spacing:.3px;text-transform:uppercase}
+    .quest-section-count{font-size:.72rem;font-weight:900;color:#6b7280;background:#f8fafc;border:1px solid #e5e7eb;border-radius:999px;padding:.18rem .5rem}
+    .quest-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.75rem}
+    .quest-card{
+      --quest-color:#f97316;
+      display:grid;grid-template-columns:auto 1fr auto;gap:.72rem;align-items:center;
+      padding:.82rem .9rem;border:1px solid #ffedd5;border-left:4px solid var(--quest-color);border-radius:16px;
+      background:#fff;box-shadow:0 10px 22px rgba(31,41,55,.05);
+      transition:transform .2s var(--ease), box-shadow .2s var(--ease), border-color .2s var(--ease)
+    }
+    .quest-card:hover{transform:translateY(-2px);border-color:var(--quest-color);box-shadow:0 14px 24px rgba(31,41,55,.08)}
+    .quest-card.claimable{background:linear-gradient(90deg,#fff7ed 0,#fff 68%)}
+    .quest-card.completed{opacity:.82;background:#f0fdf4;border-color:#bbf7d0}
+    .quest-card.placeholder{background:#f8fafc;border-color:#e5e7eb;border-left-color:#9ca3af}
+    .quest-icon{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:#fff7ed;border:1px solid #fed7aa;color:var(--quest-color);font-weight:900;flex-shrink:0}
+    .quest-main{min-width:0;display:grid;gap:.34rem}
+    .quest-name{font-weight:900;color:#111827;line-height:1.18;overflow-wrap:anywhere}
+    .quest-meta{display:flex;align-items:center;gap:.42rem;flex-wrap:wrap;font-size:.72rem;font-weight:900;color:#6b7280}
+    .quest-chip{display:inline-flex;align-items:center;gap:.28rem;border-radius:999px;padding:.14rem .5rem;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412}
+    .quest-progress{height:8px;border-radius:999px;background:#f3f4f6;overflow:hidden}
+    .quest-progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--quest-color),#fb923c);transition:width .35s var(--ease)}
+    .quest-actions{display:grid;justify-items:end;gap:.28rem}
+    .quest-reward{font-size:.72rem;font-weight:900;color:#92400e;white-space:nowrap}
+    .quest-claim-btn{
+      border:none;border-radius:12px;padding:.46rem .7rem;background:#e5e7eb;color:#6b7280;
+      font-family:inherit;font-size:.76rem;font-weight:900;cursor:not-allowed;white-space:nowrap
+    }
+    .quest-claim-btn.ready{background:linear-gradient(135deg,var(--primary),#fb923c);color:#fff;cursor:pointer;box-shadow:0 8px 16px rgba(249,115,22,.2)}
+    .quest-claim-btn.done{background:#dcfce7;color:#166534}
+    .quest-claim-btn.placeholder{background:#f3f4f6;color:#6b7280}
+    .quest-claim-btn.no-reward{background:#f3f4f6;color:#374151}
 
     .category-section{margin-bottom:1.5rem}
     .category-header{display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;padding:.5rem 0;border-bottom:2px solid var(--border)}
@@ -210,7 +314,7 @@
       scrollbar-width:none;-ms-overflow-style:none
     }
     .modal.large{max-width:740px}
-    #shopModal .modal.large,#statsModal .modal.large,#historyModal .modal.large{width:min(94vw,920px);max-width:920px}
+    #shopModal .modal.large,#historyModal .modal.large,#habitOverviewModal .modal.large,#achievementsModal .modal.large{width:min(94vw,920px);max-width:920px}
     #settingsModal .modal{width:min(92vw,680px);max-width:680px}
     .shop-tabbar,.task-tabs,.emoji-picker{scrollbar-width:none;-ms-overflow-style:none}
     .modal::-webkit-scrollbar,.shop-tabbar::-webkit-scrollbar,.task-tabs::-webkit-scrollbar,.emoji-picker::-webkit-scrollbar{width:0;height:0;display:none}
@@ -557,13 +661,15 @@
     .week-day-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;font-weight:900}
     .week-day-date{color:var(--text-secondary);font-size:.875rem}
     .week-day-tools{display:flex;align-items:center;gap:.5rem}
-    .week-freeze-btn{
+    .week-freeze-btn,.week-rest-btn{
       border:none;background:var(--blue-light);color:var(--blue);font-weight:900;font-size:.75rem;
       border-radius:999px;padding:.3rem .65rem;cursor:pointer;transition:all .2s
     }
-    .week-freeze-btn:hover{transform:translateY(-1px)}
+    .week-freeze-btn:hover,.week-rest-btn:hover{transform:translateY(-1px)}
     .week-freeze-btn.active{background:#d1fae5;color:#065f46}
-    .week-freeze-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+    .week-rest-btn{background:#fff7ed;color:#9a3412;border:1px solid #fdba74}
+    .week-rest-btn.active{background:var(--yellow);color:#fff;border-color:var(--yellow)}
+    .week-freeze-btn:disabled,.week-rest-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
     .week-day-items{display:flex;flex-direction:column;gap:.5rem}
     .week-item{display:flex;align-items:center;gap:.75rem;padding:.5rem;background:#fff;border-radius:8px;border:1px solid #e5e7eb}
     .week-item.completed{background:#f0fdf4;border-color:var(--success)}
@@ -713,7 +819,7 @@
       to{opacity:1;transform:translateY(0) scale(1)}
     }
     .habit-overview-shell{display:grid;gap:1rem}
-    .habit-overview-tabbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;background:#fff;padding-bottom:.75rem}
+    .habit-overview-tabbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;background:#fff;padding-bottom:.75rem}
     .habit-overview-tab{
       border:1px solid #e5e7eb;background:#fff;border-radius:14px;padding:.7rem .65rem;font:inherit;font-weight:900;
       color:#374151;cursor:pointer;transition:transform .2s var(--ease), box-shadow .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease)
@@ -722,6 +828,10 @@
     .habit-overview-tab.active{background:linear-gradient(135deg,var(--primary),#fb923c);color:#fff;border-color:#fdba74;box-shadow:0 12px 22px rgba(249,115,22,.22)}
     .habit-overview-panel{display:grid;gap:1rem}
     .habit-overview-dashboard{display:grid;gap:1rem}
+    .habit-overview-week-section{
+      display:grid;gap:.75rem;background:#fff;border:1px solid var(--border);border-radius:16px;padding:1rem;
+      box-shadow:0 8px 18px rgba(249,115,22,.08)
+    }
     .habit-overview-hero{
       display:grid;grid-template-columns:210px 1fr;gap:1rem;align-items:center;padding:1.15rem;border-radius:18px;
       border:1px solid var(--border);background:linear-gradient(135deg,#fff7ed,#fffaf5);overflow:hidden;position:relative
@@ -772,7 +882,7 @@
     .habit-overview-category-icon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#fff7ed;border:1px solid #fed7aa;color:var(--accent);flex-shrink:0}
     .habit-overview-category-title span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .habit-overview-category-meta{font-size:.78rem;font-weight:900;color:#6b7280;white-space:nowrap}
-    .habit-overview-list{display:grid;gap:.85rem}
+    .habit-overview-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem}
     .habit-overview-card{
       --accent:#f97316;
       background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:1rem;
@@ -802,12 +912,12 @@
     }
     .habit-overview-rate span{display:block;margin-top:.22rem;font-size:.68rem;color:var(--text-secondary);font-weight:900}
     .habit-overview-metrics{
-      display:grid;grid-template-columns:minmax(190px,1.28fr) repeat(2,minmax(0,.86fr));gap:.65rem;padding:.78rem 0;
+      display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem;padding:.7rem 0;
       border-top:1px solid #f3f4f6;border-bottom:1px solid #f3f4f6
     }
     .habit-overview-completion-pair{
       display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;overflow:hidden;border-radius:14px;
-      border:1px solid #e5e7eb;background:#f8fafc
+      border:1px solid #e5e7eb;background:#f8fafc;grid-column:1/-1
     }
     .habit-overview-count{padding:.65rem .7rem;min-width:0}
     .habit-overview-count-value{font-size:1.2rem;font-weight:900;color:#111827;line-height:1}
@@ -824,12 +934,6 @@
     .habit-overview-progress{height:9px;border-radius:999px;background:#f3f4f6;overflow:hidden}
     .habit-overview-progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),#fb923c);min-width:0;transition:width .45s var(--ease)}
     .habit-overview-footer{display:grid;gap:.48rem}
-    .habit-overview-sparkline{display:grid;grid-template-columns:repeat(14,minmax(0,1fr));gap:.24rem}
-    .habit-day-dot{height:22px;border-radius:7px;background:#f3f4f6;border:1px solid #e5e7eb}
-    .habit-day-dot.done{background:#ffedd5;border-color:#fdba74}
-    .habit-day-dot.partial{background:#fef3c7;border-color:#fcd34d}
-    .habit-day-dot.missed{background:#fee2e2;border-color:#fecaca}
-    .habit-day-dot.off{background:#f8fafc;border-color:#edf2f7}
     .habit-overview-empty{
       background:#fff;border:1px dashed var(--border);border-radius:16px;padding:2rem;text-align:center;
       color:var(--text-secondary);font-weight:900
@@ -1266,7 +1370,7 @@
         top:calc(64px + env(safe-area-inset-top));
         z-index:900;
         display:grid;
-        grid-template-columns:repeat(3,minmax(0,1fr));
+        grid-template-columns:repeat(4,minmax(0,1fr));
         gap:.42rem;
         margin:0 -.85rem .9rem;
         padding:.55rem .85rem;
@@ -1278,7 +1382,7 @@
         min-width:0;
         min-height:44px;
         padding:.45rem .35rem;
-        border-radius:14px;
+        border-radius:999px;
         font-size:.78rem;
         white-space:nowrap;
       }
@@ -1352,6 +1456,29 @@
         font-size:.78rem;
         line-height:1.25;
       }
+      .quest-shell{gap:.8rem}
+      .quest-period-tabs{gap:.38rem;padding:.3rem;border-radius:16px}
+      .quest-period-btn{min-height:42px;padding:.52rem .45rem;font-size:.82rem}
+      .quest-board-head{padding:.8rem;border-radius:16px}
+      .quest-board-title{font-size:.92rem}
+      .quest-board-title span:first-child{width:32px;height:32px;border-radius:11px}
+      .quest-board-sub{font-size:.74rem}
+      .quest-board-score{font-size:.72rem;padding:.35rem .55rem}
+      .quest-grid{grid-template-columns:1fr;gap:.62rem}
+      .quest-card{
+        grid-template-columns:auto 1fr;
+        align-items:start;
+        padding:.82rem;
+        border-radius:15px;
+      }
+      .quest-actions{
+        grid-column:1/-1;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        justify-items:stretch;
+      }
+      .quest-claim-btn{min-height:38px}
       .empty-state{
         padding:1.4rem .9rem;
         border-radius:16px;
@@ -1545,7 +1672,7 @@
         margin-bottom:.6rem;
       }
       .week-day-tools{gap:.38rem;flex-wrap:wrap;justify-content:flex-end}
-      .week-freeze-btn{min-height:34px;padding:.3rem .58rem}
+      .week-freeze-btn,.week-rest-btn{min-height:34px;padding:.3rem .58rem}
       .week-item{
         gap:.58rem;
         padding:.62rem;
@@ -1607,6 +1734,7 @@
       .habit-overview-bar-rate{text-align:left}
       .habit-overview-category-head{align-items:flex-start;gap:.55rem}
       .habit-overview-category-meta{text-align:right;white-space:normal}
+      .habit-overview-list{grid-template-columns:1fr}
       .habit-overview-card{
         padding:.88rem;
         border-radius:16px;
@@ -1625,8 +1753,6 @@
         grid-template-columns:1fr;
         gap:.58rem .75rem;
       }
-      .habit-overview-sparkline{gap:.18rem}
-      .habit-day-dot{height:19px;border-radius:6px}
 
       .category-item{
         padding:.72rem;
@@ -1715,11 +1841,12 @@
       <svg class="nav-icon" onclick="openHistory()" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-label="History">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
       </svg>
-      <svg class="nav-icon" onclick="openStats()" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-label="Stats">
+      <svg class="nav-icon" id="habitOverviewNav" onclick="openHabitOverview()" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-label="Statistics" title="Statistics">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
       </svg>
-      <svg class="nav-icon" id="habitOverviewNav" onclick="openHabitOverview()" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-label="Habit Overview" title="Habit Uebersicht">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"></path>
+      <svg class="nav-icon" id="achievementsNav" onclick="openAchievements()" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-label="Achievements" title="Achievements">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 21h8m-4-4v4m-5-8a5 5 0 0010 0V4H7v9z"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5H3v3a4 4 0 004 4m12-7h2v3a4 4 0 01-4 4"></path>
       </svg>
 
       <!-- Settings (centered gear) -->
@@ -1825,7 +1952,7 @@
           💤 Rest Day
         </button>
 
-        <button class="rest-btn mini-btn" id="miniHabitModeBtn" onclick="toggleMiniHabitMode()">
+        <button class="rest-btn mini-btn" id="miniHabitModeBtn" type="button" aria-pressed="false" onclick="toggleMiniHabitMode()">
           Mini Habits
         </button>
 
@@ -1839,9 +1966,10 @@
     </div>
 
     <div class="task-tabs">
-      <button class="task-tab active" onclick="switchTab('habits', event)">Habits</button>
-      <button class="task-tab" onclick="switchTab('onetime', event)">Tasks</button>
-      <button class="task-tab" onclick="switchTab('extra', event)">Extra Habits</button>
+      <button class="task-tab active" data-tab="habits" onclick="switchTab('habits', event)">Habits</button>
+      <button class="task-tab" data-tab="onetime" onclick="switchTab('onetime', event)">Tasks</button>
+      <button class="task-tab" data-tab="extra" onclick="switchTab('extra', event)">Extra Habits</button>
+      <button class="task-tab" data-tab="quests" onclick="switchTab('quests', event)">Quests</button>
     </div>
 
     <div id="mainContent"></div>
@@ -2237,20 +2365,20 @@
     </div>
   </div>
 
-  <!-- Stats Modal -->
-  <div class="modal-overlay" id="statsModal" onclick="closeModalOnOverlay(event)">
+  <!-- Achievements Modal -->
+  <div class="modal-overlay" id="achievementsModal" onclick="closeModalOnOverlay(event)">
     <div class="modal large" onclick="event.stopPropagation()">
       <div class="modal-header">
         <h2 class="modal-title">📊 Statistics</h2>
         <button class="modal-close" onclick="closeStats()">×</button>
       </div>
       <div class="modal-body">
-        <div class="stats-tabbar">
+        <div class="stats-tabbar" style="display:none;">
           <button class="stats-tab-btn active" type="button" data-stats-tab="overview" onclick="switchStatsTab('overview')">Overview</button>
           <button class="stats-tab-btn" type="button" data-stats-tab="achievements" onclick="switchStatsTab('achievements')">Achievements</button>
         </div>
 
-        <div class="stats-tab-panel active" data-stats-tab-panel="overview">
+        <div class="stats-tab-panel" data-stats-tab-panel="overview">
           <div class="stats-grid">
             <div class="stat-card">
               <div class="val" id="statTotalXp">0</div>
@@ -2299,7 +2427,7 @@
           </div>
         </div>
 
-        <div class="stats-tab-panel" data-stats-tab-panel="achievements">
+        <div class="stats-tab-panel active" data-stats-tab-panel="achievements">
           <div class="achievement-system-shell">
             <div class="achievement-hero">
               <div>
@@ -2320,11 +2448,11 @@
     </div>
   </div>
 
-  <!-- Habit Overview Modal -->
+  <!-- Statistics Modal -->
   <div class="modal-overlay" id="habitOverviewModal" onclick="closeModalOnOverlay(event)">
     <div class="modal large" onclick="event.stopPropagation()">
       <div class="modal-header">
-        <h2 class="modal-title">Habit Uebersicht</h2>
+        <h2 class="modal-title">Statistics</h2>
         <button class="modal-close" onclick="closeHabitOverview()">&times;</button>
       </div>
       <div class="modal-body">
@@ -2436,6 +2564,9 @@
       selectedDays: [0,1,2,3,4,5,6],
       selectedXp: 10,
       currentTab: 'habits',
+      questPeriod: 'daily',
+      questClaims: {},
+      questDailySelections: {},
 
       editingItemId: null,
       editingItemType: null, // 'habit' | 'extra' | 'onetime'
@@ -2445,11 +2576,11 @@
       taskCompletionLog: [],
       taskDebtEventLog: [],
       newAchievements: {},
-      achievementLootboxes: { normal: 0, rare: 0, epic: 0 },
+      achievementLootboxes: { normal: 0, rare: 0, epic: 0, legendary: 0 },
       achievementTrackingStarted: '',
       shopDisciplineTrackingStarted: '',
 
-      // completionData[dateStr] = { items: { "H:123": true }, itemProgress: { "H:123": 3 }, itemProgressXp: { "H:123": [10,10,10] }, miniHabits: { "H:123": true }, xp: { "H:123": 30 }, taskCoinRolls: { "T:123": {...} }, habitCoinReward: {...}, perfectBonusGiven: bool, perfectBonusXp: number, lootboxes: { normal: bool, perfect: bool } }
+      // completionData[dateStr] = { items:{}, itemProgress:{}, itemProgressXp:{}, miniHabits:{}, xp:{}, taskCoinRolls:{}, alwaysTaskCompletions:{}, habitCoinReward:{}, perfectBonusGiven:bool, perfectBonusXp:number, lootboxes:{} }
       completionData: {},
 
       currentWeekStart: new Date(),
@@ -2586,7 +2717,7 @@
         icon:'III',
         color:'#ef4444',
         achievements:[
-          { id:'shop_discipline', icon:'&#128274;', title:'Shop Discipline', desc:'7 Tage lang nichts im Shop kaufen.', rewards:[{type:'coins',amount:40}] },
+          { id:'shop_discipline', icon:'&#128274;', title:'Shop Discipline', desc:'Starte den Run manuell und kaufe dann 7 Tage lang nichts im Shop.', rewards:[{type:'coins',amount:40}] },
           { id:'deep_work_sprint', icon:'&#9876;&#65039;', title:'Deep Work Sprint', desc:'10 schwere Tasks innerhalb von 3 Tagen erledigen.', rewards:[{type:'coins',amount:120},{type:'lootbox',rarity:'rare',amount:1}] },
           { id:'task_debt_zero', icon:'&#128465;&#65039;', title:'Task Debt Zero', desc:'7 ueberfaellige Tasks an einem Tag abschliessen.', rewards:[{type:'coins',amount:100},{type:'freeze',amount:1}] },
           { id:'no_freeze_month', icon:'&#129482;', title:'No Freeze Month', desc:'30 Tage lang keinen Streak Freeze verwenden.', rewards:[{type:'coins',amount:125},{type:'lootbox',rarity:'rare',amount:1}] },
@@ -2614,6 +2745,78 @@
       medium: { label: 'Mittel', color: '#f59e0b', baseChance: 0.45 },
       hard: { label: 'Schwer', color: '#ef4444', baseChance: 0.60 }
     };
+    const QUEST_PERIODS = ['daily','weekly'];
+    const QUEST_GROUPS = [
+      { id:'always', label:'', color:'#f97316' },
+      { id:'easy', label:'Einfach', color:'#22c55e' },
+      { id:'medium', label:'Mittel', color:'#f59e0b' },
+      { id:'hard', label:'Schwer', color:'#ef4444' }
+    ];
+    const QUEST_DAILY_DIFFICULTIES = ['easy','medium','hard'];
+    const QUEST_DAILY_POOL_VERSION = 7;
+    const QUEST_COMPLETION_TIERS = [
+      {
+        group:'easy',
+        minAvg:-Infinity,
+        maxAvg:40,
+        title:'Completion Start',
+        targetRolls:[
+          { weight:20, min:15, max:40 },
+          { weight:80, min:20, max:60 }
+        ]
+      },
+      {
+        group:'medium',
+        minAvg:40,
+        maxAvg:80,
+        title:'Completion Push',
+        targetRolls:[
+          { weight:30, min:25, max:50 },
+          { weight:70, min:40, max:90 }
+        ]
+      },
+      {
+        group:'hard',
+        minAvg:80,
+        maxAvg:Infinity,
+        title:'Completion Master',
+        targetRolls:[
+          { weight:70, min:50, max:90 },
+          { weight:30, min:70, max:100 }
+        ]
+      }
+    ];
+    const QUEST_REWARD_SCORE_STRENGTH = 1.15;
+    const QUEST_REWARD_FAMILIES = {
+      easy:['coins','xp'],
+      medium:['coins','xp','lootbox'],
+      hard:['coins','xp','lootbox']
+    };
+    const QUEST_REWARD_DEFINITIONS = [
+      { id:1, family:'coins', min:1, max:2, quality:1, groups:['easy'] },
+      { id:2, family:'coins', min:1, max:3, quality:2, groups:['easy'] },
+      { id:3, family:'coins', min:2, max:3, quality:3, groups:['easy','medium'] },
+      { id:4, family:'coins', min:3, max:4, quality:4, groups:['easy','medium'] },
+      { id:5, family:'coins', min:4, max:5, quality:5, groups:['medium','hard'] },
+      { id:6, family:'coins', min:6, max:7, quality:6, groups:['hard'] },
+      { id:7, family:'xp', min:5, max:10, quality:1, groups:['easy'] },
+      { id:8, family:'xp', min:10, max:15, quality:2, groups:['easy'] },
+      { id:9, family:'xp', min:15, max:20, quality:3, groups:['easy','medium'] },
+      { id:10, family:'xp', min:20, max:25, quality:4, groups:['easy','medium'] },
+      { id:11, family:'xp', min:30, max:40, quality:5, groups:['medium','hard'] },
+      { id:12, family:'xp', min:50, max:60, quality:6, groups:['hard'] },
+      { id:13, family:'lootbox', rarity:'random', quality:1, groups:['medium','hard'] },
+      { id:14, family:'lootbox', rarity:'normal', quality:0, groups:['medium'] },
+      { id:15, family:'lootbox', rarity:'rare', quality:2, groups:['medium','hard'], baseWeight:0.9 },
+      { id:16, family:'lootbox', rarity:'epic', quality:3, groups:['hard'], baseWeight:0.55 },
+      { id:17, family:'lootbox', rarity:'legendary', quality:4, groups:['hard'], baseWeight:0.02 }
+    ];
+    const QUEST_RANDOM_LOOTBOX_WEIGHTS = [
+      { rarity:'normal', weight:50 },
+      { rarity:'rare', weight:28 },
+      { rarity:'epic', weight:18 },
+      { rarity:'legendary', weight:4 }
+    ];
     const TASK_COIN_NO_DROP_STEP = 0.05;
     const TASK_COIN_NO_DROP_MAX = 0.50;
 
@@ -2657,6 +2860,7 @@
       loadData();
       updateAppNameUi();
       ensureShopState();
+      ensureQuestState();
 
       setInterval(updateTimeLeft, 1000);
 
@@ -2723,6 +2927,71 @@
         setTimeout(()=>el.remove(), 950);
       }
     }
+    function playCoinRain(amount){
+      const coins = Math.max(1, Math.floor(Number(amount) || 0));
+      const coinDisplay = document.querySelector('.coin-display');
+      const rect = coinDisplay
+        ? coinDisplay.getBoundingClientRect()
+        : { left: window.innerWidth / 2, top: 56, width: 0, height: 0 };
+
+      if(coinDisplay){
+        coinDisplay.classList.remove('pulse');
+        void coinDisplay.offsetWidth;
+        coinDisplay.classList.add('pulse');
+        setTimeout(()=>coinDisplay.classList.remove('pulse'), 500);
+      }
+
+      const pop = document.createElement('div');
+      pop.className = 'coin-float';
+      pop.textContent = `+${coins} Coins`;
+      pop.style.left = `${Math.min(window.innerWidth - 96, Math.max(8, rect.left + (rect.width / 2) - 34))}px`;
+      pop.style.top = `${Math.max(12, rect.top + (rect.height / 2) - 12)}px`;
+      pop.style.setProperty('--tx', `${(Math.random() * 30) - 15}px`);
+      document.body.appendChild(pop);
+      setTimeout(()=>pop.remove(), 950);
+
+      if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      const isMobile = window.innerWidth <= 640;
+      const coinCount = Math.min(isMobile ? 14 : 24, Math.max(isMobile ? 7 : 10, coins + 6));
+      const sparkCount = Math.min(isMobile ? 4 : 7, Math.ceil(coinCount / 4));
+      const fragment = document.createDocumentFragment();
+      const cleanup = [];
+
+      for(let i=0;i<coinCount;i++){
+        const el = document.createElement('div');
+        el.className = 'coin-rain-coin';
+        const size = Math.round((isMobile ? 14 : 17) + Math.random() * (isMobile ? 8 : 10));
+        const delay = Math.round(i * (isMobile ? 34 : 28) + Math.random() * 120);
+        const duration = Math.round(1050 + Math.random() * (isMobile ? 560 : 720));
+        el.style.setProperty('--x', `${Math.random() * 100}vw`);
+        el.style.setProperty('--dx', `${Math.round((Math.random() * 2 - 1) * (isMobile ? 42 : 70))}px`);
+        el.style.setProperty('--rz', `${Math.round((Math.random() * 2 - 1) * 420)}deg`);
+        el.style.setProperty('--size', `${size}px`);
+        el.style.setProperty('--delay', `${delay}ms`);
+        el.style.setProperty('--duration', `${duration}ms`);
+        cleanup.push({ el, time: delay + duration + 220 });
+        fragment.appendChild(el);
+      }
+
+      for(let i=0;i<sparkCount;i++){
+        const spark = document.createElement('div');
+        spark.className = 'coin-rain-spark';
+        const delay = Math.round(Math.random() * 360);
+        const duration = Math.round(760 + Math.random() * 720);
+        spark.style.setProperty('--x', `${Math.random() * 100}vw`);
+        spark.style.setProperty('--dx', `${Math.round((Math.random() * 2 - 1) * (isMobile ? 44 : 76))}px`);
+        spark.style.setProperty('--size', `${Math.round(4 + Math.random() * 6)}px`);
+        spark.style.setProperty('--delay', `${delay}ms`);
+        spark.style.setProperty('--duration', `${duration}ms`);
+        cleanup.push({ el:spark, time: delay + duration + 220 });
+        fragment.appendChild(spark);
+      }
+
+      document.body.appendChild(fragment);
+      cleanup.forEach(item=>setTimeout(()=>item.el.remove(), item.time));
+    }
+
     function getLootboxRewardText(rolledReward){
       const amount = Math.max(1, Math.floor(Number(rolledReward.amount) || 1));
       if(rolledReward.rewardType==='xp') return `+${amount} XP`;
@@ -2882,7 +3151,7 @@
     }
 
     function bindInteractiveText(scope=document){
-      const textSelector='.logo,.date-info h2,.date-info p,.modal-title,.section-title,.form-label,.category-name,.habit-name,.stat-label,.stat-value,.today-xp-inline span,.level-text h3,.level-text p,.chart-nav-label,.calendar-title,.week-day-date,.category-item-name,.ach-title,.ach-desc,.week-item-name,.week-item-xp,.shop-item-title,.shop-item-desc,.shop-owned,.shop-balance-label,.shop-balance-value,.shop-balance-stat-label,.habit-overview-name,.habit-overview-pill,.habit-overview-metric-label,.habit-overview-kpi-label,.habit-overview-dashboard-title,.habit-overview-category-meta,.habit-overview-leader-name,.habit-overview-count-label,.habit-overview-ring-label';
+      const textSelector='.logo,.date-info h2,.date-info p,.modal-title,.section-title,.form-label,.category-name,.habit-name,.stat-label,.stat-value,.today-xp-inline span,.level-text h3,.level-text p,.chart-nav-label,.calendar-title,.week-day-date,.category-item-name,.ach-title,.ach-desc,.week-item-name,.week-item-xp,.shop-item-title,.shop-item-desc,.shop-owned,.shop-balance-label,.shop-balance-value,.shop-balance-stat-label,.habit-overview-name,.habit-overview-pill,.habit-overview-metric-label,.habit-overview-kpi-label,.habit-overview-dashboard-title,.habit-overview-category-meta,.habit-overview-leader-name,.habit-overview-count-label,.habit-overview-ring-label,.quest-board-title,.quest-board-sub,.quest-board-score,.quest-section-title,.quest-name,.quest-chip,.quest-reward';
       scope.querySelectorAll(textSelector).forEach(el=>el.classList.add('text-interactive'));
       scope.querySelectorAll('.total-xp-label,.total-xp-value').forEach(el=>el.classList.remove('text-interactive'));
     }
@@ -2925,7 +3194,7 @@
     }
 
     function animateStatsTab(){
-      const modal=document.getElementById('statsModal');
+      const modal=document.getElementById('achievementsModal') || document.getElementById('statsModal');
       if(!modal) return;
 
       const animTargets=modal.querySelectorAll('.stat-card,.chart-container,.chart-nav-label,.ach-card');
@@ -2988,13 +3257,28 @@
     }
 
     function toggleRestDay(){
-      const d=todayStr();
-      state.restDays[d]=!state.restDays[d];
-      if(state.restDays[d]) showToast('Rest Day enabled');
-      else showToast('Rest Day disabled');
+      toggleRestDayForDate(todayStr());
+    }
+    function toggleRestDayForDate(dateStr){
+      const d=normalizeDateOnly(dateStr);
+      if(!d) return;
+      const target=new Date(`${d}T00:00:00`);
+      const today=new Date(); today.setHours(0,0,0,0);
+      if(Number.isNaN(target.getTime()) || target>today){
+        showToast('Future days cannot be Rest Days');
+        return;
+      }
+      if(!state.restDays || typeof state.restDays!=='object') state.restDays={};
+      if(state.restDays[d]) delete state.restDays[d];
+      else state.restDays[d]=true;
+      showToast(state.restDays[d] ? `Rest Day enabled for ${d}` : `Rest Day disabled for ${d}`);
+      if(state.restDays[d]) revokePerfectBonusIfNoLongerPerfect(d);
+      recalcAllStreaks();
+      checkAchievements();
       updateRestDayButton();
       updateStats();
       renderMain();
+      renderWeekView();
       saveData();
     }
     function updateRestDayButton(){
@@ -3004,16 +3288,20 @@
       btn.classList.toggle('active', on);
     }
     function toggleMiniHabitMode(){
-      state.miniHabitMode = !state.miniHabitMode;
+      const nextMode = !state.miniHabitMode;
+      state.miniHabitMode = nextMode;
       updateMiniHabitModeButton();
-      showToast(state.miniHabitMode ? 'Mini Habits enabled' : 'Mini Habits disabled');
+      showToast(nextMode ? 'Mini Habits enabled' : 'Mini Habits disabled');
       renderMain();
       saveData();
     }
     function updateMiniHabitModeButton(){
       const btn=document.getElementById('miniHabitModeBtn');
       if(!btn) return;
-      btn.classList.toggle('active', !!state.miniHabitMode);
+      const active=!!state.miniHabitMode;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      btn.textContent = 'Mini Habits';
     }
     function isMiniHabitModeActive(){
       return !!state.miniHabitMode;
@@ -3046,7 +3334,7 @@
     // --- Completion storage ---
     function ensureDay(dateStr){
       if(!state.completionData[dateStr]){
-        state.completionData[dateStr]={ items:{}, itemProgress:{}, itemProgressXp:{}, miniHabits:{}, xp:{}, taskCoinRolls:{}, habitCoinReward:null, perfectBonusGiven:false, perfectBonusXp:0, lootboxes:{ normal:false, perfect:false } };
+        state.completionData[dateStr]={ items:{}, itemProgress:{}, itemProgressXp:{}, miniHabits:{}, xp:{}, taskCoinRolls:{}, alwaysTaskCompletions:{}, habitCoinReward:null, perfectBonusGiven:false, perfectBonusXp:0, lootboxes:{ normal:false, perfect:false } };
       } else {
         const d=state.completionData[dateStr];
         if(!d.items){
@@ -3055,13 +3343,14 @@
             if(k==='xp'||k==='perfectBonusGiven') return;
             if(typeof d[k]==='boolean') items[`H:${k}`]=d[k];
           });
-          state.completionData[dateStr]={ items, itemProgress:{}, itemProgressXp:{}, miniHabits:{}, xp:{}, taskCoinRolls:{}, habitCoinReward:null, perfectBonusGiven:false, perfectBonusXp:0, lootboxes:{ normal:false, perfect:false } };
+          state.completionData[dateStr]={ items, itemProgress:{}, itemProgressXp:{}, miniHabits:{}, xp:{}, taskCoinRolls:{}, alwaysTaskCompletions:{}, habitCoinReward:null, perfectBonusGiven:false, perfectBonusXp:0, lootboxes:{ normal:false, perfect:false } };
         } else {
           if(!d.itemProgress || typeof d.itemProgress !== 'object') d.itemProgress = {};
           if(!d.itemProgressXp || typeof d.itemProgressXp !== 'object') d.itemProgressXp = {};
           if(!d.miniHabits || typeof d.miniHabits !== 'object') d.miniHabits = {};
           d.xp = d.xp || {};
           if(!d.taskCoinRolls || typeof d.taskCoinRolls !== 'object') d.taskCoinRolls = {};
+          if(!d.alwaysTaskCompletions || typeof d.alwaysTaskCompletions !== 'object') d.alwaysTaskCompletions = {};
           Object.keys(d.taskCoinRolls).forEach(k=>{
             const roll=d.taskCoinRolls[k];
             if(roll && typeof roll==='object' && !roll.coinLogRef) roll.coinLogRef = `task_coin:${k}:${dateStr}`;
@@ -3299,6 +3588,10 @@
         const ds=formatDate(d);
         const frozen = hasDayFreeze(ds);
         if(type==='habit'){
+          if(isRestDay(ds) && habit.restAffected){
+            d.setDate(d.getDate()-1);
+            continue;
+          }
           if(!shouldHabitExistOnDate(habit, d)) break;
           if(isCompleted('habit', habit.id, ds)) streak++;
           else if(!frozen) break;
@@ -3316,10 +3609,7 @@
 
     function computeBestHistoricalHabitStreak(){
       const datedKeys = Object.keys(state.completionData || {}).sort();
-      const tracked = [
-        ...state.habits.map(item=>({ item, type:'habit' })),
-        ...state.extraHabits.map(item=>({ item, type:'extra' }))
-      ];
+      const tracked = state.habits.map(item=>({ item, type:'habit' }));
       if(tracked.length===0) return 0;
 
       let best = Math.max(0, ...tracked.map(entry=>Number(entry.item.streak) || 0));
@@ -3377,6 +3667,52 @@ function recomputeLevelFromTotalXp(){
   state.level = lvl;
   state.levelStartXp = start;
 }
+function ensureQuestState(){
+  if(!QUEST_PERIODS.includes(state.questPeriod)) state.questPeriod = 'daily';
+  if(!state.questClaims || typeof state.questClaims !== 'object' || Array.isArray(state.questClaims)){
+    state.questClaims = {};
+  }
+  Object.keys(state.questClaims).forEach(key=>{
+    const claim = state.questClaims[key];
+    if(!claim || typeof claim !== 'object'){
+      delete state.questClaims[key];
+      return;
+    }
+    claim.period = QUEST_PERIODS.includes(claim.period) ? claim.period : '';
+    claim.periodKey = String(claim.periodKey || '');
+    claim.questId = String(claim.questId || '');
+    claim.rewardType = ['xp','coins','lootbox'].includes(claim.rewardType) ? claim.rewardType : 'xp';
+    claim.rarity = ['normal','rare','epic','legendary'].includes(claim.rarity) ? claim.rarity : 'normal';
+    claim.amount = Math.max(1, Math.floor(Number(claim.amount) || 1));
+    claim.claimedAt = Number(claim.claimedAt) || Date.now();
+  });
+  if(!state.questDailySelections || typeof state.questDailySelections !== 'object' || Array.isArray(state.questDailySelections)){
+    state.questDailySelections = {};
+  }
+  Object.keys(state.questDailySelections).forEach(dateKey=>{
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(dateKey)){
+      delete state.questDailySelections[dateKey];
+      return;
+    }
+    const entry = state.questDailySelections[dateKey];
+    if(!entry || typeof entry !== 'object' || !Array.isArray(entry.quests)){
+      delete state.questDailySelections[dateKey];
+      return;
+    }
+    entry.date = dateKey;
+    entry.generatedAt = Number(entry.generatedAt) || Date.now();
+    entry.quests = entry.quests
+      .filter(quest=>quest && typeof quest === 'object')
+      .map(quest=>({
+        ...quest,
+        id:String(quest.id || createShopUid('quest')),
+        group:QUEST_DAILY_DIFFICULTIES.includes(quest.group) ? quest.group : 'easy',
+        condition:String(quest.condition || 'placeholder'),
+        target:Math.max(1, Math.floor(Number(quest.target) || 1))
+      }));
+    if(entry.quests.length===0) delete state.questDailySelections[dateKey];
+  });
+}
 function normalizeStreakFreezeState(sourceData){
   const hasFreezeCount = !!(sourceData && Object.prototype.hasOwnProperty.call(sourceData, 'streakFreezes'));
   const hasFreezeDays = !!(sourceData && Object.prototype.hasOwnProperty.call(sourceData, 'streakFreezeDays'));
@@ -3418,7 +3754,7 @@ function normalizeStreakFreezeState(sourceData){
       });
       state.newAchievements = normalized;
       if(!state.achievementLootboxes || typeof state.achievementLootboxes !== 'object') state.achievementLootboxes = {};
-      ['normal','rare','epic'].forEach(key=>{
+      ['normal','rare','epic','legendary'].forEach(key=>{
         state.achievementLootboxes[key] = Math.max(0, Math.floor(Number(state.achievementLootboxes[key]) || 0));
       });
       state.coinEarningLog = Array.isArray(state.coinEarningLog) ? state.coinEarningLog : [];
@@ -3430,13 +3766,7 @@ function normalizeStreakFreezeState(sourceData){
       if(!/^\d{4}-\d{2}-\d{2}$/.test(String(state.achievementTrackingStarted || ''))){
         state.achievementTrackingStarted = todayStr();
       }
-      if(!hasShopDisciplineStart){
-        state.shopDisciplineTrackingStarted = todayStr();
-        if(normalized.shop_discipline){
-          normalized.shop_discipline.unlocked = false;
-          normalized.shop_discipline.unlockedAt = 0;
-        }
-      }
+      if(!hasShopDisciplineStart) state.shopDisciplineTrackingStarted = '';
     }
     function sanitizeShopText(value, maxLen=80){
       return String(value || '').replace(/\s+/g, ' ').trim().slice(0, maxLen);
@@ -3746,7 +4076,13 @@ function normalizeStreakFreezeState(sourceData){
           continue;
         }
         const scheduled=getScheduledHabits(d);
-        if(scheduled.length===0) break;
+        if(scheduled.length===0){
+          if(isRestDay(ds)){
+            d.setDate(d.getDate()-1);
+            continue;
+          }
+          break;
+        }
         if(isPerfectDay(d)) streak++;
         else break;
         d.setDate(d.getDate()-1);
@@ -3852,13 +4188,13 @@ function calculatePerfectBonus(streak){
         perfectEl.style.display='none';
       }
 
-      // Day streak (at least one completion/day)
+      // Day streak (habit/task completions only; extra habits only contribute XP)
       let dayStreak=0;
       const d=new Date();
       for(;;){
         const s=formatDate(d);
         const dd=ensureDay(s);
-        const anyCompleted = Object.values(dd.items||{}).some(v=>v);
+        const anyCompleted = Object.entries(dd.items||{}).some(([k,v])=>v===true && /^(H|T):/.test(k));
         if(anyCompleted) dayStreak++;
         else if(hasDayFreeze(s)){
           // frozen days neither add nor break the day streak
@@ -3866,9 +4202,6 @@ function calculatePerfectBonus(streak){
         else break;
         d.setDate(d.getDate()-1);
       }
-
-      // completed today (habits + extra + onetime completions stored in day.items)
-      const completedToday = Object.entries(day.items||{}).filter(([_,v])=>v===true).length;
 
       // Habits today (scheduled main habits only, rest-day aware)
       const todayProgress = getTodayHabitProgress();
@@ -3883,10 +4216,14 @@ function calculatePerfectBonus(streak){
 
       updateLevelDisplay();
 
-      // keep stats modal in sync if open
+      // keep open summary modals in sync
       const statsModal = document.getElementById('statsModal');
       if (statsModal && statsModal.classList.contains('active')) {
         updateStatsModal();
+      }
+      const achievementsModal = document.getElementById('achievementsModal');
+      if(achievementsModal && achievementsModal.classList.contains('active')){
+        renderNewAchievementsGrid();
       }
       const habitOverviewModal = document.getElementById('habitOverviewModal');
       if(habitOverviewModal && habitOverviewModal.classList.contains('active')){
@@ -3909,6 +4246,7 @@ function calculatePerfectBonus(streak){
         if(!Array.isArray(state.coinEarningLog)) state.coinEarningLog = [];
         state.coinEarningLog.push({ date: todayStr(), amount: coins, source, ref:cleanRef, createdAt: Date.now() });
       }
+      playCoinRain(coins);
     }
     function removeCoinEarningLog(ref, fallback){
       if(!Array.isArray(state.coinEarningLog)) state.coinEarningLog = [];
@@ -4226,10 +4564,9 @@ function calculatePerfectBonus(streak){
       return true;
     }
     function hasMultiBoxFullStreak(days, minBoxes){
-      const tracked = [
-        ...(state.habits||[]).map(item=>({ item, type:'habit' })),
-        ...(state.extraHabits||[]).map(item=>({ item, type:'extra' }))
-      ].filter(entry=>getHabitBoxCount(entry.item)>=minBoxes);
+      const tracked = (state.habits||[])
+        .map(item=>({ item, type:'habit' }))
+        .filter(entry=>getHabitBoxCount(entry.item)>=minBoxes);
       return tracked.some(entry=>{
         let ds=shiftDateKey(todayStr(), -(days-1));
         for(let i=0;i<days;i++){
@@ -4296,9 +4633,9 @@ function calculatePerfectBonus(streak){
       });
     }
     function hasNoShopPurchaseDays(days){
-      ensureNewAchievementState();
-      if(daysBetweenKeys(state.shopDisciplineTrackingStarted, todayStr()) < (days-1)) return false;
-      const start=shiftDateKey(todayStr(), -(days-1));
+      const start=String(state.shopDisciplineTrackingStarted || '');
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(start)) return false;
+      if(daysBetweenKeys(start, todayStr()) < (days-1)) return false;
       return !(state.shopPurchaseLog||[]).some(entry=>entry.date>=start && entry.date<=todayStr());
     }
     function hasCoinEarnedInDay(amount){
@@ -4329,14 +4666,20 @@ function calculatePerfectBonus(streak){
     }
 
     function getNewAchievementStatus(id){
-      ensureNewAchievementState();
+      if(!state.newAchievements || !state.newAchievements[id]) ensureNewAchievementState();
       return state.newAchievements[id] || { unlocked:false, unlockedAt:0 };
     }
     function formatAchievementReward(reward){
       if(reward.type==='coins') return `${reward.amount} Coins`;
       if(reward.type==='freeze') return `${reward.amount} Freeze${reward.amount>1?'s':''}`;
       if(reward.type==='lootbox'){
-        const label = reward.rarity==='normal' ? 'Normale Lootbox' : (reward.rarity==='rare' ? 'Seltene Lootbox' : 'Epische Lootbox');
+        const label = reward.rarity==='normal'
+          ? 'Normale Lootbox'
+          : reward.rarity==='rare'
+            ? 'Seltene Lootbox'
+            : reward.rarity==='epic'
+              ? 'Epische Lootbox'
+              : 'Legendary Lootbox';
         return `${reward.amount} ${label}`;
       }
       return '';
@@ -4353,13 +4696,50 @@ function calculatePerfectBonus(streak){
           parts.push(`${amount} Freeze${amount>1?'s':''}`);
         } else if(reward.type==='lootbox'){
           ensureNewAchievementState();
-          const rarity = ['normal','rare','epic'].includes(reward.rarity) ? reward.rarity : 'normal';
+          const rarity = ['normal','rare','epic','legendary'].includes(reward.rarity) ? reward.rarity : 'normal';
           state.achievementLootboxes[rarity] = Math.max(0, Number(state.achievementLootboxes[rarity])||0) + amount;
           parts.push(formatAchievementReward({ ...reward, amount }));
         }
       });
       updateLevelDisplay();
       return parts.join(', ');
+    }
+    function getShopDisciplineStart(){
+      const start=String(state.shopDisciplineTrackingStarted || '');
+      return /^\d{4}-\d{2}-\d{2}$/.test(start) ? start : '';
+    }
+    function getShopDisciplineCardHtml(status){
+      const start=getShopDisciplineStart();
+      const today=todayStr();
+      const elapsed=start ? Math.max(0, daysBetweenKeys(start, today) + 1) : 0;
+      const progress=start ? Math.min(7, elapsed) : 0;
+      const label=status && status.unlocked
+        ? `Gestartet am ${start || '-'}`
+        : start
+          ? `Aktiv seit ${start} (${progress}/7 Tage)`
+          : 'Noch nicht gestartet';
+      return `
+        <div class="achievement-card-reward">
+          <span class="achievement-reward-chip">${escapeHtml(label)}</span>
+        </div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;margin-top:.45rem;">
+          <input class="form-input" id="shopDisciplineStartInput" type="date" value="${escapeHtml(start || today)}" style="max-width:160px;padding:.45rem .55rem;font-size:.8rem;">
+          <button class="achievement-vault-btn" type="button" onclick="startShopDisciplineAchievement()">Startdatum speichern</button>
+        </div>
+      `;
+    }
+    function startShopDisciplineAchievement(){
+      ensureNewAchievementState();
+      const input=document.getElementById('shopDisciplineStartInput');
+      const start=normalizeDateOnly(input && input.value) || todayStr();
+      state.shopDisciplineTrackingStarted = start;
+      if(state.newAchievements && state.newAchievements.shop_discipline){
+        state.newAchievements.shop_discipline.unlocked = false;
+        state.newAchievements.shop_discipline.unlockedAt = 0;
+      }
+      renderNewAchievementsGrid();
+      saveData();
+      showToast(`Shop Discipline startet ab ${start}`);
     }
     function evaluateNewAchievement(id){
       const bestStreak=computeBestHistoricalHabitStreak();
@@ -4464,6 +4844,7 @@ function calculatePerfectBonus(streak){
         { key:'normal', title:'Normale Lootbox', desc:'Rollt wie eine normale Tages-Lootbox.' },
         { key:'rare', title:'Seltene Lootbox', desc:'Garantiert einen seltenen Reward.' },
         { key:'epic', title:'Epische Lootbox', desc:'Garantiert einen epischen Reward.' },
+        { key:'legendary', title:'Legendary Lootbox', desc:'Garantiert einen Legendary Reward.' },
         { key:'freeze', title:'Streak Freezes', desc:'Direkt im Inventar.', count:Math.max(0, Number(state.streakFreezes)||0), noOpen:true }
       ];
       vault.innerHTML=entries.map(entry=>{
@@ -4498,15 +4879,16 @@ function calculatePerfectBonus(streak){
             <div class="achievement-card-grid">
               ${tier.achievements.map(def=>{
                 const status=getNewAchievementStatus(def.id);
+                const rewardHtml = (def.rewards||[]).map(reward=>`<span class="achievement-reward-chip">${escapeHtml(formatAchievementReward(reward))}</span>`).join('');
                 return `
                   <div class="achievement-card ${status.unlocked?'unlocked':'locked'}" style="--tier-color:${tier.color}">
                     <div class="achievement-card-icon">${def.icon || tier.icon}</div>
                     <div>
                       <div class="achievement-card-title">${escapeHtml(def.title)}</div>
                       <div class="achievement-card-desc">${escapeHtml(def.desc)}</div>
-                      <div class="achievement-card-reward">
-                        ${(def.rewards||[]).map(reward=>`<span class="achievement-reward-chip">${escapeHtml(formatAchievementReward(reward))}</span>`).join('')}
-                      </div>
+                      ${def.id==='shop_discipline'
+                        ? `${getShopDisciplineCardHtml(status)}<div class="achievement-card-reward">${rewardHtml}</div>`
+                        : `<div class="achievement-card-reward">${rewardHtml}</div>`}
                     </div>
                     <div class="achievement-card-status">${status.unlocked?'Unlocked':'Locked'}</div>
                   </div>
@@ -4530,7 +4912,7 @@ function calculatePerfectBonus(streak){
     }
     async function openAchievementLootbox(kind){
       ensureNewAchievementState();
-      if(!['normal','rare','epic'].includes(kind)) return;
+      if(!['normal','rare','epic','legendary'].includes(kind)) return;
       if((state.achievementLootboxes[kind] || 0)<=0){
         showToast('No achievement lootbox available');
         return;
@@ -4703,29 +5085,104 @@ function calculatePerfectBonus(streak){
 
     // --- Tabs ---
     function switchTab(tab, ev){
-      state.currentTab=tab;
-      document.querySelectorAll('.task-tab').forEach(t=>t.classList.remove('active'));
-      const target = ev && (ev.currentTarget || ev.target);
-      if(target) target.classList.add('active');
-      else {
-        const fallback = Array.from(document.querySelectorAll('.task-tab'))
-          .find(btn => (btn.getAttribute('onclick') || '').includes(`'${tab}'`));
-        if(fallback) fallback.classList.add('active');
-      }
+      const safeTab = ['habits','onetime','extra','quests'].includes(tab) ? tab : 'habits';
+      state.currentTab=safeTab;
+      document.querySelectorAll('.task-tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===safeTab));
 
       updateCreateTaskTypeUi();
-      document.getElementById('taskDifficultyGroup').style.display = (tab==='onetime') ? 'block' : 'none';
-      document.getElementById('daysGroup').style.display = (tab==='habits') ? 'block' : 'none';
-      document.getElementById('categoryGroup').style.display = (tab==='extra') ? 'none' : 'block';
-      document.getElementById('restDayAffectGroup').style.display = (tab==='habits') ? 'block' : 'none';
-      document.getElementById('yesterdayGroup').style.display = (tab==='habits') ? 'block' : 'none';
-      document.getElementById('habitBoxGroup').style.display = (tab==='habits' || tab==='extra') ? 'block' : 'none';
+      const isQuestTab = safeTab==='quests';
+      document.getElementById('taskDifficultyGroup').style.display = (safeTab==='onetime') ? 'block' : 'none';
+      document.getElementById('daysGroup').style.display = (safeTab==='habits') ? 'block' : 'none';
+      document.getElementById('categoryGroup').style.display = (!isQuestTab && safeTab!=='extra') ? 'block' : 'none';
+      document.getElementById('restDayAffectGroup').style.display = (safeTab==='habits') ? 'block' : 'none';
+      document.getElementById('yesterdayGroup').style.display = (safeTab==='habits') ? 'block' : 'none';
+      document.getElementById('habitBoxGroup').style.display = (safeTab==='habits' || safeTab==='extra') ? 'block' : 'none';
 
       renderMain();
     }
 
+    function getTabProgressCounts(tab){
+      if(tab==='habits'){
+        const ds=habitsViewStr();
+        const date=new Date(`${ds}T00:00:00`);
+        const scheduled=getScheduledHabits(date);
+        return {
+          total:scheduled.length,
+          completed:scheduled.filter(h=>isCompleted('habit', h.id, ds)).length
+        };
+      }
+
+      if(tab==='extra'){
+        const ds=todayStr();
+        const date=new Date(`${ds}T00:00:00`);
+        const scheduled=getScheduledExtraHabits(date);
+        return {
+          total:scheduled.length,
+          completed:scheduled.filter(h=>isCompleted('extra', h.id, ds)).length
+        };
+      }
+
+      if(tab==='onetime'){
+        const today=todayStr();
+        const totalIds=new Set();
+        const completedIds=new Set();
+
+        (state.oneTimeTasks || []).forEach(task=>{
+          if(!task || isAlwaysTask(task)) return;
+          const id=String(task.id);
+          if(task.completed){
+            const completionDate=getTaskCompletionDateKey(task, today);
+            if(completionDate===today){
+              totalIds.add(id);
+              completedIds.add(id);
+            }
+            return;
+          }
+          totalIds.add(id);
+        });
+
+        getTaskCompletionLogEntries().forEach(entry=>{
+          if(entry.completionDate!==today || entry.taskType==='always') return;
+          const id=String(entry.taskId);
+          totalIds.add(id);
+          completedIds.add(id);
+        });
+
+        return { total:totalIds.size, completed:completedIds.size };
+      }
+
+      if(tab==='quests'){
+        ensureQuestState();
+        const range=getQuestPeriodRange('daily');
+        const quests=getDailyQuestSelection(range.start)
+          .filter(quest=>quest.condition!=='placeholder' && quest.condition!=='unavailable');
+        return {
+          total:quests.length,
+          completed:quests.filter(quest=>getQuestProgress(quest, 'daily').complete).length
+        };
+      }
+
+      return { total:0, completed:0 };
+    }
+
+    function updateTaskTabProgress(){
+      const activeTab = ['habits','onetime','extra','quests'].includes(state.currentTab) ? state.currentTab : 'habits';
+      document.querySelectorAll('.task-tab[data-tab]').forEach(btn=>{
+        const counts=getTabProgressCounts(btn.dataset.tab);
+        const total=Math.max(0, Number(counts.total) || 0);
+        const completed=Math.max(0, Math.min(total, Number(counts.completed) || 0));
+        const percent=total>0 ? Math.round((completed/total)*100) : 0;
+        btn.style.setProperty('--tab-progress', `${percent * 3.6}deg`);
+        btn.classList.toggle('active', btn.dataset.tab===activeTab);
+        btn.classList.toggle('complete', total>0 && completed>=total);
+        btn.title = total>0 ? `${completed}/${total} erledigt` : 'Keine Eintraege';
+        btn.setAttribute('aria-label', `${btn.textContent.trim()} ${completed}/${total} erledigt`);
+      });
+    }
+
     function renderMain(){
       updateDate();
+      updateTaskTabProgress();
       const root=document.getElementById('mainContent');
       if(state.currentTab==='habits'){
         root.innerHTML = renderHabitsByCategory() + renderHabitsDaySwitcher();
@@ -4739,6 +5196,11 @@ function calculatePerfectBonus(streak){
       }
       if(state.currentTab==='onetime'){
         root.innerHTML = renderOneTimeTasks();
+        initInteractiveUi(root);
+        return;
+      }
+      if(state.currentTab==='quests'){
+        root.innerHTML = renderQuests();
         initInteractiveUi(root);
         return;
       }
@@ -4850,6 +5312,1614 @@ function calculatePerfectBonus(streak){
         : `<div class="empty-state" style="padding:1.5rem;"><div class="empty-state-icon">♾️</div><p>No always tasks.</p></div>`;
 
       return html;
+    }
+
+    function setQuestPeriod(period){
+      ensureQuestState();
+      state.questPeriod = QUEST_PERIODS.includes(period) ? period : 'daily';
+      renderMain();
+      saveData();
+    }
+
+    function getQuestPeriodRange(period){
+      const today = todayStr();
+      if(period==='weekly'){
+        const startDate = dateFromKey(today) || new Date();
+        startDate.setDate(startDate.getDate() - startDate.getDay());
+        const start = formatDate(startDate);
+        return {
+          start,
+          end: shiftDateKey(start, 6),
+          label: `${formatQuestShortDate(start)} - ${formatQuestShortDate(shiftDateKey(start, 6))}`
+        };
+      }
+      return { start: today, end: today, label: 'Heute' };
+    }
+
+    function formatQuestShortDate(dateStr){
+      const date = dateFromKey(dateStr);
+      if(!date) return dateStr;
+      return date.toLocaleDateString('de-DE', { day:'2-digit', month:'2-digit' });
+    }
+
+    function randomChoice(list){
+      return Array.isArray(list) && list.length ? list[randomInt(0, list.length - 1)] : null;
+    }
+
+    function weightedChoice(options){
+      if(!Array.isArray(options) || options.length===0) return null;
+      const total = options.reduce((sum, option)=>sum + Math.max(0, Number(option.weight) || 0), 0);
+      if(total<=0) return randomChoice(options);
+      let roll = Math.random() * total;
+      for(const option of options){
+        roll -= Math.max(0, Number(option.weight) || 0);
+        if(roll < 0) return option;
+      }
+      return options[options.length - 1];
+    }
+
+    function normalizeDailyQuestScore(value){
+      return Math.max(1, Math.min(10, Math.round(Number(value) || 1)));
+    }
+
+    function getDailyCompletionQuestScore(target){
+      const clampedTarget = Math.max(15, Math.min(100, Number(target) || 15));
+      return normalizeDailyQuestScore(3 + (6 * ((clampedTarget - 15) / 85)));
+    }
+
+    function getDailyQuestRewardOptions(group, family){
+      return QUEST_REWARD_DEFINITIONS.filter(definition=>{
+        return definition.family===family && definition.groups.includes(group);
+      });
+    }
+
+    function getDailyQuestRewardOptionWeight(definition, options, score){
+      const qualities = options.map(option=>Number(option.quality) || 0);
+      const minQuality = Math.min(...qualities);
+      const maxQuality = Math.max(...qualities);
+      const qualityPosition = maxQuality>minQuality
+        ? ((Number(definition.quality) || 0) - minQuality) / (maxQuality - minQuality)
+        : 0.5;
+      const qualityAxis = (qualityPosition * 2) - 1;
+      const scoreAxis = (normalizeDailyQuestScore(score) - 5.5) / 4.5;
+      const baseWeight = Math.max(0.001, Number(definition.baseWeight) || 1);
+      return baseWeight * Math.exp(QUEST_REWARD_SCORE_STRENGTH * scoreAxis * qualityAxis);
+    }
+
+    function rollDailyQuestRewardFromFamily(group, score, family){
+      const options = getDailyQuestRewardOptions(group, family);
+      if(!options.length) return null;
+      const weightedOptions = options.map(definition=>({
+        definition,
+        weight:getDailyQuestRewardOptionWeight(definition, options, score)
+      }));
+      const selected = weightedChoice(weightedOptions);
+      const definition = selected && selected.definition;
+      if(!definition) return null;
+      if(definition.family==='lootbox'){
+        return {
+          rewardId:definition.id,
+          type:'lootbox',
+          rarity:definition.rarity,
+          amount:1
+        };
+      }
+      return {
+        rewardId:definition.id,
+        type:definition.family,
+        amount:randomInt(definition.min, definition.max)
+      };
+    }
+
+    function rollDailyQuestReward(group, score){
+      const families = QUEST_REWARD_FAMILIES[group] || [];
+      const family = randomChoice(families);
+      return family ? rollDailyQuestRewardFromFamily(group, score, family) : null;
+    }
+
+    function attachDailyQuestReward(quest){
+      if(!quest || quest.condition==='placeholder' || quest.condition==='unavailable') return quest;
+      const score = normalizeDailyQuestScore(quest.score);
+      return {
+        ...quest,
+        score,
+        rewardSystemVersion:1,
+        reward:rollDailyQuestReward(quest.group, score)
+      };
+    }
+
+    function rollQuestRandomLootboxRarity(){
+      const selected = weightedChoice(QUEST_RANDOM_LOOTBOX_WEIGHTS);
+      return selected ? selected.rarity : 'normal';
+    }
+
+    function getDailyQuestSelection(dateStr=todayStr()){
+      ensureQuestState();
+      const ds = normalizeDateOnly(dateStr) || todayStr();
+      const current = state.questDailySelections[ds];
+      if(current && Array.isArray(current.quests) && hasDailyQuestDifficulties(current.quests, current)){
+        return current.quests;
+      }
+      const next = buildDailyQuestSelection(ds);
+      state.questDailySelections[ds] = next;
+      saveData();
+      return next.quests;
+    }
+
+    function hasDailyQuestDifficulties(quests, entry){
+      if(!entry || Number(entry.poolVersion) !== QUEST_DAILY_POOL_VERSION) return false;
+      const groups = new Set((Array.isArray(quests) ? quests : []).map(quest=>quest && quest.group));
+      const completionQuest = (Array.isArray(quests) ? quests : []).find(quest=>quest && quest.condition==='dailyCompletion');
+      const hasCompletionQuest = !!completionQuest
+        && completionQuest.title === 'Completion Quest'
+        && (completionQuest.completionMode === 'random' || completionQuest.completionMode === 'average')
+        && !String(completionQuest.description || '').includes('Schaffe heute')
+        && !/% Completion schaffen/.test(String(completionQuest.title || ''));
+      const hasRewards = (Array.isArray(quests) ? quests : []).every(quest=>{
+        if(!quest || quest.condition==='placeholder' || quest.condition==='unavailable') return true;
+        return quest.rewardSystemVersion===1 && !!quest.reward;
+      });
+      return hasCompletionQuest && hasRewards && QUEST_DAILY_DIFFICULTIES.every(group=>groups.has(group));
+    }
+
+    function buildDailyQuestSelection(dateStr){
+      const candidates = buildDailyQuestCandidates(dateStr);
+      const completionQuest = createDailyCompletionQuest(dateStr);
+      const quests = QUEST_DAILY_DIFFICULTIES.map(group=>{
+        if(group===completionQuest.group) return completionQuest;
+        const pool = candidates[group] || [];
+        return randomChoice(pool) || createUnavailableDailyQuest(dateStr, group);
+      }).map(attachDailyQuestReward);
+      return { date:dateStr, generatedAt:Date.now(), poolVersion:QUEST_DAILY_POOL_VERSION, quests };
+    }
+
+    function addDailyQuestCandidate(candidates, quest, score){
+      if(!quest || !candidates[quest.group]) return;
+      quest.score = normalizeDailyQuestScore(score);
+      candidates[quest.group].push(quest);
+    }
+
+    function buildDailyQuestCandidates(dateStr){
+      const candidates = { easy:[], medium:[], hard:[] };
+      const perfectDayQuest = createPerfectDayDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, perfectDayQuest, 10);
+      const categoryQuest = createCategorySweepDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, categoryQuest, 4);
+      const completeCategoryQuest = createCompleteCategoryDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, completeCategoryQuest, 6);
+      const weakestCategoryQuest = createWeakestCategoryDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, weakestCategoryQuest, 10);
+      const twoWeakestCategoryHabitsQuest = createTwoWeakestCategoryHabitsDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, twoWeakestCategoryHabitsQuest, 7);
+      const halfWeakestCategoryQuest = createHalfWeakestCategoryDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, halfWeakestCategoryQuest, 7);
+      const bestAndWorstCategoryQuest = createBestAndWorstCategoryDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, bestAndWorstCategoryQuest, 5);
+      const streakQuest = createStreakTargetDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, streakQuest, 4);
+      const zeroStreakHabitQuest = createZeroStreakHabitDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, zeroStreakHabitQuest, 6);
+      const randomHabitQuest = createRandomHabitDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, randomHabitQuest, 3);
+      const missedYesterdayQuest = createMissedYesterdayHabitDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, missedYesterdayQuest, 4);
+      const allMissedYesterdayQuest = createAllMissedYesterdayHabitsDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, allMissedYesterdayQuest, 8);
+      const allZeroStreakHabitsQuest = createAllZeroStreakHabitsDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, allZeroStreakHabitsQuest, 8);
+      const extraHabitQuest = createExtraHabitDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, extraHabitQuest, 7);
+      const mediumExtraHabitQuest = createMediumExtraHabitDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, mediumExtraHabitQuest, 6);
+      const hardExtraHabitQuest = createHardExtraHabitDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, hardExtraHabitQuest, 7);
+      const alwaysTaskQuest = createAlwaysTaskDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, alwaysTaskQuest, 5);
+      const mediumAlwaysTaskQuest = createMediumAlwaysTaskDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, mediumAlwaysTaskQuest, 4);
+      const hardAlwaysTaskQuest = createHardAlwaysTaskDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, hardAlwaysTaskQuest, 4);
+      const taskQuest = createTaskCountDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, taskQuest, 7);
+      const mediumTaskCountQuest = createMediumTaskCountDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, mediumTaskCountQuest, 7);
+      const hardTaskCountQuest = createHardTaskCountDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, hardTaskCountQuest, 7);
+      const easyTaskQuest = createEasyTaskDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, easyTaskQuest, 3);
+      const mediumTaskQuest = createMediumTaskDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, mediumTaskQuest, 2);
+      const hardTaskQuest = createHardTaskDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, hardTaskQuest, 3);
+      const lowestXpTaskQuest = createLowestXpTaskDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, lowestXpTaskQuest, 4);
+      const newestTaskQuest = createNewestEligibleTaskDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, newestTaskQuest, 6);
+      const taskPerDifficultyQuest = createTaskPerDifficultyDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, taskPerDifficultyQuest, 7);
+      const weakestHabitQuest = createWeakestHabitDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, weakestHabitQuest, 7);
+      const weakestHabitsQuest = createThreeWeakestHabitsDailyQuest(dateStr);
+      addDailyQuestCandidate(candidates, weakestHabitsQuest, 8);
+      const availableOverdue = getDailyQuestOverdueAvailableTaskIds(dateStr).length;
+      const mediumOverdue = createOverdueDailyQuest(dateStr, 'medium', 1, 2, availableOverdue);
+      addDailyQuestCandidate(candidates, mediumOverdue, 4);
+      const hardOverdue = createOverdueDailyQuest(dateStr, 'hard', 3, 4, availableOverdue);
+      addDailyQuestCandidate(candidates, hardOverdue, 8);
+      return candidates;
+    }
+
+    function getPreviousWeekCompletionAverage(dateStr){
+      let total = 0;
+      let days = 0;
+      for(let i=7;i>=1;i--){
+        const ds = shiftDateKey(dateStr, -i);
+        const progress = getHabitProgressForDate(ds);
+        if(progress.total<=0) continue;
+        total += progress.percent;
+        days++;
+      }
+      return days>0 ? Math.round(total / days) : 0;
+    }
+
+    function getCompletionTierForAverage(avg){
+      const value = Math.max(0, Math.min(100, Math.round(Number(avg) || 0)));
+      if(value < 40) return QUEST_COMPLETION_TIERS.find(tier=>tier.group==='easy');
+      if(value <= 80) return QUEST_COMPLETION_TIERS.find(tier=>tier.group==='medium');
+      return QUEST_COMPLETION_TIERS.find(tier=>tier.group==='hard');
+    }
+
+    function createDailyCompletionQuest(dateStr){
+      const average = getPreviousWeekCompletionAverage(dateStr);
+      const completionMode = Math.random() < 0.5 ? 'random' : 'average';
+      const tier = completionMode==='random'
+        ? randomChoice(QUEST_COMPLETION_TIERS)
+        : (getCompletionTierForAverage(average) || QUEST_COMPLETION_TIERS[0]);
+      const targetRoll = weightedChoice(tier.targetRolls) || tier.targetRolls[0];
+      const target = randomInt(targetRoll.min, targetRoll.max);
+      return {
+        id:`daily_${dateStr}_completion_${tier.group}`,
+        group:tier.group,
+        icon:'%',
+        condition:'dailyCompletion',
+        title:'Completion Quest',
+        description:`Letzte 7 Tage: ${average}% Durchschnitt.`,
+        target,
+        average,
+        completionMode,
+        score:getDailyCompletionQuestScore(target)
+      };
+    }
+
+    function createUnavailableDailyQuest(dateStr, group){
+      return {
+        id:`daily_${dateStr}_unavailable_${group}`,
+        group,
+        icon:'-',
+        condition:'unavailable',
+        title:'Keine moegliche Quest',
+        description:'Fuer diese Schwierigkeit gab es beim Generieren keine machbare Quest.',
+        target:1
+      };
+    }
+
+    function createPerfectDayDailyQuest(dateStr){
+      const progress = getHabitProgressForDate(dateStr);
+      if(progress.total<=0) return null;
+      return {
+        id:`daily_${dateStr}_perfect_day`,
+        group:'hard',
+        icon:'&#11088;',
+        condition:'perfectDay',
+        title:'Perfect Day',
+        description:`Mache heute alle ${progress.total} geplanten Habits.`,
+        target:progress.total
+      };
+    }
+
+    function getQuestGroupMeta(groupId){
+      return QUEST_GROUPS.find(group=>group.id===groupId) || QUEST_GROUPS[1];
+    }
+
+    function getDailyQuestCategoryTargets(dateStr){
+      const date = dateFromKey(dateStr);
+      if(!date) return [];
+      const byId = new Map();
+      (state.habits || [])
+        .filter(habit=>shouldHabitExistOnDate(habit, date))
+        .forEach(habit=>{
+          const id = habit.category || 'uncategorized';
+          const cat = state.categories.find(entry=>entry.id===id);
+          byId.set(id, {
+            id,
+            name: cat ? cat.name : 'Uncategorized'
+          });
+        });
+      return Array.from(byId.values()).sort((a,b)=>a.name.localeCompare(b.name, 'de', { sensitivity:'base' }));
+    }
+
+    function createCategorySweepDailyQuest(dateStr){
+      const categories = getDailyQuestCategoryTargets(dateStr);
+      if(!categories.length) return null;
+      return {
+        id:`daily_${dateStr}_category_sweep`,
+        group:'easy',
+        icon:'&#128193;',
+        condition:'categoryHabit',
+        title:'Aus jeder Kategorie',
+        description:`Mache mindestens ein Habit aus jeder aktiven Kategorie (${categories.length}).`,
+        target:categories.length,
+        categoryIds:categories.map(category=>category.id),
+        categoryNames:categories.map(category=>category.name)
+      };
+    }
+
+    function getDailyQuestFullCategoryTargets(dateStr){
+      const date = dateFromKey(dateStr);
+      if(!date) return [];
+      const byId = new Map();
+      (state.habits || [])
+        .filter(habit=>shouldHabitExistOnDate(habit, date))
+        .forEach(habit=>{
+          const id = habit.category || 'uncategorized';
+          const cat = state.categories.find(entry=>entry.id===id);
+          if(!byId.has(id)){
+            byId.set(id, {
+              id,
+              name:cat ? cat.name : 'Uncategorized',
+              habitIds:[]
+            });
+          }
+          byId.get(id).habitIds.push(String(habit.id));
+        });
+      return Array.from(byId.values())
+        .filter(category=>category.habitIds.length>0)
+        .sort((a,b)=>a.name.localeCompare(b.name, 'de', { sensitivity:'base' }));
+    }
+
+    function createCompleteCategoryDailyQuest(dateStr){
+      const categories = getDailyQuestFullCategoryTargets(dateStr);
+      const selected = randomChoice(categories);
+      if(!selected) return null;
+      const target = Math.max(1, selected.habitIds.length);
+      const safeId = normalizeShopId(selected.id || selected.name) || 'category';
+      return {
+        id:`daily_${dateStr}_complete_category_${safeId}`,
+        group:'easy',
+        icon:'&#127942;',
+        condition:'completeCategory',
+        title:'Kategorie komplett',
+        description:`Mache heute alle ${target} Habit${target>1?'s':''} in ${selected.name}.`,
+        target,
+        categoryId:selected.id,
+        categoryName:selected.name,
+        habitIds:selected.habitIds
+      };
+    }
+
+    function getDailyQuestCategorySevenDayRate(category, dateStr){
+      if(!category) return { completed:0, total:0, rate:0 };
+      let completed = 0;
+      let total = 0;
+      for(let i=1;i<=7;i++){
+        const ds = shiftDateKey(dateStr, -i);
+        const date = dateFromKey(ds);
+        if(!date) continue;
+        (state.habits || []).forEach(habit=>{
+          const habitCategory = habit.category || 'uncategorized';
+          if(habitCategory!==category.id || !shouldHabitExistOnDate(habit, date)) return;
+          total++;
+          if(isCompleted('habit', habit.id, ds)) completed++;
+        });
+      }
+      return {
+        completed,
+        total,
+        rate:total>0 ? completed / total : 0
+      };
+    }
+
+    function getDailyQuestCategoryRateEntries(dateStr, minHabits=1){
+      const minimum = Math.max(1, Math.floor(Number(minHabits) || 1));
+      return getDailyQuestFullCategoryTargets(dateStr)
+        .filter(category=>category.habitIds.length>=minimum)
+        .map(category=>{
+          const stats = getDailyQuestCategorySevenDayRate(category, dateStr);
+          return {
+            ...category,
+            completed:stats.completed,
+            total:stats.total,
+            rate:stats.rate
+          };
+        })
+        .sort((a,b)=>{
+          const byRate = a.rate - b.rate;
+          if(byRate!==0) return byRate;
+          const byCompleted = a.completed - b.completed;
+          if(byCompleted!==0) return byCompleted;
+          const bySize = b.habitIds.length - a.habitIds.length;
+          if(bySize!==0) return bySize;
+          return a.name.localeCompare(b.name, 'de', { sensitivity:'base' });
+        });
+    }
+
+    function createWeakestCategoryDailyQuest(dateStr){
+      const scored = getDailyQuestCategoryRateEntries(dateStr);
+      if(!scored.length) return null;
+      const lowestRate = scored[0].rate;
+      const selected = randomChoice(scored.filter(category=>category.rate===lowestRate)) || scored[0];
+      const target = Math.max(1, selected.habitIds.length);
+      const percent = Math.round(selected.rate * 100);
+      const safeId = normalizeShopId(selected.id || selected.name) || 'category';
+      return {
+        id:`daily_${dateStr}_weakest_category_${safeId}`,
+        group:'medium',
+        icon:'&#128200;',
+        condition:'completeCategory',
+        title:'Schlechteste Kategorie',
+        description:`Mache heute alle ${target} Habit${target>1?'s':''} in ${selected.name} (${percent}% in den letzten 7 Tagen).`,
+        target,
+        categoryId:selected.id,
+        categoryName:selected.name,
+        habitIds:selected.habitIds,
+        previousRate:percent
+      };
+    }
+
+    function createTwoWeakestCategoryHabitsDailyQuest(dateStr){
+      const scored = getDailyQuestCategoryRateEntries(dateStr, 2);
+      if(!scored.length) return null;
+      const lowestRate = scored[0].rate;
+      const selected = randomChoice(scored.filter(category=>category.rate===lowestRate)) || scored[0];
+      const percent = Math.round(selected.rate * 100);
+      const safeId = normalizeShopId(selected.id || selected.name) || 'category';
+      return {
+        id:`daily_${dateStr}_two_weakest_category_${safeId}`,
+        group:'easy',
+        icon:'&#128200;',
+        condition:'categoryHabitCount',
+        title:'Zwei aus der schlechtesten Kategorie',
+        description:`Mache 2 Habits aus ${selected.name} (${percent}% in den letzten 7 Tagen).`,
+        target:2,
+        categoryId:selected.id,
+        categoryName:selected.name,
+        habitIds:selected.habitIds,
+        previousRate:percent
+      };
+    }
+
+    function createHalfWeakestCategoryDailyQuest(dateStr){
+      const scored = getDailyQuestCategoryRateEntries(dateStr, 2);
+      if(!scored.length) return null;
+      const lowestRate = scored[0].rate;
+      const selected = randomChoice(scored.filter(category=>category.rate===lowestRate)) || scored[0];
+      const target = Math.max(1, Math.ceil(selected.habitIds.length / 2));
+      const percent = Math.round(selected.rate * 100);
+      const safeId = normalizeShopId(selected.id || selected.name) || 'category';
+      return {
+        id:`daily_${dateStr}_half_weakest_category_${safeId}`,
+        group:'medium',
+        icon:'50%',
+        condition:'categoryHabitCount',
+        title:'50% der schwaechsten Kategorie',
+        description:`Mache ${target} von ${selected.habitIds.length} Habits aus ${selected.name} (${percent}% in den letzten 7 Tagen).`,
+        target,
+        categoryId:selected.id,
+        categoryName:selected.name,
+        habitIds:selected.habitIds,
+        previousRate:percent
+      };
+    }
+
+    function createBestAndWorstCategoryDailyQuest(dateStr){
+      const scored = getDailyQuestCategoryRateEntries(dateStr);
+      if(scored.length<2) return null;
+      const worst = scored[0];
+      const best = scored[scored.length - 1];
+      if(worst.id===best.id) return null;
+      return {
+        id:`daily_${dateStr}_best_worst_categories`,
+        group:'easy',
+        icon:'&#9878;',
+        condition:'categoryHabit',
+        title:'Beste und schlechteste Kategorie',
+        description:`Mache je 1 Habit aus ${best.name} und ${worst.name}.`,
+        target:2,
+        categoryIds:[best.id, worst.id],
+        categoryNames:[best.name, worst.name],
+        categoryRates:[Math.round(best.rate * 100), Math.round(worst.rate * 100)]
+      };
+    }
+
+    function getDailyQuestStreakGroups(dateStr){
+      const todayDate = dateFromKey(dateStr);
+      const prevDate = dateFromKey(shiftDateKey(dateStr, -1));
+      if(!todayDate || !prevDate) return [];
+      const groups = {};
+      (state.habits || [])
+        .filter(habit=>shouldHabitExistOnDate(habit, todayDate))
+        .forEach(habit=>{
+          const previousStreak = Math.max(0, computeHabitStreakForDate(habit, 'habit', prevDate));
+          const targetStreak = previousStreak + 1;
+          if(!groups[targetStreak]) groups[targetStreak] = { targetStreak, habits:[] };
+          groups[targetStreak].habits.push({ id:Number(habit.id), name:String(habit.name || 'Habit') });
+        });
+      return Object.values(groups);
+    }
+
+    function createStreakTargetDailyQuest(dateStr){
+      const groups = getDailyQuestStreakGroups(dateStr);
+      const selected = randomChoice(groups);
+      if(!selected || !selected.habits.length) return null;
+      const names = selected.habits.slice(0, 2).map(entry=>entry.name).join(', ');
+      const extra = selected.habits.length>2 ? ` +${selected.habits.length - 2}` : '';
+      return {
+        id:`daily_${dateStr}_streak_${selected.targetStreak}`,
+        group:'easy',
+        icon:'&#128293;',
+        condition:'streakTarget',
+        title:`Bringe ein Habit auf Streak ${selected.targetStreak}`,
+        description:`Erledige heute einen passenden Habit (${names}${extra}).`,
+        target:1,
+        targetStreak:selected.targetStreak,
+        eligibleHabitIds:selected.habits.map(entry=>entry.id)
+      };
+    }
+
+    function getDailyQuestScheduledHabitEntries(dateStr){
+      const date = dateFromKey(dateStr);
+      if(!date) return [];
+      return (state.habits || [])
+        .filter(habit=>shouldHabitExistOnDate(habit, date))
+        .map(habit=>({
+          habit,
+          id:String(habit.id),
+          name:String(habit.name || 'Habit')
+        }));
+    }
+
+    function createSpecificHabitDailyQuest(dateStr, config){
+      const selected = config && config.selected;
+      if(!selected) return null;
+      return {
+        id:`daily_${dateStr}_${config.idPart}_${normalizeShopId(selected.id) || 'habit'}`,
+        group:'easy',
+        icon:config.icon,
+        condition:'specificHabit',
+        title:config.title,
+        description:config.description,
+        target:1,
+        targetHabitId:String(selected.id),
+        targetHabitName:selected.name
+      };
+    }
+
+    function getDailyQuestZeroStreakHabitEntries(dateStr){
+      const previousDateStr = shiftDateKey(dateStr, -1);
+      const previousDate = dateFromKey(previousDateStr);
+      if(!previousDate) return [];
+      return getDailyQuestScheduledHabitEntries(dateStr).filter(entry=>{
+        const anchor = isCompleted('habit', entry.habit.id, dateStr)
+          ? dateFromKey(dateStr)
+          : previousDate;
+        return anchor && computeHabitStreakForDate(entry.habit, 'habit', anchor)===0;
+      });
+    }
+
+    function createZeroStreakHabitDailyQuest(dateStr){
+      const selected = randomChoice(getDailyQuestZeroStreakHabitEntries(dateStr));
+      return createSpecificHabitDailyQuest(dateStr, {
+        selected,
+        idPart:'zero_streak_habit',
+        icon:'0',
+        title:'Habit mit Streak 0',
+        description:selected ? `Mache heute "${selected.name}".` : ''
+      });
+    }
+
+    function createAllZeroStreakHabitsDailyQuest(dateStr){
+      const eligible = getDailyQuestZeroStreakHabitEntries(dateStr);
+      if(eligible.length<4) return null;
+      return {
+        id:`daily_${dateStr}_all_zero_streak_habits`,
+        group:'hard',
+        icon:'0',
+        condition:'habitSet',
+        title:'Alle Habits mit Streak 0',
+        description:`Mache heute alle ${eligible.length} Habits, die mit Streak 0 gestartet sind.`,
+        target:eligible.length,
+        targetHabitIds:eligible.map(entry=>entry.id),
+        targetHabitNames:eligible.map(entry=>entry.name)
+      };
+    }
+
+    function createRandomHabitDailyQuest(dateStr){
+      const selected = randomChoice(getDailyQuestScheduledHabitEntries(dateStr));
+      return createSpecificHabitDailyQuest(dateStr, {
+        selected,
+        idPart:'random_habit',
+        icon:'?',
+        title:'Zufalls-Habit',
+        description:selected ? `Das System hat "${selected.name}" ausgewaehlt. Mache genau dieses Habit.` : ''
+      });
+    }
+
+    function getDailyQuestMissedYesterdayHabitEntries(dateStr){
+      const yesterdayStr = shiftDateKey(dateStr, -1);
+      const yesterday = dateFromKey(yesterdayStr);
+      if(!yesterday) return [];
+      return getDailyQuestScheduledHabitEntries(dateStr).filter(entry=>{
+        return shouldHabitExistOnDate(entry.habit, yesterday)
+          && !isCompleted('habit', entry.habit.id, yesterdayStr);
+      });
+    }
+
+    function createMissedYesterdayHabitDailyQuest(dateStr){
+      const selected = randomChoice(getDailyQuestMissedYesterdayHabitEntries(dateStr));
+      return createSpecificHabitDailyQuest(dateStr, {
+        selected,
+        idPart:'missed_yesterday_habit',
+        icon:'&#8634;',
+        title:'Gestern verpasst',
+        description:selected ? `Hole heute "${selected.name}" nach.` : ''
+      });
+    }
+
+    function createAllMissedYesterdayHabitsDailyQuest(dateStr){
+      const eligible = getDailyQuestMissedYesterdayHabitEntries(dateStr);
+      if(!eligible.length) return null;
+      return {
+        id:`daily_${dateStr}_all_missed_yesterday_habits`,
+        group:'medium',
+        icon:'&#8634;',
+        condition:'habitSet',
+        title:'Alles von gestern nachholen',
+        description:`Mache heute alle ${eligible.length} Habits, die gestern offen geblieben sind.`,
+        target:eligible.length,
+        targetHabitIds:eligible.map(entry=>entry.id),
+        targetHabitNames:eligible.map(entry=>entry.name)
+      };
+    }
+
+    function createExtraHabitDailyQuest(dateStr){
+      const date = dateFromKey(dateStr);
+      if(!date) return null;
+      const extras = getScheduledExtraHabits(date).map(habit=>({ id:String(habit.id), name:String(habit.name || 'Extra Habit') }));
+      if(!extras.length) return null;
+      const target = randomInt(1, Math.min(2, extras.length));
+      return {
+        id:`daily_${dateStr}_extra_habits_${target}`,
+        group:'easy',
+        icon:'&#10024;',
+        condition:'extraHabits',
+        title:`Mache ${target} Extra Habit${target>1?'s':''}`,
+        description:`Heute zaehlen ${target} von ${extras.length} vorhandenen Extra Habits.`,
+        target,
+        eligibleExtraHabitIds:extras.map(entry=>entry.id)
+      };
+    }
+
+    function createMediumExtraHabitDailyQuest(dateStr){
+      const date = dateFromKey(dateStr);
+      if(!date) return null;
+      const extras = getScheduledExtraHabits(date).map(habit=>({ id:String(habit.id), name:String(habit.name || 'Extra Habit') }));
+      if(extras.length<3) return null;
+      const target = randomInt(3, Math.min(4, extras.length));
+      return {
+        id:`daily_${dateStr}_extra_habits_medium_${target}`,
+        group:'medium',
+        icon:'&#10024;',
+        condition:'extraHabits',
+        title:`Mache ${target} Extra Habits`,
+        description:`Heute zaehlen ${target} von ${extras.length} vorhandenen Extra Habits.`,
+        target,
+        eligibleExtraHabitIds:extras.map(entry=>entry.id)
+      };
+    }
+
+    function createHardExtraHabitDailyQuest(dateStr){
+      const date = dateFromKey(dateStr);
+      if(!date) return null;
+      const extras = getScheduledExtraHabits(date).map(habit=>({ id:String(habit.id), name:String(habit.name || 'Extra Habit') }));
+      if(extras.length<5) return null;
+      const target = randomInt(5, Math.min(6, extras.length));
+      return {
+        id:`daily_${dateStr}_extra_habits_hard_${target}`,
+        group:'hard',
+        icon:'&#10024;',
+        condition:'extraHabits',
+        title:`Mache ${target} Extra Habits`,
+        description:`Heute zaehlen ${target} von ${extras.length} vorhandenen Extra Habits.`,
+        target,
+        eligibleExtraHabitIds:extras.map(entry=>entry.id)
+      };
+    }
+
+    function getDailyQuestHabitSevenDayRate(habit, dateStr){
+      let completed = 0;
+      let total = 0;
+      for(let i=1;i<=7;i++){
+        const ds = shiftDateKey(dateStr, -i);
+        const date = dateFromKey(ds);
+        if(!date || !shouldHabitExistOnDate(habit, date)) continue;
+        total++;
+        if(isCompleted('habit', habit.id, ds)) completed++;
+      }
+      return {
+        completed,
+        total,
+        rate:total>0 ? completed / total : 0
+      };
+    }
+
+    function getDailyQuestWeakestHabitEntries(dateStr){
+      const date = dateFromKey(dateStr);
+      if(!date) return [];
+      const scheduled = (state.habits || []).filter(habit=>shouldHabitExistOnDate(habit, date));
+      if(!scheduled.length) return [];
+      return scheduled.map(habit=>{
+        const stats = getDailyQuestHabitSevenDayRate(habit, dateStr);
+        return {
+          habit,
+          name:String(habit.name || 'Habit'),
+          completed:stats.completed,
+          total:stats.total,
+          rate:stats.rate
+        };
+      }).sort((a,b)=>{
+        const byRate = a.rate - b.rate;
+        if(byRate!==0) return byRate;
+        const byCompleted = a.completed - b.completed;
+        if(byCompleted!==0) return byCompleted;
+        const byTotal = b.total - a.total;
+        if(byTotal!==0) return byTotal;
+        return a.name.localeCompare(b.name, 'de', { sensitivity:'base' });
+      });
+    }
+
+    function createWeakestHabitDailyQuest(dateStr){
+      const scored = getDailyQuestWeakestHabitEntries(dateStr);
+      if(!scored.length) return null;
+      const lowestRate = scored[0].rate;
+      const weakest = scored.filter(entry=>entry.rate===lowestRate);
+      const selected = randomChoice(weakest) || scored[0];
+      const percent = Math.round(selected.rate * 100);
+      return {
+        id:`daily_${dateStr}_weakest_habit_${normalizeShopId(selected.habit.id) || 'habit'}`,
+        group:'easy',
+        icon:'&#128269;',
+        condition:'weakestHabit',
+        title:'Schwaechstes Habit',
+        description:`Mache heute "${selected.name}" (${percent}% in den letzten 7 Tagen).`,
+        target:1,
+        targetHabitId:String(selected.habit.id),
+        previousRate:percent
+      };
+    }
+
+    function createThreeWeakestHabitsDailyQuest(dateStr){
+      const scored = getDailyQuestWeakestHabitEntries(dateStr);
+      if(scored.length<3) return null;
+      const selected = scored.slice(0, 3);
+      const names = selected.map(entry=>entry.name).join(', ');
+      return {
+        id:`daily_${dateStr}_weakest_habits_3`,
+        group:'medium',
+        icon:'&#128269;',
+        condition:'weakestHabits',
+        title:'Die 3 schlechtesten Habits',
+        description:`Mache heute diese Habits: ${names}.`,
+        target:3,
+        targetHabitIds:selected.map(entry=>String(entry.habit.id)),
+        previousRates:selected.map(entry=>Math.round(entry.rate * 100))
+      };
+    }
+
+    function getDailyQuestOverdueCompletedTaskIds(dateStr){
+      const ds = normalizeDateOnly(dateStr);
+      if(!ds) return [];
+      const ids = new Set();
+      getTaskCompletionLogEntries().forEach(entry=>{
+        if(entry.completionDate===ds && entry.dueDate && entry.dueDate<ds) ids.add(String(entry.taskId));
+      });
+      return Array.from(ids);
+    }
+
+    function getDailyQuestOverdueAvailableTaskIds(dateStr){
+      const ds = normalizeDateOnly(dateStr);
+      if(!ds) return [];
+      const ids = new Set(getDailyQuestOverdueCompletedTaskIds(ds));
+      getTaskCompletionLogEntries().forEach(entry=>{
+        if(entry.dueDate && entry.dueDate<ds && entry.completionDate>ds) ids.add(String(entry.taskId));
+      });
+      (state.oneTimeTasks || []).forEach(task=>{
+        if(!task || isAlwaysTask(task) || !task.dueDate || task.dueDate>=ds) return;
+        const completedDate = getTaskFirstCompletionDate(task);
+        if(!completedDate || completedDate>=ds) ids.add(String(task.id));
+      });
+      return Array.from(ids);
+    }
+
+    function createOverdueDailyQuest(dateStr, group, minTarget, maxTarget, availableCount){
+      const available = Math.max(0, Math.floor(Number(availableCount) || 0));
+      const min = Math.max(1, Math.floor(Number(minTarget) || 1));
+      const max = Math.max(min, Math.floor(Number(maxTarget) || min));
+      if(available < min) return null;
+      const target = randomInt(min, Math.min(max, available));
+      return {
+        id:`daily_${dateStr}_overdue_${group}_${target}`,
+        group,
+        icon:group==='hard' ? '&#128680;' : '&#9888;',
+        condition:'overdueTasks',
+        title:`Erledige ${target} ueberfaellige Task${target>1?'s':''}`,
+        description:`Heute muessen ${target} von ${available} ueberfaelligen Tasks erledigt werden.`,
+        target
+      };
+    }
+
+    function dailyQuestTaskMatchesDifficulty(taskLike, difficulty){
+      if(!difficulty) return true;
+      return normalizeTaskDifficulty(taskLike && taskLike.difficulty) === difficulty;
+    }
+
+    function getDailyQuestCompletedTaskIds(dateStr, difficulty=''){
+      const ds = normalizeDateOnly(dateStr);
+      if(!ds) return [];
+      const ids = new Set();
+      getTaskCompletionLogEntries().forEach(entry=>{
+        if(entry.completionDate!==ds || entry.taskType==='always') return;
+        if(!dailyQuestTaskMatchesDifficulty(entry, difficulty)) return;
+        ids.add(String(entry.taskId));
+      });
+      (state.oneTimeTasks || []).forEach(task=>{
+        if(!task || isAlwaysTask(task)) return;
+        if(!dailyQuestTaskMatchesDifficulty(task, difficulty)) return;
+        const completedToday = wasTaskCompletedOn(task, ds)
+          || (!!task.completed && getTaskCompletionDateKey(task, ds)===ds);
+        if(completedToday) ids.add(String(task.id));
+      });
+      return Array.from(ids);
+    }
+
+    function getDailyQuestAvailableTaskIds(dateStr, difficulty=''){
+      const ds = normalizeDateOnly(dateStr);
+      if(!ds) return [];
+      const ids = new Set(getDailyQuestCompletedTaskIds(ds, difficulty));
+      (state.oneTimeTasks || []).forEach(task=>{
+        if(!task || isAlwaysTask(task)) return;
+        if(!dailyQuestTaskMatchesDifficulty(task, difficulty)) return;
+        const completedDate = getTaskFirstCompletionDate(task);
+        if(!completedDate || completedDate>=ds) ids.add(String(task.id));
+      });
+      return Array.from(ids);
+    }
+
+    function getDailyQuestSelectableTasks(dateStr, predicate){
+      const ds = normalizeDateOnly(dateStr);
+      if(!ds) return [];
+      return (state.oneTimeTasks || []).filter(task=>{
+        if(!task || isAlwaysTask(task)) return false;
+        const createdDate = normalizeDateOnly(task.createdAt);
+        if(createdDate && createdDate>ds) return false;
+        const completedDate = getTaskFirstCompletionDate(task);
+        if(completedDate && completedDate!==ds) return false;
+        return typeof predicate==='function' ? !!predicate(task, ds) : true;
+      });
+    }
+
+    function createSpecificTaskDailyQuest(dateStr, config){
+      const selected = config && config.selected;
+      if(!selected) return null;
+      return {
+        id:`daily_${dateStr}_${config.idPart}_${normalizeShopId(selected.id) || 'task'}`,
+        group:'easy',
+        icon:config.icon,
+        condition:'specificTask',
+        title:config.title,
+        description:config.description,
+        target:1,
+        targetTaskId:String(selected.id),
+        targetTaskName:String(selected.name || 'Task')
+      };
+    }
+
+    function createLowestXpTaskDailyQuest(dateStr){
+      const tasks = getDailyQuestSelectableTasks(dateStr);
+      if(!tasks.length) return null;
+      const getXp = task=>{
+        const value = Number(task.xp);
+        return Number.isFinite(value) ? value : 10;
+      };
+      const lowestXp = Math.min(...tasks.map(getXp));
+      const selected = randomChoice(tasks.filter(task=>getXp(task)===lowestXp));
+      return createSpecificTaskDailyQuest(dateStr, {
+        selected,
+        idPart:'lowest_xp_task',
+        icon:'XP',
+        title:'Task mit den wenigsten XP',
+        description:selected ? `Erledige "${selected.name}" (${lowestXp} XP).` : ''
+      });
+    }
+
+    function createNewestEligibleTaskDailyQuest(dateStr){
+      const tasks = getDailyQuestSelectableTasks(dateStr, task=>!task.dueDate || task.dueDate===dateStr);
+      if(!tasks.length) return null;
+      const selected = tasks.slice().sort((a,b)=>{
+        const aCreated = Number(a.createdAt) || Number(a.id) || 0;
+        const bCreated = Number(b.createdAt) || Number(b.id) || 0;
+        return bCreated - aCreated;
+      })[0];
+      return createSpecificTaskDailyQuest(dateStr, {
+        selected,
+        idPart:'newest_eligible_task',
+        icon:'&#128204;',
+        title:'Zuletzt erstellte Task',
+        description:selected
+          ? `Erledige "${selected.name}"${selected.dueDate ? ' (heute faellig)' : ' (ohne Due Date)'}.`
+          : ''
+      });
+    }
+
+    function createTaskPerDifficultyDailyQuest(dateStr){
+      const difficultyTaskIds = {};
+      ['easy','medium','hard'].forEach(difficulty=>{
+        const ids = getDailyQuestAvailableTaskIds(dateStr, difficulty);
+        if(ids.length) difficultyTaskIds[difficulty] = ids;
+      });
+      const requiredDifficulties = Object.keys(difficultyTaskIds);
+      if(!requiredDifficulties.length) return null;
+      const labels = requiredDifficulties.map(difficulty=>TASK_DIFFICULTY_META[difficulty].label);
+      return {
+        id:`daily_${dateStr}_task_per_difficulty`,
+        group:'hard',
+        icon:'&#127919;',
+        condition:'taskDifficulties',
+        title:'Eine Task pro Schwierigkeit',
+        description:`Erledige je 1 Task in: ${labels.join(', ')}.`,
+        target:requiredDifficulties.length,
+        requiredDifficulties,
+        difficultyTaskIds
+      };
+    }
+
+    function createTaskCountDailyQuest(dateStr){
+      const available = getDailyQuestAvailableTaskIds(dateStr).length;
+      if(available<1) return null;
+      const target = randomInt(1, Math.min(2, available));
+      return {
+        id:`daily_${dateStr}_tasks_${target}`,
+        group:'easy',
+        icon:'&#9989;',
+        condition:'oneTimeTasks',
+        title:`Mache ${target} Task${target>1?'s':''}`,
+        description:`Heute zaehlen ${target} von ${available} vorhandenen offenen Tasks.`,
+        target
+      };
+    }
+
+    function createMediumTaskCountDailyQuest(dateStr){
+      const available = getDailyQuestAvailableTaskIds(dateStr).length;
+      if(available<3) return null;
+      const target = randomInt(3, Math.min(4, available));
+      return {
+        id:`daily_${dateStr}_tasks_medium_${target}`,
+        group:'medium',
+        icon:'&#9989;',
+        condition:'oneTimeTasks',
+        title:`Mache ${target} Tasks`,
+        description:`Heute zaehlen ${target} von ${available} vorhandenen offenen Tasks.`,
+        target
+      };
+    }
+
+    function createHardTaskCountDailyQuest(dateStr){
+      const available = getDailyQuestAvailableTaskIds(dateStr).length;
+      if(available<5) return null;
+      const target = randomInt(5, Math.min(6, available));
+      return {
+        id:`daily_${dateStr}_tasks_hard_${target}`,
+        group:'hard',
+        icon:'&#9989;',
+        condition:'oneTimeTasks',
+        title:`Mache ${target} Tasks`,
+        description:`Heute zaehlen ${target} von ${available} vorhandenen offenen Tasks.`,
+        target
+      };
+    }
+
+    function createEasyTaskDailyQuest(dateStr){
+      const available = getDailyQuestAvailableTaskIds(dateStr, 'easy').length;
+      if(available<1) return null;
+      return {
+        id:`daily_${dateStr}_easy_task`,
+        group:'easy',
+        icon:'&#127919;',
+        condition:'easyTask',
+        title:'Mache eine einfache Task',
+        description:`Erledige heute eine von ${available} vorhandenen einfachen Tasks.`,
+        target:1
+      };
+    }
+
+    function createHardTaskDailyQuest(dateStr){
+      const available = getDailyQuestAvailableTaskIds(dateStr, 'hard').length;
+      if(available<1) return null;
+      return {
+        id:`daily_${dateStr}_hard_task`,
+        group:'hard',
+        icon:'&#127919;',
+        condition:'hardTask',
+        title:'Mache eine schwere Task',
+        description:`Erledige heute eine von ${available} vorhandenen schweren Tasks.`,
+        target:1
+      };
+    }
+
+    function createMediumTaskDailyQuest(dateStr){
+      const available = getDailyQuestAvailableTaskIds(dateStr, 'medium').length;
+      if(available<1) return null;
+      return {
+        id:`daily_${dateStr}_medium_task`,
+        group:'medium',
+        icon:'&#127919;',
+        condition:'mediumTask',
+        title:'Mache eine mittelschwere Task',
+        description:`Erledige heute eine von ${available} vorhandenen mittelschweren Tasks.`,
+        target:1
+      };
+    }
+
+    function getDailyQuestCompletedAlwaysTaskIds(dateStr){
+      const ds = normalizeDateOnly(dateStr);
+      if(!ds) return [];
+      const day = ensureDay(ds);
+      return Object.keys(day.alwaysTaskCompletions || {})
+        .filter(key=>!!day.alwaysTaskCompletions[key])
+        .map(key=>String(key).replace(/^T:/, ''));
+    }
+
+    function getDailyQuestAlwaysTaskAvailableIds(dateStr){
+      const ds = normalizeDateOnly(dateStr);
+      if(!ds) return [];
+      return (state.oneTimeTasks || [])
+        .filter(task=>{
+          if(!task || !isAlwaysTask(task)) return false;
+          const anchor = normalizeDateOnly(task.anchorDate || task.createdAt);
+          return !anchor || anchor<=ds;
+        })
+        .map(task=>String(task.id));
+    }
+
+    function createAlwaysTaskDailyQuest(dateStr){
+      const available = getDailyQuestAlwaysTaskAvailableIds(dateStr).length;
+      if(available<1) return null;
+      return {
+        id:`daily_${dateStr}_always_task`,
+        group:'easy',
+        icon:'&#9854;',
+        condition:'alwaysTask',
+        title:'Mache eine Always Task',
+        description:`Erledige heute eine von ${available} vorhandenen Always Tasks.`,
+        target:1
+      };
+    }
+
+    function createMediumAlwaysTaskDailyQuest(dateStr){
+      const available = getDailyQuestAlwaysTaskAvailableIds(dateStr).length;
+      if(available<2) return null;
+      return {
+        id:`daily_${dateStr}_always_tasks_2`,
+        group:'medium',
+        icon:'&#9854;',
+        condition:'alwaysTask',
+        title:'Mache 2 Always Tasks',
+        description:`Erledige heute 2 von ${available} vorhandenen Always Tasks.`,
+        target:2
+      };
+    }
+
+    function createHardAlwaysTaskDailyQuest(dateStr){
+      const available = getDailyQuestAlwaysTaskAvailableIds(dateStr).length;
+      if(available<3) return null;
+      return {
+        id:`daily_${dateStr}_always_tasks_3`,
+        group:'hard',
+        icon:'&#9854;',
+        condition:'alwaysTask',
+        title:'Mache 3 Always Tasks',
+        description:`Erledige heute 3 von ${available} vorhandenen Always Tasks.`,
+        target:3
+      };
+    }
+
+    function getDailyQuestCategoryProgress(quest, dateStr){
+      const date = dateFromKey(dateStr);
+      if(!date) return { current:0, target:1, complete:false, label:'0/1' };
+      const categoryIds = Array.isArray(quest.categoryIds) && quest.categoryIds.length
+        ? quest.categoryIds
+        : getDailyQuestCategoryTargets(dateStr).map(category=>category.id);
+      const completed = categoryIds.filter(categoryId=>{
+        return (state.habits || []).some(habit=>{
+          const habitCategory = habit.category || 'uncategorized';
+          return habitCategory===categoryId
+            && shouldHabitExistOnDate(habit, date)
+            && isCompleted('habit', habit.id, dateStr);
+        });
+      }).length;
+      const target = Math.max(1, categoryIds.length);
+      return {
+        current:Math.min(completed, target),
+        target,
+        complete:completed>=target,
+        label:`${Math.min(completed, target)}/${target} Kategorien`
+      };
+    }
+
+    function getDailyQuestCategoryHabitCountProgress(quest, dateStr){
+      const date = dateFromKey(dateStr);
+      if(!date) return { current:0, target:1, complete:false, label:'0/1 Habits' };
+      let ids = Array.isArray(quest.habitIds) ? quest.habitIds.map(id=>String(id)) : [];
+      if(!ids.length && quest.categoryId){
+        const match = getDailyQuestFullCategoryTargets(dateStr).find(category=>category.id===quest.categoryId);
+        if(match) ids = match.habitIds.map(id=>String(id));
+      }
+      const completed = ids.filter(id=>{
+        const habit = (state.habits || []).find(entry=>String(entry.id)===id);
+        return habit
+          && shouldHabitExistOnDate(habit, date)
+          && isCompleted('habit', habit.id, dateStr);
+      }).length;
+      const target = Math.max(1, Math.floor(Number(quest.target) || 1));
+      return {
+        current:Math.min(completed, target),
+        target,
+        complete:completed>=target,
+        label:`${Math.min(completed, target)}/${target} Habits`
+      };
+    }
+
+    function getDailyQuestCompleteCategoryProgress(quest, dateStr){
+      const date = dateFromKey(dateStr);
+      if(!date) return { current:0, target:1, complete:false, label:'0/1 Habits' };
+      let habitIds = Array.isArray(quest.habitIds) ? quest.habitIds.map(id=>String(id)) : [];
+      if(!habitIds.length && quest.categoryId){
+        const match = getDailyQuestFullCategoryTargets(dateStr).find(category=>category.id===quest.categoryId);
+        if(match) habitIds = match.habitIds.map(id=>String(id));
+      }
+      const completed = habitIds.filter(habitId=>{
+        const habit = (state.habits || []).find(entry=>String(entry.id)===habitId);
+        return habit
+          && shouldHabitExistOnDate(habit, date)
+          && isCompleted('habit', habit.id, dateStr);
+      }).length;
+      const target = Math.max(1, habitIds.length || Math.floor(Number(quest.target) || 1));
+      return {
+        current:Math.min(completed, target),
+        target,
+        complete:completed>=target,
+        label:`${Math.min(completed, target)}/${target} Habits`
+      };
+    }
+
+    function getDailyQuestStreakProgress(quest, dateStr){
+      const date = dateFromKey(dateStr);
+      const targetStreak = Math.max(1, Math.floor(Number(quest.targetStreak) || 1));
+      const eligible = new Set((Array.isArray(quest.eligibleHabitIds) ? quest.eligibleHabitIds : []).map(id=>String(id)));
+      const reached = !!date && (state.habits || []).some(habit=>{
+        if(eligible.size && !eligible.has(String(habit.id))) return false;
+        return shouldHabitExistOnDate(habit, date)
+          && isCompleted('habit', habit.id, dateStr)
+          && computeHabitStreakForDate(habit, 'habit', date) >= targetStreak;
+      });
+      return {
+        current:reached ? 1 : 0,
+        target:1,
+        complete:reached,
+        label:reached ? `Streak ${targetStreak}` : `Ziel: ${targetStreak}`
+      };
+    }
+
+    function getDailyQuestExtraHabitProgress(quest, dateStr){
+      const date = dateFromKey(dateStr);
+      if(!date) return { current:0, target:1, complete:false, label:'0/1 Extra' };
+      const ids = Array.isArray(quest.eligibleExtraHabitIds) && quest.eligibleExtraHabitIds.length
+        ? quest.eligibleExtraHabitIds.map(id=>String(id))
+        : getScheduledExtraHabits(date).map(habit=>String(habit.id));
+      const completed = ids.filter(id=>{
+        const habit = (state.extraHabits || []).find(entry=>String(entry.id)===id);
+        return habit
+          && shouldExtraHabitExistOnDate(habit, date)
+          && isCompleted('extra', habit.id, dateStr);
+      }).length;
+      const target = Math.max(1, Math.floor(Number(quest.target) || 1));
+      return {
+        current:Math.min(completed, target),
+        target,
+        complete:completed>=target,
+        label:`${Math.min(completed, target)}/${target} Extra`
+      };
+    }
+
+    function getDailyQuestWeakestHabitProgress(quest, dateStr){
+      const date = dateFromKey(dateStr);
+      const targetHabitId = String(quest.targetHabitId || '');
+      const habit = (state.habits || []).find(entry=>String(entry.id)===targetHabitId);
+      const complete = !!(date && habit && shouldHabitExistOnDate(habit, date) && isCompleted('habit', habit.id, dateStr));
+      return {
+        current:complete ? 1 : 0,
+        target:1,
+        complete,
+        label:complete ? '1/1 Habit' : '0/1 Habit'
+      };
+    }
+
+    function getDailyQuestSpecificHabitProgress(quest, dateStr){
+      const date = dateFromKey(dateStr);
+      const targetHabitId = String(quest.targetHabitId || '');
+      const habit = (state.habits || []).find(entry=>String(entry.id)===targetHabitId);
+      const complete = !!(date
+        && habit
+        && shouldHabitExistOnDate(habit, date)
+        && isCompleted('habit', habit.id, dateStr));
+      return {
+        current:complete ? 1 : 0,
+        target:1,
+        complete,
+        label:complete ? '1/1 Habit' : '0/1 Habit'
+      };
+    }
+
+    function getDailyQuestWeakestHabitsProgress(quest, dateStr){
+      const date = dateFromKey(dateStr);
+      if(!date) return { current:0, target:1, complete:false, label:'0/1 Habits' };
+      const ids = Array.isArray(quest.targetHabitIds) ? quest.targetHabitIds.map(id=>String(id)) : [];
+      const completed = ids.filter(id=>{
+        const habit = (state.habits || []).find(entry=>String(entry.id)===id);
+        return habit
+          && shouldHabitExistOnDate(habit, date)
+          && isCompleted('habit', habit.id, dateStr);
+      }).length;
+      const target = Math.max(1, ids.length || Math.floor(Number(quest.target) || 1));
+      return {
+        current:Math.min(completed, target),
+        target,
+        complete:completed>=target,
+        label:`${Math.min(completed, target)}/${target} Habits`
+      };
+    }
+
+    function getDailyQuestHabitSetProgress(quest, dateStr){
+      return getDailyQuestWeakestHabitsProgress(quest, dateStr);
+    }
+
+    function getDailyQuestOverdueProgress(quest, dateStr){
+      const completed = getDailyQuestOverdueCompletedTaskIds(dateStr).length;
+      const target = Math.max(1, Math.floor(Number(quest.target) || 1));
+      return {
+        current:Math.min(completed, target),
+        target,
+        complete:completed>=target,
+        label:`${Math.min(completed, target)}/${target} Tasks`
+      };
+    }
+
+    function getDailyQuestTaskProgress(quest, dateStr, difficulty=''){
+      const completed = getDailyQuestCompletedTaskIds(dateStr, difficulty).length;
+      const target = Math.max(1, Math.floor(Number(quest.target) || 1));
+      return {
+        current:Math.min(completed, target),
+        target,
+        complete:completed>=target,
+        label:`${Math.min(completed, target)}/${target} Tasks`
+      };
+    }
+
+    function getDailyQuestSpecificTaskProgress(quest, dateStr){
+      const targetTaskId = String(quest.targetTaskId || '');
+      const complete = !!targetTaskId && getDailyQuestCompletedTaskIds(dateStr).includes(targetTaskId);
+      return {
+        current:complete ? 1 : 0,
+        target:1,
+        complete,
+        label:complete ? '1/1 Task' : '0/1 Task'
+      };
+    }
+
+    function getDailyQuestTaskDifficultiesProgress(quest, dateStr){
+      const required = Array.isArray(quest.requiredDifficulties)
+        ? quest.requiredDifficulties.filter(difficulty=>difficulty==='easy' || difficulty==='medium' || difficulty==='hard')
+        : [];
+      const taskIdsByDifficulty = quest.difficultyTaskIds && typeof quest.difficultyTaskIds==='object'
+        ? quest.difficultyTaskIds
+        : {};
+      const completedDifficulties = required.filter(difficulty=>{
+        const eligibleIds = new Set((Array.isArray(taskIdsByDifficulty[difficulty]) ? taskIdsByDifficulty[difficulty] : []).map(id=>String(id)));
+        if(!eligibleIds.size) return false;
+        return getDailyQuestCompletedTaskIds(dateStr, difficulty).some(id=>eligibleIds.has(String(id)));
+      }).length;
+      const target = Math.max(1, required.length || Math.floor(Number(quest.target) || 1));
+      return {
+        current:Math.min(completedDifficulties, target),
+        target,
+        complete:required.length>0 && completedDifficulties>=required.length,
+        label:`${Math.min(completedDifficulties, target)}/${target} Schwierigkeiten`
+      };
+    }
+
+    function getDailyQuestAlwaysTaskProgress(quest, dateStr){
+      const completed = getDailyQuestCompletedAlwaysTaskIds(dateStr).length;
+      const target = Math.max(1, Math.floor(Number(quest.target) || 1));
+      return {
+        current:Math.min(completed, target),
+        target,
+        complete:completed>=target,
+        label:`${Math.min(completed, target)}/${target} Always`
+      };
+    }
+
+    function getDailyQuestCompletionProgress(quest, dateStr){
+      const progress = getHabitProgressForDate(dateStr);
+      const target = Math.max(1, Math.min(100, Math.floor(Number(quest.target) || 1)));
+      const current = Math.max(0, Math.min(100, Math.floor(Number(progress.percent) || 0)));
+      return {
+        current:Math.min(current, target),
+        rawCurrent:current,
+        target,
+        complete:current>=target,
+        label:`Heute: ${current}%`,
+        barPercent:0,
+        hideProgressBar:true
+      };
+    }
+
+    function getDailyQuestPerfectDayProgress(quest, dateStr){
+      const progress = getHabitProgressForDate(dateStr);
+      const target = Math.max(1, progress.total || Math.floor(Number(quest.target) || 1));
+      const completed = Math.min(progress.completed || 0, target);
+      return {
+        current:completed,
+        target,
+        complete:progress.total>0 && progress.completed>=progress.total,
+        label:`${completed}/${target} Habits`
+      };
+    }
+
+    function getQuestClaimKey(period, quest, periodKey){
+      return `${period}:${periodKey}:${quest && quest.id ? quest.id : ''}`;
+    }
+
+    function getQuestClaim(period, quest, periodKey){
+      ensureQuestState();
+      return state.questClaims[getQuestClaimKey(period, quest, periodKey)] || null;
+    }
+
+    function formatQuestReward(reward){
+      if(!reward) return '';
+      const amount = Math.max(1, Math.floor(Number(reward.amount) || 1));
+      if(reward.type==='coins') return `+${amount} Coins`;
+      if(reward.type==='lootbox'){
+        const labels = {
+          normal:'Normale Lootbox',
+          rare:'Seltene Lootbox',
+          epic:'Epic Lootbox',
+          legendary:'Legendary Lootbox',
+          random:'Random Lootbox'
+        };
+        const label = labels[reward.rarity] || 'Lootbox';
+        return amount>1 ? `${amount} ${label}en` : `1 ${label}`;
+      }
+      return `+${amount} XP`;
+    }
+
+    function formatQuestClaimReward(claim){
+      if(!claim) return '';
+      return formatQuestReward({ type:claim.rewardType, amount:claim.amount, rarity:claim.rarity });
+    }
+
+    function getQuestProgress(quest, period){
+      const range = getQuestPeriodRange(period);
+      if(!quest || quest.condition==='placeholder'){
+        return { current:0, target:1, complete:false, label:'Spaeter', range, placeholder:true };
+      }
+      if(quest.condition==='unavailable'){
+        return { current:0, target:1, complete:false, label:'Nicht verfuegbar', range, placeholder:true };
+      }
+      if(period==='daily' && quest.condition==='dailyCompletion') return { ...getDailyQuestCompletionProgress(quest, range.start), range };
+      if(period==='daily' && quest.condition==='perfectDay') return { ...getDailyQuestPerfectDayProgress(quest, range.start), range };
+      if(period==='daily' && quest.condition==='categoryHabit') return { ...getDailyQuestCategoryProgress(quest, range.start), range };
+      if(period==='daily' && quest.condition==='categoryHabitCount') return { ...getDailyQuestCategoryHabitCountProgress(quest, range.start), range };
+      if(period==='daily' && quest.condition==='completeCategory') return { ...getDailyQuestCompleteCategoryProgress(quest, range.start), range };
+      if(period==='daily' && quest.condition==='streakTarget') return { ...getDailyQuestStreakProgress(quest, range.start), range };
+      if(period==='daily' && quest.condition==='specificHabit') return { ...getDailyQuestSpecificHabitProgress(quest, range.start), range };
+      if(period==='daily' && quest.condition==='extraHabits') return { ...getDailyQuestExtraHabitProgress(quest, range.start), range };
+      if(period==='daily' && quest.condition==='weakestHabit') return { ...getDailyQuestWeakestHabitProgress(quest, range.start), range };
+      if(period==='daily' && quest.condition==='weakestHabits') return { ...getDailyQuestWeakestHabitsProgress(quest, range.start), range };
+      if(period==='daily' && quest.condition==='habitSet') return { ...getDailyQuestHabitSetProgress(quest, range.start), range };
+      if(period==='daily' && quest.condition==='overdueTasks') return { ...getDailyQuestOverdueProgress(quest, range.start), range };
+      if(period==='daily' && quest.condition==='oneTimeTasks') return { ...getDailyQuestTaskProgress(quest, range.start), range };
+      if(period==='daily' && quest.condition==='easyTask') return { ...getDailyQuestTaskProgress(quest, range.start, 'easy'), range };
+      if(period==='daily' && quest.condition==='mediumTask') return { ...getDailyQuestTaskProgress(quest, range.start, 'medium'), range };
+      if(period==='daily' && quest.condition==='hardTask') return { ...getDailyQuestTaskProgress(quest, range.start, 'hard'), range };
+      if(period==='daily' && quest.condition==='specificTask') return { ...getDailyQuestSpecificTaskProgress(quest, range.start), range };
+      if(period==='daily' && quest.condition==='taskDifficulties') return { ...getDailyQuestTaskDifficultiesProgress(quest, range.start), range };
+      if(period==='daily' && quest.condition==='alwaysTask') return { ...getDailyQuestAlwaysTaskProgress(quest, range.start), range };
+      const target = Math.max(1, Math.floor(Number(quest.target) || 1));
+      return { current:0, target, complete:false, label:`0/${target}`, range };
+    }
+
+    function getQuestStats(period, quests){
+      const entries = Array.isArray(quests) ? quests : [];
+      const completed = entries.filter(quest=>getQuestProgress(quest, period).complete).length;
+      const placeholders = entries.filter(quest=>quest.condition==='placeholder' || quest.condition==='unavailable').length;
+      return { total:entries.length, completed, placeholders };
+    }
+
+    function renderQuests(){
+      ensureQuestState();
+      const period = QUEST_PERIODS.includes(state.questPeriod) ? state.questPeriod : 'daily';
+      const range = getQuestPeriodRange(period);
+      const title = period==='daily' ? 'Daily Quests' : 'Weekly Quests';
+      const sub = period==='daily'
+        ? `Reset: ${range.label}`
+        : `Woche: ${range.label}`;
+      const quests = period==='daily' ? getDailyQuestSelection(range.start) : [];
+      const stats = getQuestStats(period, quests);
+
+      return `
+        <div class="quest-shell">
+          <div class="quest-period-tabs">
+            <button class="quest-period-btn ${period==='daily'?'active':''}" type="button" onclick="setQuestPeriod('daily')">Daily</button>
+            <button class="quest-period-btn ${period==='weekly'?'active':''}" type="button" onclick="setQuestPeriod('weekly')">Weekly</button>
+          </div>
+          <div class="quest-board-head">
+            <div>
+              <div class="quest-board-title"><span>${period==='daily'?'D':'W'}</span><div>${title}</div></div>
+              <div class="quest-board-sub">${sub}</div>
+            </div>
+            <div class="quest-board-score">${stats.completed}/${stats.total} erledigt${stats.placeholders ? ` | ${stats.placeholders} xx` : ''}</div>
+          </div>
+          ${quests.length ? renderQuestSections(quests, period) : renderQuestEmpty(period)}
+        </div>
+      `;
+    }
+
+    function renderQuestSections(quests, period){
+      return QUEST_GROUPS.map(group=>{
+        const entries = quests.filter(quest=>(quest.group || 'always')===group.id);
+        if(!entries.length) return '';
+        const head = group.label
+          ? `<div class="quest-section-head" style="--quest-color:${group.color}">
+               <div class="quest-section-title">${group.label}</div>
+               <div class="quest-section-count">${entries.length}</div>
+             </div>`
+          : '';
+        return `
+          <section class="quest-section" style="--quest-color:${group.color}">
+            ${head}
+            <div class="quest-grid">
+              ${entries.map(quest=>renderQuestCard(quest, period, group)).join('')}
+            </div>
+          </section>
+        `;
+      }).join('');
+    }
+
+    function renderQuestEmpty(period){
+      return `
+        <div class="empty-state" style="padding:1.5rem;">
+          <div class="empty-state-icon">${period==='daily'?'&#127919;':'&#128197;'}</div>
+          <p>Noch keine ${period==='daily'?'Daily':'Weekly'} Quests.</p>
+        </div>
+      `;
+    }
+
+    function renderQuestCard(quest, period, group){
+      const progress = getQuestProgress(quest, period);
+      const completed = !!progress.complete;
+      const placeholder = !!progress.placeholder;
+      const claim = getQuestClaim(period, quest, progress.range.start);
+      const hasReward = !!quest.reward;
+      const claimed = !!claim;
+      const pct = typeof progress.barPercent === 'number'
+        ? Math.max(0, Math.min(100, Math.round(progress.barPercent)))
+        : Math.min(100, Math.round((progress.current / progress.target) * 100));
+      const difficultyLabel = (QUEST_GROUPS.find(entry=>entry.id===quest.group) || {}).label || '';
+      const statusClass = claimed || (completed && !hasReward) ? 'completed' : (placeholder ? 'placeholder' : (completed ? 'claimable' : ''));
+      const buttonHtml = claimed
+        ? `<button class="quest-claim-btn done" type="button" disabled>${escapeHtml(formatQuestClaimReward(claim))}</button>`
+        : completed && hasReward
+          ? `<button class="quest-claim-btn ready" type="button" onclick="claimQuestReward('${period}','${quest.id}')">Claim</button>`
+        : completed
+            ? `<button class="quest-claim-btn no-reward" type="button" disabled>Erledigt</button>`
+        : placeholder
+          ? `<button class="quest-claim-btn placeholder" type="button" disabled>Spaeter</button>`
+          : hasReward
+            ? `<button class="quest-claim-btn" type="button" disabled>Offen</button>`
+          : `<button class="quest-claim-btn" type="button" disabled>${progress.current}/${progress.target}</button>`;
+      const visibleRewardLabel = claimed
+        ? formatQuestClaimReward(claim)
+        : (quest.condition!=='dailyCompletion' && hasReward ? formatQuestReward(quest.reward) : '');
+
+      return `
+        <div class="quest-card ${statusClass}" style="--quest-color:${group.color}">
+          <div class="quest-icon">${quest.icon || '&#9733;'}</div>
+          <div class="quest-main">
+            <div class="quest-name">${escapeHtml(quest.title)}</div>
+            <div class="quest-meta">
+              ${difficultyLabel ? `<span class="quest-chip">${escapeHtml(difficultyLabel)}</span>` : ''}
+              <span>${escapeHtml(quest.description || '')}</span>
+            </div>
+            ${progress.hideProgressBar ? '' : `
+              <div class="quest-progress" aria-label="${escapeHtml(progress.label || `${progress.current}/${progress.target}`)}">
+                <div class="quest-progress-fill" style="width:${pct}%"></div>
+              </div>
+            `}
+          </div>
+          <div class="quest-actions">
+            ${visibleRewardLabel ? `<div class="quest-reward">${escapeHtml(visibleRewardLabel)}</div>` : ''}
+            <div class="quest-reward">${escapeHtml(progress.label || `${progress.current}/${progress.target}`)}</div>
+            ${buttonHtml}
+          </div>
+        </div>
+      `;
+    }
+
+    function findQuestById(period, questId){
+      const range = getQuestPeriodRange(period);
+      const quests = period==='daily' ? getDailyQuestSelection(range.start) : [];
+      return quests.find(quest=>quest.id===questId) || null;
+    }
+
+    function applyQuestReward(quest, claimKey){
+      const reward = quest && quest.reward;
+      if(!reward) return null;
+      const amount = Math.max(1, Math.floor(Number(reward.amount) || 1));
+      if(reward.type==='coins'){
+        addCoins(amount, 'quest', claimKey);
+        return { rewardType:'coins', amount, rarity:'normal' };
+      }
+      if(reward.type==='lootbox'){
+        const rolledRarity = reward.rarity==='random' ? rollQuestRandomLootboxRarity() : reward.rarity;
+        const rarity = ['normal','rare','epic','legendary'].includes(rolledRarity) ? rolledRarity : 'normal';
+        if(!state.achievementLootboxes || typeof state.achievementLootboxes !== 'object') state.achievementLootboxes = {};
+        state.achievementLootboxes[rarity] = Math.max(0, Number(state.achievementLootboxes[rarity]) || 0) + amount;
+        return { rewardType:'lootbox', amount, rarity };
+      }
+      state.xp += amount;
+      checkLevelUp();
+      return { rewardType:'xp', amount, rarity:'normal' };
+    }
+
+    function claimQuestReward(period, questId){
+      ensureQuestState();
+      const safePeriod = QUEST_PERIODS.includes(period) ? period : state.questPeriod;
+      const quest = findQuestById(safePeriod, questId);
+      if(!quest || !quest.reward) return;
+      const progress = getQuestProgress(quest, safePeriod);
+      if(!progress.complete){
+        showToast('Quest noch nicht erledigt');
+        return;
+      }
+      const key = getQuestClaimKey(safePeriod, quest, progress.range.start);
+      if(state.questClaims[key]){
+        showToast('Quest schon eingesammelt');
+        return;
+      }
+      const applied = applyQuestReward(quest, key);
+      if(!applied) return;
+      state.questClaims[key] = {
+        period:safePeriod,
+        periodKey:progress.range.start,
+        questId:quest.id,
+        ...applied,
+        claimedAt:Date.now()
+      };
+      createConfetti();
+      checkAchievements();
+      updateStats();
+      renderMain();
+      saveData();
+      showToast(`Quest Reward: ${formatQuestClaimReward(state.questClaims[key])}`);
     }
 
     function getDisplayStreak(item, type, anchorDateStr){
@@ -5049,7 +7119,6 @@ function calculatePerfectBonus(streak){
         if(habitCoinReward && !habitCoinReward.awarded){
           habitCoinReward.awarded = true;
           addCoins(habitCoinReward.coins, 'habit_coin', habitCoinReward.coinLogRef);
-          animateCoinGain(habitCoinReward.coins);
         }
         awardPerfectBonusIfNeeded(ds);
       }
@@ -5085,7 +7154,7 @@ function calculatePerfectBonus(streak){
       const ds=(type==='habit') ? habitsViewStr() : todayStr();
       const item=getTrackedHabit(type,id);
       if(!item) return;
-      if(type==='habit' && isMiniHabitModeActive() && ds===todayStr()){
+      if(type==='habit' && isMiniHabitModeActive()){
         toggleMiniHabitCompletion(item,type,ds);
         updateStats();
         renderMain();
@@ -5110,12 +7179,13 @@ function calculatePerfectBonus(streak){
 
         if(taskType==='always'){
           item.completed = false;
+          const day = ensureDay(todayKey);
+          day.alwaysTaskCompletions[keyFor('onetime', id)] = true;
           state.xp += item.xp;
 
           const coinRoll = rollTaskCoinNow(item, todayKey);
           if(coinRoll.coins>0){
             addCoins(coinRoll.coins, 'task_coin', createShopUid(`always_task_coin_${item.id}`));
-            animateCoinGain(coinRoll.coins);
           }
 
           createConfetti();
@@ -5146,7 +7216,6 @@ function calculatePerfectBonus(streak){
           const coinRoll = ensureTaskCoinRoll(item, ds, todayKey);
           if(coinRoll.coins>0){
             addCoins(coinRoll.coins, 'task_coin', coinRoll.coinLogRef);
-            animateCoinGain(coinRoll.coins);
           }
 
           createConfetti();
@@ -5188,7 +7257,7 @@ function calculatePerfectBonus(streak){
       const item = list.find(h=>h.id===id);
       if(!item) return;
 
-      if(type==='habit' && isMiniHabitModeActive() && ds===todayKey){
+      if(type==='habit' && isMiniHabitModeActive()){
         toggleMiniHabitCompletion(item,type,ds);
         updateStats();
         renderMain();
@@ -5205,6 +7274,10 @@ function calculatePerfectBonus(streak){
 
     // --- Modals ---
     function openModal(){
+      if(state.currentTab==='quests'){
+        showToast('Quests werden automatisch im Quest-Tab angezeigt');
+        return;
+      }
       document.getElementById('modal').classList.add('active');
       updateModalScrollLock();
       setDefaultTaskDate();
@@ -5216,6 +7289,7 @@ function calculatePerfectBonus(streak){
       const title = (t==='habits') ? 'Create New Habit'
                   : (t==='extra') ? 'Create New Extra Habit'
                   : (t==='onetime') ? 'Create New Task'
+                  : (t==='quests') ? 'Quests'
                   : 'Create';
       document.getElementById('modalTitle').textContent=title;
     }
@@ -5242,7 +7316,7 @@ function calculatePerfectBonus(streak){
     function closeModalOnOverlay(e){
       if(e.target!==e.currentTarget) return;
       closeModal(); closeCategoryManager(); closeEditModal(); closeManualXpModal();
-      closeShop(); closeHistory(); closeStats(); closeHabitOverview(); closeSettings(); closeMilestone();
+      closeShop(); closeHistory(); closeStats(); closeAchievements(); closeHabitOverview(); closeSettings(); closeMilestone();
       updateModalScrollLock();
     }
 
@@ -6393,14 +8467,22 @@ const newItem={
     }
 
     function renderWeekView(){
+      renderWeekViewInto('weekViewContent','calendarWeekRange');
+    }
+
+    function renderWeekViewInto(containerId, rangeId){
       const weekStart=new Date(state.currentWeekStart);
       const weekEnd=new Date(weekStart); weekEnd.setDate(weekEnd.getDate()+6);
 
       const options={month:'short',day:'numeric'};
-      document.getElementById('calendarWeekRange').textContent =
-        `${weekStart.toLocaleDateString('en-US',options)} - ${weekEnd.toLocaleDateString('en-US',options)}, ${weekStart.getFullYear()}`;
+      const rangeEl=document.getElementById(rangeId);
+      if(rangeEl){
+        rangeEl.textContent =
+          `${weekStart.toLocaleDateString('en-US',options)} - ${weekEnd.toLocaleDateString('en-US',options)}, ${weekStart.getFullYear()}`;
+      }
 
-      const container=document.getElementById('weekViewContent');
+      const container=document.getElementById(containerId);
+      if(!container) return;
       const dayNames=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
       container.innerHTML = Array.from({length:7},(_,i)=>{
@@ -6409,6 +8491,7 @@ const newItem={
         const isToday=ds===todayStr();
         const isFuture = date > new Date(new Date().setHours(0,0,0,0));
         const isFrozen = hasDayFreeze(ds);
+        const isRest = isRestDay(ds);
 
         const scheduled = state.habits.filter(h => shouldHabitExistOnDate(h, date));
         const dayObj = ensureDay(ds);
@@ -6417,7 +8500,7 @@ const newItem={
         const oneTimes = state.oneTimeTasks.filter(t => !isAlwaysTask(t) && t.dueDate === ds);
 
         const habitItemsHtml = scheduled.length===0
-          ? `<div style="color:var(--text-secondary);font-size:.875rem;font-style:italic;font-weight:800;">${isRestDay(ds)?'Rest day / excluded':'No habits'}</div>`
+          ? `<div style="color:var(--text-secondary);font-size:.875rem;font-style:italic;font-weight:800;">${isRest?'Rest day / excluded':'No habits'}</div>`
           : scheduled.map(h=>{
               const done = isCompleted('habit',h.id,ds);
               const progress = getHabitBoxProgress('habit', h.id, ds);
@@ -6454,7 +8537,7 @@ const newItem={
 
         const itemsHtml = habitItemsHtml + oneTimeHtml;
 
-        const restBadge = isRestDay(ds) ? `<span style="color:var(--yellow);font-weight:900;">Rest Day</span>` : '';
+        const restBadge = isRest ? `<span style="color:var(--yellow);font-weight:900;">Rest Day</span>` : '';
 
         return `
           <div class="week-day" style="${isToday?'border:2px solid var(--primary);':''}">
@@ -6462,6 +8545,11 @@ const newItem={
               <span>${dayNames[date.getDay()]}${isToday?' (Today)':''} ${restBadge}</span>
               <div class="week-day-tools">
                 <span class="week-day-date">${date.toLocaleDateString()}</span>
+                <button
+                  class="week-rest-btn ${isRest?'active':''}"
+                  onclick="toggleRestDayForDate('${ds}')"
+                  ${isFuture ? 'disabled' : ''}
+                >${isRest ? 'Rest Day On' : 'Rest Day'}</button>
                 <button
                   class="week-freeze-btn ${isFrozen?'active':''}"
                   onclick="applyStreakFreezeForDay('${ds}')"
@@ -6536,7 +8624,6 @@ const newItem={
         const coinRoll = ensureTaskCoinRoll(t, ds, dateStr);
         if(coinRoll.coins>0){
           addCoins(coinRoll.coins, 'task_coin', coinRoll.coinLogRef);
-          animateCoinGain(coinRoll.coins);
         }
       } else {
         const raw = getAwardedXpRaw('onetime', taskId, ds);
@@ -6571,24 +8658,47 @@ const newItem={
 
     // --- Stats modal ---
     function openStats(){
-      state.statsWeekOffset = 0;
-      document.getElementById('statsModal').classList.add('active');
-      updateModalScrollLock();
-      updateStatsModal();
-      switchStatsTab(state.statsActiveTab || 'overview');
+      openHabitOverview();
     }
-    function closeStats(){ document.getElementById('statsModal').classList.remove('active'); updateModalScrollLock(); }
+    function closeStats(){
+      const modal=document.getElementById('statsModal');
+      if(modal) modal.classList.remove('active');
+      closeAchievements();
+    }
+    function openAchievements(){
+      const modal=document.getElementById('achievementsModal');
+      if(!modal) return;
+      const title=modal.querySelector('.modal-title');
+      if(title) title.textContent='Achievements';
+      const closeBtn=modal.querySelector('.modal-close');
+      if(closeBtn) closeBtn.onclick=closeAchievements;
+      modal.classList.add('active');
+      const nav=document.getElementById('achievementsNav');
+      if(nav) nav.classList.add('active');
+      switchStatsTab('achievements');
+      renderNewAchievementsGrid();
+      initInteractiveUi(modal);
+      updateModalScrollLock();
+    }
+    function closeAchievements(){
+      const modal=document.getElementById('achievementsModal');
+      if(modal) modal.classList.remove('active');
+      const nav=document.getElementById('achievementsNav');
+      if(nav) nav.classList.remove('active');
+      updateModalScrollLock();
+    }
     function changeStatsWeek(delta){
       const next = (state.statsWeekOffset || 0) + delta;
       state.statsWeekOffset = Math.max(0, next);
       updateStatsModal();
+      renderHabitOverviewWeeklyProgress();
     }
 
     function updateStatsModal(){
       const totalCompleted =
         Object.values(state.completionData).reduce((sum,day)=>{
           const items=day.items||{};
-          return sum + Object.values(items).filter(v=>v).length;
+          return sum + Object.entries(items).filter(([k,v])=>v===true && /^(H|T):/.test(k)).length;
         },0);
 
       const bestStreak = computeBestHistoricalHabitStreak();
@@ -6604,7 +8714,7 @@ const newItem={
       document.getElementById('statBestStreak').textContent = bestStreak;
       document.getElementById('statPerfectDays').textContent = perfectDays;
 
-      // Last 7 days chart (all completed items, main+extra+one-time)
+      // Last 7 days chart (main habits + one-time tasks; extra habits only contribute XP)
       const chart=document.getElementById('completion7Chart');
       const weekRangeLabel=document.getElementById('statsWeekRangeLabel');
       const nextWeekBtn=document.getElementById('statsNextWeekBtn');
@@ -6629,17 +8739,16 @@ const newItem={
         const ds=formatDate(d);
         const day=ensureDay(ds);
         const done = Object.entries(day.items||{})
-          .filter(([k,v])=>v===true && (/^(H|E|T):/.test(k)))
+          .filter(([k,v])=>v===true && (/^(H|T):/.test(k)))
           .length;
 
         const scheduledHabits = getScheduledHabits(d).length;
-        const scheduledExtra = getScheduledExtraHabits(d).length;
         const scheduledOneTime = state.oneTimeTasks.filter(t=>!isAlwaysTask(t) && !t.completed && t.dueDate===ds).length
           + state.oneTimeTasks.filter(t=>!isAlwaysTask(t) && t.completed && t.dueDate===ds).length;
-        const total = scheduledHabits + scheduledExtra + scheduledOneTime;
+        const total = scheduledHabits + scheduledOneTime;
         const pct = total>0 ? (done/total)*100 : 0;
         const habitsDone = Object.entries(day.items||{})
-          .filter(([k,v])=>v===true && (/^(H|E):/.test(k)))
+          .filter(([k,v])=>v===true && (/^H:/.test(k)))
           .length;
         const dayXp = Object.values(day.xp||{}).reduce((sum,v)=>sum + (Number(v)||0),0);
 
@@ -6684,17 +8793,106 @@ const newItem={
 
       renderAchievementsGrid();
       renderNewAchievementsGrid();
-      initInteractiveUi(document.getElementById('statsModal'));
+      initInteractiveUi(document.getElementById('achievementsModal') || document.getElementById('statsModal'));
       animateStatsTab();
     }
 
+    function renderHabitOverviewWeeklyProgress(){
+      const chart=document.getElementById('habitOverviewCompletion7Chart');
+      if(!chart) return;
+      const weekRangeLabel=document.getElementById('habitOverviewStatsWeekRangeLabel');
+      const nextWeekBtn=document.getElementById('habitOverviewStatsNextWeekBtn');
+      const weekOffset = Number.isFinite(state.statsWeekOffset) ? state.statsWeekOffset : 0;
+      if(nextWeekBtn) nextWeekBtn.disabled = weekOffset===0;
+
+      const today=new Date(); today.setHours(0,0,0,0);
+      today.setDate(today.getDate()-(weekOffset*7));
+      const weekStart=new Date(today); weekStart.setDate(weekStart.getDate()-6);
+      if(weekRangeLabel){
+        const options={month:'short',day:'numeric'};
+        weekRangeLabel.textContent=`${weekStart.toLocaleDateString('en-US',options)} - ${today.toLocaleDateString('en-US',options)}`;
+      }
+
+      const labels=[];
+      const points=[];
+      let weekDoneTotal = 0;
+      let weekPlannedTotal = 0;
+      let weekHabitsDone = 0;
+      let weekXp = 0;
+
+      for(let i=6;i>=0;i--){
+        const d=new Date(today); d.setDate(d.getDate()-i);
+        const ds=formatDate(d);
+        const day=ensureDay(ds);
+        const scheduledHabitList = getScheduledHabits(d);
+        const scheduledHabitIds = new Set(scheduledHabitList.map(habit=>String(habit.id)));
+        const scheduledTaskList = state.oneTimeTasks.filter(task=>!isAlwaysTask(task) && task.dueDate===ds);
+        const scheduledTaskIds = new Set(scheduledTaskList.map(task=>String(task.id)));
+        const habitsDone = Object.entries(day.items||{})
+          .filter(([k,v])=>v===true && /^H:/.test(k) && scheduledHabitIds.has(k.slice(2)))
+          .length;
+        const tasksDone = Object.entries(day.items||{})
+          .filter(([k,v])=>v===true && /^T:/.test(k) && scheduledTaskIds.has(k.slice(2)))
+          .length;
+        const done = habitsDone + tasksDone;
+
+        const scheduledHabits = scheduledHabitList.length;
+        const scheduledOneTime = scheduledTaskList.length;
+        const total = scheduledHabits + scheduledOneTime;
+        const pct = total>0 ? (done/total)*100 : 0;
+        const dayXp = Object.entries(day.xp||{}).reduce((sum,[key,value])=>{
+          if(/^H:/.test(key) && !scheduledHabitIds.has(key.slice(2))) return sum;
+          return sum + (Number(value)||0);
+        },0);
+
+        weekDoneTotal += done;
+        weekPlannedTotal += total;
+        weekHabitsDone += habitsDone;
+        weekXp += dayXp;
+
+        labels.push(d.toLocaleDateString(undefined,{month:'short',day:'numeric'}));
+        points.push({done, total, pct});
+      }
+
+      const weekCompletionRate = weekPlannedTotal>0 ? Math.round((weekDoneTotal/weekPlannedTotal)*100) : 0;
+      const completionRateEl = document.getElementById('habitOverviewWeekProgressCompletionRate');
+      const habitsDoneEl = document.getElementById('habitOverviewWeekProgressHabitsDone');
+      const xpEl = document.getElementById('habitOverviewWeekProgressXp');
+      if(completionRateEl) completionRateEl.textContent = `${weekCompletionRate}%`;
+      if(habitsDoneEl) habitsDoneEl.textContent = weekHabitsDone;
+      if(xpEl) xpEl.textContent = weekXp;
+
+      chart.innerHTML = points.map((p,idx)=>{
+        const pct = Math.max(0, Math.min(100, Number(p.pct) || 0));
+        const pctLabel = `${Math.round(pct)}%`;
+        const ratio = `${p.done}/${p.total}`;
+        const MAX_BAR_PX = 160;
+        const MIN_BAR_PX = 6;
+        const barPx = (p.total > 0)
+          ? Math.max(MIN_BAR_PX, Math.round((pct/100) * MAX_BAR_PX))
+          : MIN_BAR_PX;
+
+        return `
+          <div class="chart-bar-wrapper" title="${pctLabel} (${ratio})">
+            <div class="chart-bar" style="height:${barPx}px;">
+              <div class="chart-bar-value">${pctLabel}</div>
+            </div>
+            <div class="chart-label">${labels[idx].split(' ').join('')}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
     // --- Habit overview modal ---
-    const HABIT_OVERVIEW_TABS=['general','habits','extra'];
+    const HABIT_OVERVIEW_TABS=['general','habits'];
     let habitOverviewActiveTab='general';
 
     function openHabitOverview(){
       const modal=document.getElementById('habitOverviewModal');
       if(!modal) return;
+      state.currentWeekStart=new Date();
+      state.currentWeekStart.setDate(state.currentWeekStart.getDate()-state.currentWeekStart.getDay());
+      state.statsWeekOffset = 0;
       modal.classList.add('active');
       updateModalScrollLock();
       const nav=document.getElementById('habitOverviewNav');
@@ -6727,11 +8925,10 @@ const newItem={
       const activeTab=HABIT_OVERVIEW_TABS.includes(habitOverviewActiveTab) ? habitOverviewActiveTab : 'general';
       const content = activeTab==='general'
         ? renderHabitOverviewGeneral(reports)
-        : activeTab==='habits'
-          ? renderHabitOverviewListTab(reports.filter(r=>r.type==='habit'),'habit')
-          : renderHabitOverviewListTab(reports.filter(r=>r.type==='extra'),'extra');
+        : renderHabitOverviewListTab(reports.filter(r=>r.type==='habit'),'habit');
 
       root.innerHTML=renderHabitOverviewTabs(activeTab) + content;
+      if(activeTab==='general') renderHabitOverviewWeeklyProgress();
       initInteractiveUi(root);
       animateHabitOverview();
     }
@@ -6739,8 +8936,7 @@ const newItem={
     function renderHabitOverviewTabs(activeTab){
       const tabs=[
         { id:'general', label:'Allgemein' },
-        { id:'habits', label:'Habits' },
-        { id:'extra', label:'Extra Habits' }
+        { id:'habits', label:'Habits' }
       ];
       return `
         <div class="habit-overview-tabbar">
@@ -6757,8 +8953,8 @@ const newItem={
       const habitReports=reports.filter(r=>r.type==='habit');
       const activeHabitReports=habitReports.filter(r=>!r.archived);
       const totalDone=habitReports.reduce((sum,r)=>sum+r.totalDone,0);
-      const totalPlanned=habitReports.reduce((sum,r)=>sum+r.scheduled,0);
       const habitXp=habitReports.reduce((sum,r)=>sum+r.totalXp,0);
+      const perfectDays=getPerfectDaysCount();
       const quote=getWeightedHabitOverviewRate(habitReports);
       const bestActiveStreak=activeHabitReports.length ? Math.max(...activeHabitReports.map(r=>r.longestStreak)) : 0;
       const quoteDeg=Math.max(0,Math.min(360,quote*3.6));
@@ -6775,10 +8971,40 @@ const newItem={
                 </div>
               </div>
               <div class="habit-overview-kpi-grid">
-                ${renderHabitOverviewKpi(String(totalDone)+'/'+String(totalPlanned),'Gemacht / Geplant')}
+                ${renderHabitOverviewKpi(totalDone,'Gemacht')}
                 ${renderHabitOverviewKpi(bestActiveStreak,'Laengste Streak aktive Habits')}
+                ${renderHabitOverviewKpi(perfectDays,'Perfect Days')}
                 ${renderHabitOverviewKpi(habitXp,'XP von Habits')}
                 ${renderHabitOverviewKpi(activeHabitReports.length,'Aktive Habits')}
+              </div>
+            </div>
+            <div class="habit-overview-week-section">
+              <div class="form-group">
+                <label class="form-label">Last 7 Days (Completed Tasks)</label>
+                <div class="chart-container">
+                  <div class="chart-nav">
+                    <div class="chart-nav-controls">
+                      <button class="chart-nav-btn" onclick="changeStatsWeek(1)" aria-label="Previous week">&larr;</button>
+                      <button class="chart-nav-btn" id="habitOverviewStatsNextWeekBtn" onclick="changeStatsWeek(-1)" aria-label="Next week">&rarr;</button>
+                    </div>
+                    <div class="chart-nav-label" id="habitOverviewStatsWeekRangeLabel">This week</div>
+                  </div>
+                  <div class="chart-bars" id="habitOverviewCompletion7Chart"></div>
+                </div>
+                <div class="stats-grid" style="margin-top:1rem;">
+                  <div class="stat-card">
+                    <div class="val" id="habitOverviewWeekProgressCompletionRate">0%</div>
+                    <div class="lab">Average Completion Rate</div>
+                  </div>
+                  <div class="stat-card">
+                    <div class="val" id="habitOverviewWeekProgressHabitsDone">0</div>
+                    <div class="lab">Habits gemacht</div>
+                  </div>
+                  <div class="stat-card">
+                    <div class="val" id="habitOverviewWeekProgressXp">0</div>
+                    <div class="lab">XP erzielt</div>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="habit-overview-dashboard-grid">
@@ -6794,6 +9020,15 @@ const newItem={
           </div>
         </div>
       `;
+    }
+
+    function getPerfectDaysCount(){
+      let perfectDays=0;
+      Object.keys(state.completionData || {}).forEach(ds=>{
+        const date=new Date(ds+'T00:00:00');
+        if(isPerfectDay(date)) perfectDays++;
+      });
+      return perfectDays;
     }
 
     function renderHabitOverviewKpi(value,label){
@@ -6870,7 +9105,7 @@ const newItem={
 
     function renderHabitOverviewCategoryGroup(group){
       const rate=getWeightedHabitOverviewRate(group.reports);
-      const done=group.reports.reduce((sum,r)=>sum+r.totalDone,0);
+      const done=group.reports.reduce((sum,r)=>sum+r.completedScheduled,0);
       const planned=group.reports.reduce((sum,r)=>sum+r.scheduled,0);
       const accent=normalizeShopColor(group.color);
       return `
@@ -6905,10 +9140,7 @@ const newItem={
     }
 
     function getHabitOverviewReports(){
-      const entries=[
-        ...state.habits.map(item=>({ item, type:'habit' })),
-        ...state.extraHabits.map(item=>({ item, type:'extra' }))
-      ];
+      const entries=state.habits.map(item=>({ item, type:'habit' }));
       return entries.map(entry=>calculateHabitOverviewReport(entry.item,entry.type));
     }
 
@@ -6976,11 +9208,15 @@ const newItem={
       Object.keys(state.completionData||{}).sort().forEach(ds=>{
         const day=state.completionData[ds] || {};
         const progress=getStoredHabitProgress(item,type,ds);
+        const date=new Date(`${ds}T00:00:00`);
+        const inOverviewRange=hasRange && !Number.isNaN(date.getTime()) && isHabitScheduledForOverview(item,type,date,start);
         const done=progress>=required;
-        if(done) totalDone++;
-        else if(progress>0) partialDays++;
-        totalBoxes += progress;
-        if(day.xp && Object.prototype.hasOwnProperty.call(day.xp,key)){
+        if(inOverviewRange){
+          if(done) totalDone++;
+          else if(progress>0) partialDays++;
+          totalBoxes += progress;
+        }
+        if(inOverviewRange && day.xp && Object.prototype.hasOwnProperty.call(day.xp,key)){
           totalXp += Math.max(0,Number(day.xp[key]) || 0);
         }
       });
@@ -7001,8 +9237,7 @@ const newItem={
         scheduled,completedScheduled,totalDone,partialDays,totalXp,totalBoxes,
         longestStreak,currentStreak,
         rate:Math.max(0,Math.min(100,rate)),
-        scheduleLabel:getHabitOverviewScheduleLabel(item,type),
-        sparkline:renderHabitOverviewSparkline(item,type)
+        scheduleLabel:getHabitOverviewScheduleLabel(item,type)
       };
     }
 
@@ -7046,6 +9281,7 @@ const newItem={
 
     function getHabitOverviewEffectiveStartDate(item,type,key){
       const declaredStart=normalizeDateOnly(item.startDate) || (item.createdAt ? normalizeDateOnly(item.createdAt) : '');
+      if(declaredStart) return declaredStart;
       let firstStoredDate='';
       Object.keys(state.completionData||{}).sort().some(ds=>{
         const day=state.completionData[ds] || {};
@@ -7058,8 +9294,7 @@ const newItem={
         }
         return false;
       });
-      if(declaredStart && firstStoredDate) return declaredStart<firstStoredDate ? declaredStart : firstStoredDate;
-      return declaredStart || firstStoredDate || todayStr();
+      return firstStoredDate || todayStr();
     }
 
     function isHabitScheduledForOverview(item,type,date,startOverride=''){
@@ -7171,9 +9406,6 @@ const newItem={
             <div class="habit-overview-progress">
               <div class="habit-overview-progress-fill" style="width:${report.rate}%"></div>
             </div>
-            <div class="habit-overview-sparkline" aria-label="Last 14 days">
-              ${report.sparkline}
-            </div>
           </div>
         </div>
       `;
@@ -7204,34 +9436,6 @@ function renderHabitOverviewMetric(value,label){
     </div>
   `;
 }
-
-    function renderHabitOverviewSparkline(item,type){
-      const today=new Date();
-      today.setHours(0,0,0,0);
-      const dots=[];
-      for(let i=13;i>=0;i--){
-        const date=new Date(today);
-        date.setDate(today.getDate()-i);
-        const ds=formatDate(date);
-        const scheduled=isHabitScheduledForOverview(item,type,date);
-        const progress=getStoredHabitProgress(item,type,ds);
-        const done=isStoredHabitCompleted(item,type,ds);
-        let cls='off';
-        let label='frei';
-        if(scheduled && done){
-          cls='done';
-          label='gemacht';
-        } else if(scheduled && progress>0){
-          cls='partial';
-          label='teilweise';
-        } else if(scheduled){
-          cls='missed';
-          label='offen';
-        }
-        dots.push(`<span class="habit-day-dot ${cls}" title="${formatHabitOverviewDate(ds)}: ${label}"></span>`);
-      }
-      return dots.join('');
-    }
 
     function formatHabitOverviewDate(dateStr){
       if(!dateStr) return '-';
@@ -7636,6 +9840,7 @@ function renderHabitOverviewMetric(value,label){
       state.extraHabits.forEach(normalizeHabitRecord);
       normalizeAchievements();
       ensureShopState();
+      ensureQuestState();
       state.statsWeekOffset = 0;
       Object.keys(state.completionData).forEach(ds=>ensureDay(ds));
       updateCategoryDropdowns();
@@ -7653,6 +9858,8 @@ function renderHabitOverviewMetric(value,label){
       updateLevelDisplay();
       const statsModal = document.getElementById('statsModal');
       if(statsModal && statsModal.classList.contains('active')) updateStatsModal();
+      const achievementsModal = document.getElementById('achievementsModal');
+      if(achievementsModal && achievementsModal.classList.contains('active')) renderNewAchievementsGrid();
       const habitOverviewModal = document.getElementById('habitOverviewModal');
       if(habitOverviewModal && habitOverviewModal.classList.contains('active')) updateHabitOverview();
       const shopModal = document.getElementById('shopModal');
@@ -7767,6 +9974,7 @@ state.habits.forEach(h=>{
           state.manualXpLog = Array.isArray(state.manualXpLog) ? state.manualXpLog : [];
           normalizeAchievements();
           ensureShopState();
+          ensureQuestState();
           state.statsWeekOffset = 0;
 
           Object.keys(state.completionData).forEach(ds=>ensureDay(ds));
@@ -7850,6 +10058,7 @@ state.habits.forEach(h=>{
           : JSON.parse(JSON.stringify(DEFAULT_CATEGORIES));
         normalizeAchievements();
         ensureShopState();
+        ensureQuestState();
 
         Object.keys(state.completionData).forEach(ds=>ensureDay(ds));
 
@@ -7881,7 +10090,7 @@ state.habits.forEach(h=>{
     document.addEventListener('keydown', (e)=>{
       if(e.key==='Escape'){
         closeModal(); closeCategoryManager(); closeEditModal(); closeManualXpModal();
-        closeShop(); closeHistory(); closeStats(); closeHabitOverview(); closeSettings(); closeMilestone();
+        closeShop(); closeHistory(); closeStats(); closeAchievements(); closeHabitOverview(); closeSettings(); closeMilestone();
         closeLootboxAnimationOverlay();
         updateModalScrollLock();
       }
