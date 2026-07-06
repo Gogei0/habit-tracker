@@ -231,6 +231,29 @@
     .quest-card.claimable{background:linear-gradient(90deg,#fff7ed 0,#fff 68%)}
     .quest-card.completed{opacity:.82;background:#f0fdf4;border-color:#bbf7d0}
     .quest-card.placeholder{background:#f8fafc;border-color:#e5e7eb;border-left-color:#9ca3af}
+    .quest-yesterday-panel{
+      border:1px solid #ffedd5;border-radius:16px;background:rgba(255,255,255,.92);
+      box-shadow:0 10px 22px rgba(31,41,55,.04);overflow:hidden
+    }
+    .quest-yesterday-summary{
+      list-style:none;display:flex;align-items:center;justify-content:space-between;gap:.75rem;
+      padding:.62rem .82rem;cursor:pointer;background:#fff7ed;color:#9a3412;font-weight:900
+    }
+    .quest-yesterday-summary::-webkit-details-marker{display:none}
+    .quest-yesterday-title{display:flex;align-items:center;gap:.5rem;min-width:0}
+    .quest-yesterday-title span:first-child{
+      width:28px;height:28px;border-radius:10px;background:#fff;border:1px solid #fed7aa;
+      display:grid;place-items:center;color:var(--primary);flex-shrink:0
+    }
+    .quest-yesterday-meta{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;justify-content:flex-end}
+    .quest-yesterday-badge{
+      border-radius:999px;background:#fff;border:1px solid #fed7aa;padding:.18rem .5rem;
+      font-size:.72rem;font-weight:900;color:#9a3412;white-space:nowrap
+    }
+    .quest-yesterday-chevron{transition:transform .2s var(--ease);font-size:.82rem}
+    .quest-yesterday-panel[open] .quest-yesterday-chevron{transform:rotate(180deg)}
+    .quest-yesterday-content{display:grid;gap:.78rem;padding:.78rem}
+    .quest-yesterday-panel .quest-card{box-shadow:none}
     .quest-icon{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:#fff7ed;border:1px solid #fed7aa;color:var(--quest-color);font-weight:900;flex-shrink:0}
     .quest-main{min-width:0;display:grid;gap:.34rem}
     .quest-name{font-weight:900;color:#111827;line-height:1.18;overflow-wrap:anywhere}
@@ -316,6 +339,7 @@
     .modal.large{max-width:740px}
     #shopModal .modal.large,#historyModal .modal.large,#habitOverviewModal .modal.large,#achievementsModal .modal.large{width:min(94vw,920px);max-width:920px}
     #settingsModal .modal{width:min(92vw,680px);max-width:680px}
+    #notesModal .modal{width:min(92vw,540px);max-width:540px}
     .shop-tabbar,.task-tabs,.emoji-picker{scrollbar-width:none;-ms-overflow-style:none}
     .modal::-webkit-scrollbar,.shop-tabbar::-webkit-scrollbar,.task-tabs::-webkit-scrollbar,.emoji-picker::-webkit-scrollbar{width:0;height:0;display:none}
     @keyframes modalSlide{from{opacity:0;transform:translateY(20px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
@@ -333,6 +357,29 @@
     .form-input{width:100%;padding:.875rem 1rem;border:2px solid #e5e7eb;border-radius:12px;font-family:inherit;font-size:1rem;transition:all .2s;background:#fafafa}
     .form-input:focus{outline:none;border-color:var(--primary);background:#fff}
     textarea.form-input{resize:vertical;min-height:90px}
+
+    .notes-board{display:grid;gap:1rem}
+    .notes-compose{
+      display:grid;gap:.75rem;padding:1rem;border:1px solid var(--border);border-radius:18px;
+      background:linear-gradient(180deg,#fff,#fffaf5);box-shadow:0 10px 26px rgba(124,45,18,.06)
+    }
+    .notes-compose-actions{display:flex;gap:.55rem;align-items:center}
+    .notes-compose-actions .create-btn{margin-top:0;flex:1}
+    .notes-list{display:grid;gap:.65rem}
+    .note-item{
+      display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:start;gap:.75rem;
+      padding:.82rem;border:1px solid #fed7aa;border-radius:16px;background:#fff;box-shadow:0 6px 18px rgba(124,45,18,.045)
+    }
+    .note-item.pinned{border-color:#fb923c;background:linear-gradient(180deg,#fff7ed,#fff)}
+    .note-done-btn,.note-pin-btn{
+      width:34px;height:34px;border-radius:12px;border:1px solid #fed7aa;background:#fff8f1;color:var(--primary);
+      display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:900;transition:all .2s
+    }
+    .note-done-btn:hover{background:#dcfce7;border-color:#86efac;color:#15803d}
+    .note-pin-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .note-text{font-weight:900;line-height:1.35;white-space:pre-wrap;overflow-wrap:anywhere}
+    .note-meta{margin-top:.28rem;color:var(--text-secondary);font-size:.74rem;font-weight:900}
+    .notes-empty{padding:1.4rem;border:1px dashed #fed7aa;border-radius:16px;text-align:center;color:var(--text-secondary);font-weight:900;background:#fffaf5}
 
     .category-select{display:flex;gap:.5rem}
     .category-dropdown{
@@ -661,15 +708,22 @@
     .week-day-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;font-weight:900}
     .week-day-date{color:var(--text-secondary);font-size:.875rem}
     .week-day-tools{display:flex;align-items:center;gap:.5rem}
-    .week-freeze-btn,.week-rest-btn{
+    .week-freeze-btn,.week-rest-btn,.week-excluded-btn,.week-collapse-btn{
       border:none;background:var(--blue-light);color:var(--blue);font-weight:900;font-size:.75rem;
       border-radius:999px;padding:.3rem .65rem;cursor:pointer;transition:all .2s
     }
-    .week-freeze-btn:hover,.week-rest-btn:hover{transform:translateY(-1px)}
+    .week-freeze-btn:hover,.week-rest-btn:hover,.week-excluded-btn:hover,.week-collapse-btn:hover{transform:translateY(-1px)}
+    .week-collapse-btn{min-width:34px;background:#fff;color:var(--text-primary);border:1px solid var(--border)}
     .week-freeze-btn.active{background:#d1fae5;color:#065f46}
     .week-rest-btn{background:#fff7ed;color:#9a3412;border:1px solid #fdba74}
     .week-rest-btn.active{background:var(--yellow);color:#fff;border-color:var(--yellow)}
-    .week-freeze-btn:disabled,.week-rest-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+    .week-excluded-btn{background:#eef2ff;color:#3730a3;border:1px solid #c7d2fe}
+    .week-excluded-btn.active{background:#4f46e5;color:#fff;border-color:#4f46e5}
+    .week-freeze-btn:disabled,.week-rest-btn:disabled,.week-excluded-btn:disabled,.week-collapse-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+    .week-day.excluded{background:#f8fafc;border-color:#c7d2fe}
+    .week-day.collapsed .week-day-header{margin-bottom:0}
+    .week-day.collapsed .week-day-items{display:none}
+    .week-excluded-badge{color:#3730a3;font-weight:900}
     .week-day-items{display:flex;flex-direction:column;gap:.5rem}
     .week-item{display:flex;align-items:center;gap:.75rem;padding:.5rem;background:#fff;border-radius:8px;border:1px solid #e5e7eb}
     .week-item.completed{background:#f0fdf4;border-color:var(--success)}
@@ -1465,6 +1519,8 @@
       .quest-board-sub{font-size:.74rem}
       .quest-board-score{font-size:.72rem;padding:.35rem .55rem}
       .quest-grid{grid-template-columns:1fr;gap:.62rem}
+      .quest-yesterday-summary{align-items:flex-start;flex-direction:column}
+      .quest-yesterday-meta{justify-content:flex-start}
       .quest-card{
         grid-template-columns:auto 1fr;
         align-items:start;
@@ -1672,7 +1728,7 @@
         margin-bottom:.6rem;
       }
       .week-day-tools{gap:.38rem;flex-wrap:wrap;justify-content:flex-end}
-      .week-freeze-btn,.week-rest-btn{min-height:34px;padding:.3rem .58rem}
+      .week-freeze-btn,.week-rest-btn,.week-excluded-btn,.week-collapse-btn{min-height:34px;padding:.3rem .58rem}
       .week-item{
         gap:.58rem;
         padding:.62rem;
@@ -1835,6 +1891,10 @@
   <header class="header">
     <div class="logo" id="appNameLogo">feelwrite</div>
     <div class="nav-icons">
+      <svg class="nav-icon" id="notesNav" onclick="openNotes()" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-label="Notes" title="Notes">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2z"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9h8M8 13h6"></path>
+      </svg>
       <svg class="nav-icon" onclick="openShop()" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-label="Shop">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18l-2 12H5L3 7zm3 0a3 3 0 016 0m6 0a3 3 0 00-6 0"></path>
       </svg>
@@ -2436,7 +2496,7 @@
                 <div class="achievement-hero-copy">Hard goals for discipline, debt cleanup, no-freeze runs, coins and multi-box consistency.</div>
               </div>
               <div class="achievement-hero-score">
-                <span id="newAchievementUnlockedCount">0/17</span>
+                <span id="newAchievementUnlockedCount">0/16</span>
                 <small>unlocked</small>
               </div>
             </div>
@@ -2457,6 +2517,27 @@
       </div>
       <div class="modal-body">
         <div class="habit-overview-shell" id="habitOverviewContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notes Modal -->
+  <div class="modal-overlay" id="notesModal" onclick="closeModalOnOverlay(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title">Mini Notiz Board</h2>
+        <button class="modal-close" onclick="closeNotes()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="notes-board">
+          <div class="notes-compose">
+            <textarea class="form-input" id="noteTextInput" placeholder="Kurze Notiz..." maxlength="280"></textarea>
+            <div class="notes-compose-actions">
+              <button class="create-btn" type="button" onclick="addNote()">Notiz erstellen</button>
+            </div>
+          </div>
+          <div class="notes-list" id="notesList"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -2560,13 +2641,17 @@
       habits: [],
       extraHabits: [],
       oneTimeTasks: [],
+      notes: [],
 
       selectedDays: [0,1,2,3,4,5,6],
       selectedXp: 10,
       currentTab: 'habits',
       questPeriod: 'daily',
+      questYesterdayOpen: false,
+      questLastWeekOpen: false,
       questClaims: {},
       questDailySelections: {},
+      questWeeklySelections: {},
 
       editingItemId: null,
       editingItemType: null, // 'habit' | 'extra' | 'onetime'
@@ -2579,6 +2664,7 @@
       achievementLootboxes: { normal: 0, rare: 0, epic: 0, legendary: 0 },
       achievementTrackingStarted: '',
       shopDisciplineTrackingStarted: '',
+      noFreezeMonthTrackingStarted: '',
 
       // completionData[dateStr] = { items:{}, itemProgress:{}, itemProgressXp:{}, miniHabits:{}, xp:{}, taskCoinRolls:{}, alwaysTaskCompletions:{}, habitCoinReward:{}, perfectBonusGiven:bool, perfectBonusXp:number, lootboxes:{} }
       completionData: {},
@@ -2609,6 +2695,8 @@
 
       // restDays[dateStr] = true
       restDays: {},
+      // excludedDays[dateStr] = true (Urlaub/Krankheit, globally ignored)
+      excludedDays: {},
       miniHabitMode: false,
 
       // inventory + usage map for streak freeze mechanic
@@ -2720,9 +2808,8 @@
           { id:'shop_discipline', icon:'&#128274;', title:'Shop Discipline', desc:'Starte den Run manuell und kaufe dann 7 Tage lang nichts im Shop.', rewards:[{type:'coins',amount:40}] },
           { id:'deep_work_sprint', icon:'&#9876;&#65039;', title:'Deep Work Sprint', desc:'10 schwere Tasks innerhalb von 3 Tagen erledigen.', rewards:[{type:'coins',amount:120},{type:'lootbox',rarity:'rare',amount:1}] },
           { id:'task_debt_zero', icon:'&#128465;&#65039;', title:'Task Debt Zero', desc:'7 ueberfaellige Tasks an einem Tag abschliessen.', rewards:[{type:'coins',amount:100},{type:'freeze',amount:1}] },
-          { id:'no_freeze_month', icon:'&#129482;', title:'No Freeze Month', desc:'30 Tage lang keinen Streak Freeze verwenden.', rewards:[{type:'coins',amount:125},{type:'lootbox',rarity:'rare',amount:1}] },
-          { id:'money_maker', icon:'&#128176;', title:'Money Maker', desc:'30 Coins an einem Tag verdienen, ohne Achievement-Belohnungen.', rewards:[{type:'coins',amount:50}] },
-          { id:'savety_first', icon:'&#127974;', title:'Savety First', desc:'100 Coins zu einem Zeitpunkt haben.', rewards:[{type:'coins',amount:35},{type:'lootbox',rarity:'normal',amount:1}] }
+          { id:'no_freeze_month', icon:'&#129482;', title:'No Freeze Month', desc:'Starte den Run manuell und verwende dann 30 Tage lang keinen Streak Freeze.', rewards:[{type:'coins',amount:125},{type:'lootbox',rarity:'rare',amount:1}] },
+          { id:'money_maker', icon:'&#128176;', title:'Money Maker', desc:'30 Coins an einem Tag verdienen, ohne Achievement-Belohnungen.', rewards:[{type:'coins',amount:50}] }
         ]
       },
       {
@@ -2753,7 +2840,42 @@
       { id:'hard', label:'Schwer', color:'#ef4444' }
     ];
     const QUEST_DAILY_DIFFICULTIES = ['easy','medium','hard'];
-    const QUEST_DAILY_POOL_VERSION = 7;
+    const QUEST_DAILY_POOL_VERSION = 8;
+    const QUEST_WEEKLY_POOL_VERSION = 8;
+    const QUEST_WEEKLY_COMPLETION_DAY_VARIANTS = {
+      easy:[
+        { days:2, percent:50 }
+      ],
+      medium:[
+        { days:3, percent:70 }
+      ],
+      hard:[
+        { days:5, percent:80 }
+      ]
+    };
+    const QUEST_WEEKLY_COMPLETION_TIERS = [
+      {
+        group:'easy',
+        targetRolls:[
+          { weight:20, min:20, max:40 },
+          { weight:80, min:30, max:60 }
+        ]
+      },
+      {
+        group:'medium',
+        targetRolls:[
+          { weight:30, min:40, max:65 },
+          { weight:70, min:55, max:85 }
+        ]
+      },
+      {
+        group:'hard',
+        targetRolls:[
+          { weight:70, min:70, max:90 },
+          { weight:30, min:85, max:100 }
+        ]
+      }
+    ];
     const QUEST_COMPLETION_TIERS = [
       {
         group:'easy',
@@ -2811,6 +2933,50 @@
       { id:16, family:'lootbox', rarity:'epic', quality:3, groups:['hard'], baseWeight:0.55 },
       { id:17, family:'lootbox', rarity:'legendary', quality:4, groups:['hard'], baseWeight:0.02 }
     ];
+    const QUEST_WEEKLY_REWARD_SYSTEM_VERSION = 3;
+    const QUEST_WEEKLY_REWARD_FAMILIES = {
+      easy:['coins','xp','lootbox'],
+      medium:['coins','xp','lootbox'],
+      hard:['coins','xp','lootbox']
+    };
+    const QUEST_WEEKLY_REWARD_DEFINITIONS = [
+      { id:101, family:'coins', min:4, max:6, quality:1, groups:['easy'] },
+      { id:102, family:'coins', min:6, max:9, quality:2, groups:['easy','medium'] },
+      { id:103, family:'coins', min:9, max:12, quality:3, groups:['medium'] },
+      { id:104, family:'coins', min:12, max:16, quality:4, groups:['medium','hard'] },
+      { id:105, family:'coins', min:16, max:22, quality:5, groups:['hard'] },
+      { id:106, family:'coins', min:22, max:30, quality:6, groups:['hard'], baseWeight:0.35 },
+      { id:107, family:'xp', min:40, max:70, quality:1, groups:['easy'] },
+      { id:108, family:'xp', min:70, max:110, quality:2, groups:['easy','medium'] },
+      { id:109, family:'xp', min:110, max:150, quality:3, groups:['medium'] },
+      { id:110, family:'xp', min:150, max:180, quality:4, groups:['medium','hard'] },
+      { id:111, family:'xp', min:180, max:200, quality:5, groups:['hard'] },
+      { id:112, family:'xp', min:230, max:330, quality:6, groups:['hard'], baseWeight:0.35 },
+      { id:113, family:'lootbox', rarity:'random', quality:1, groups:['easy','medium'] },
+      { id:114, family:'lootbox', rarity:'rare', quality:2, groups:['medium'], baseWeight:0.8 },
+      { id:115, family:'lootbox', rarity:'epic', quality:3, groups:['medium','hard'], baseWeight:0.5 },
+      { id:116, family:'lootbox', rarity:'legendary', quality:4, groups:['hard'], baseWeight:0.006 }
+    ];
+    const QUEST_WEEKLY_REWARD_AMOUNT_MULTIPLIERS = {
+      easy:1.15,
+      medium:1.15,
+      hard:1.30
+    };
+    const QUEST_WEEKLY_LOOTBOX_AMOUNT_ROLLS = {
+      easy:[
+        { amount:1, weight:85 },
+        { amount:2, weight:15 }
+      ],
+      medium:[
+        { amount:1, weight:85 },
+        { amount:2, weight:15 }
+      ],
+      hard:[
+        { amount:1, weight:75 },
+        { amount:2, weight:20 },
+        { amount:3, weight:5 }
+      ]
+    };
     const QUEST_RANDOM_LOOTBOX_WEIGHTS = [
       { rarity:'normal', weight:50 },
       { rarity:'rare', weight:28 },
@@ -2830,6 +2996,7 @@
     let selectedExternalSaveHandle = null;
     let habitsViewDate = new Date();
     habitsViewDate.setHours(0,0,0,0);
+    let historyExpandedDays = {};
     let editingShopCustomItemId = null;
     let lootboxAnimationBusy = false;
     let activeLootboxAnimation = null;
@@ -3128,7 +3295,7 @@
     }
 
     function bindInteractiveElements(scope=document){
-      const selector='button,.habit-checkbox,.habit-drag,.habit-xp,.xp-display,.coin-display,.week-item-checkbox,.category-delete,.emoji-option,.chart-nav-btn,.week-freeze-btn';
+      const selector='button,.habit-checkbox,.habit-drag,.habit-xp,.xp-display,.coin-display,.week-item-checkbox,.category-delete,.emoji-option,.chart-nav-btn,.week-freeze-btn,.week-excluded-btn';
       scope.querySelectorAll(selector).forEach(el=>{
         el.classList.add('interactive-click');
         if(!el.dataset.rippleBound){
@@ -3262,6 +3429,10 @@
     function toggleRestDayForDate(dateStr){
       const d=normalizeDateOnly(dateStr);
       if(!d) return;
+      if(isExcludedDay(d)){
+        showToast('Urlaub/Krankheit ignoriert diesen Tag bereits');
+        return;
+      }
       const target=new Date(`${d}T00:00:00`);
       const today=new Date(); today.setHours(0,0,0,0);
       if(Number.isNaN(target.getTime()) || target>today){
@@ -3280,6 +3451,72 @@
       renderMain();
       renderWeekView();
       saveData();
+    }
+    function normalizeDayFlagMap(map){
+      const normalized={};
+      if(!map || typeof map!=='object' || Array.isArray(map)) return normalized;
+      Object.keys(map).forEach(key=>{
+        if(!map[key]) return;
+        const ds=normalizeDateOnly(key);
+        if(ds) normalized[ds]=true;
+      });
+      return normalized;
+    }
+    function ensureExcludedDayState(){
+      state.excludedDays = normalizeDayFlagMap(state.excludedDays);
+      return state.excludedDays;
+    }
+    function isExcludedDay(dateStr){
+      const ds=normalizeDateOnly(dateStr);
+      return !!(ds && state.excludedDays && state.excludedDays[ds]);
+    }
+    function getWeekStartKeyForDate(dateStr){
+      const date=dateFromKey(dateStr);
+      if(!date) return '';
+      date.setDate(date.getDate()-date.getDay());
+      return formatDate(date);
+    }
+    function invalidateQuestSelectionsForDate(dateStr){
+      ensureQuestState();
+      const ds=normalizeDateOnly(dateStr);
+      if(!ds) return;
+      if(state.questDailySelections) delete state.questDailySelections[ds];
+      const weekStart=getWeekStartKeyForDate(ds);
+      if(weekStart && state.questWeeklySelections) delete state.questWeeklySelections[weekStart];
+    }
+    function toggleExcludedDayForDate(dateStr){
+      const d=normalizeDateOnly(dateStr);
+      if(!d) return;
+      const target=new Date(`${d}T00:00:00`);
+      const today=new Date(); today.setHours(0,0,0,0);
+      if(Number.isNaN(target.getTime()) || target>today){
+        showToast('Future days cannot be Urlaub/Krankheit');
+        return;
+      }
+      ensureExcludedDayState();
+      const enable=!state.excludedDays[d];
+      if(enable){
+        state.excludedDays[d]=true;
+        if(state.restDays && state.restDays[d]) delete state.restDays[d];
+        if(state.streakFreezeDays && state.streakFreezeDays[d]){
+          delete state.streakFreezeDays[d];
+          state.streakFreezes = Math.max(0, Number(state.streakFreezes) || 0) + 1;
+        }
+        revokePerfectBonusIfNoLongerPerfect(d);
+      } else {
+        delete state.excludedDays[d];
+      }
+      invalidateQuestSelectionsForDate(d);
+      recalcAllStreaks();
+      checkAchievements();
+      updateRestDayButton();
+      updateStats();
+      renderMain();
+      renderWeekView();
+      const shopModal=document.getElementById('shopModal');
+      if(shopModal && shopModal.classList.contains('active')) renderShopItems();
+      saveData();
+      showToast(enable ? `Urlaub/Krankheit aktiviert fuer ${d}` : `Urlaub/Krankheit deaktiviert fuer ${d}`);
     }
     function updateRestDayButton(){
       const btn=document.getElementById('restDayBtn');
@@ -3554,6 +3791,7 @@
     // --- Streak calculation (consecutive days completed) ---
     function shouldHabitExistOnDate(habit, date){
   const dateStr = formatDate(date);
+  if(isExcludedDay(dateStr)) return false;
 
   // NEU: Habit existiert nicht vor seinem Startdatum
   const start =
@@ -3574,6 +3812,7 @@
 
     function shouldExtraHabitExistOnDate(habit, date){
       const dateStr = formatDate(date);
+      if(isExcludedDay(dateStr)) return false;
       const start = habit.startDate || (habit.createdAt ? formatDate(new Date(habit.createdAt)) : null);
       if(start && dateStr < start) return false;
       const deletedAt = normalizeDateOnly(habit.deletedAt);
@@ -3586,6 +3825,10 @@
       const d=new Date(anchorDate);
       for(;;){
         const ds=formatDate(d);
+        if(isExcludedDay(ds)){
+          d.setDate(d.getDate()-1);
+          continue;
+        }
         const frozen = hasDayFreeze(ds);
         if(type==='habit'){
           if(isRestDay(ds) && habit.restAffected){
@@ -3669,6 +3912,8 @@ function recomputeLevelFromTotalXp(){
 }
 function ensureQuestState(){
   if(!QUEST_PERIODS.includes(state.questPeriod)) state.questPeriod = 'daily';
+  state.questYesterdayOpen = !!state.questYesterdayOpen;
+  state.questLastWeekOpen = !!state.questLastWeekOpen;
   if(!state.questClaims || typeof state.questClaims !== 'object' || Array.isArray(state.questClaims)){
     state.questClaims = {};
   }
@@ -3712,6 +3957,33 @@ function ensureQuestState(){
       }));
     if(entry.quests.length===0) delete state.questDailySelections[dateKey];
   });
+  if(!state.questWeeklySelections || typeof state.questWeeklySelections !== 'object' || Array.isArray(state.questWeeklySelections)){
+    state.questWeeklySelections = {};
+  }
+  Object.keys(state.questWeeklySelections).forEach(weekKey=>{
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(weekKey)){
+      delete state.questWeeklySelections[weekKey];
+      return;
+    }
+    const entry = state.questWeeklySelections[weekKey];
+    if(!entry || typeof entry !== 'object' || !Array.isArray(entry.quests)){
+      delete state.questWeeklySelections[weekKey];
+      return;
+    }
+    entry.weekStart = weekKey;
+    entry.generatedAt = Number(entry.generatedAt) || Date.now();
+    entry.quests = entry.quests
+      .filter(quest=>quest && typeof quest === 'object')
+      .map(quest=>({
+        ...quest,
+        id:String(quest.id || createShopUid('weekly_quest')),
+        group:QUEST_GROUPS.some(group=>group.id===quest.group) ? quest.group : 'easy',
+        condition:String(quest.condition || 'placeholder'),
+        target:Math.max(1, Math.floor(Number(quest.target) || 1)),
+        targetPercent:Math.max(1, Math.min(100, Math.floor(Number(quest.targetPercent) || 1)))
+      }));
+    if(entry.quests.length===0) delete state.questWeeklySelections[weekKey];
+  });
 }
 function normalizeStreakFreezeState(sourceData){
   const hasFreezeCount = !!(sourceData && Object.prototype.hasOwnProperty.call(sourceData, 'streakFreezes'));
@@ -3744,6 +4016,7 @@ function normalizeStreakFreezeState(sourceData){
     function ensureNewAchievementState(){
       const imported = (state.newAchievements && typeof state.newAchievements === 'object') ? state.newAchievements : {};
       const hasShopDisciplineStart = /^\d{4}-\d{2}-\d{2}$/.test(String(state.shopDisciplineTrackingStarted || ''));
+      const hasNoFreezeMonthStart = /^\d{4}-\d{2}-\d{2}$/.test(String(state.noFreezeMonthTrackingStarted || ''));
       const normalized = {};
       NEW_ACHIEVEMENT_DEFS.forEach(def=>{
         const entry = imported[def.id];
@@ -3767,6 +4040,7 @@ function normalizeStreakFreezeState(sourceData){
         state.achievementTrackingStarted = todayStr();
       }
       if(!hasShopDisciplineStart) state.shopDisciplineTrackingStarted = '';
+      if(!hasNoFreezeMonthStart) state.noFreezeMonthTrackingStarted = '';
     }
     function sanitizeShopText(value, maxLen=80){
       return String(value || '').replace(/\s+/g, ' ').trim().slice(0, maxLen);
@@ -3937,6 +4211,10 @@ function normalizeStreakFreezeState(sourceData){
       const day = ensureDay(dateStr);
       const date = new Date(`${dateStr}T00:00:00`);
       if(Number.isNaN(date.getTime())) return null;
+      if(isExcludedDay(dateStr)){
+        if(day.habitCoinReward && !day.habitCoinReward.awarded) day.habitCoinReward = null;
+        return null;
+      }
       const scheduled = getScheduledHabits(date);
       if(!scheduled.length){
         if(day.habitCoinReward && !day.habitCoinReward.awarded) day.habitCoinReward = null;
@@ -4042,6 +4320,9 @@ function normalizeStreakFreezeState(sourceData){
       if(Number.isNaN(date.getTime())){
         return { total: 0, completed: 0, percent: 0, isPerfect: false };
       }
+      if(isExcludedDay(dateStr)){
+        return { total: 0, completed: 0, percent: 0, isPerfect: false, excluded: true };
+      }
       const scheduled = getScheduledHabits(date);
       const total = scheduled.length;
       const completed = scheduled.filter(h => isCompleted('habit', h.id, dateStr) && !isMiniHabitCompletion('habit', h.id, dateStr)).length;
@@ -4059,6 +4340,7 @@ function normalizeStreakFreezeState(sourceData){
 
     function isPerfectDay(date){
       const ds=formatDate(date);
+      if(isExcludedDay(ds)) return false;
       if(dayHasMiniHabit(ds)) return false;
       const scheduled=getScheduledHabits(date);
       if(scheduled.length===0) return false;
@@ -4071,6 +4353,10 @@ function normalizeStreakFreezeState(sourceData){
       d.setHours(0,0,0,0);
       for(;;){
         const ds=formatDate(d);
+        if(isExcludedDay(ds)){
+          d.setDate(d.getDate()-1);
+          continue;
+        }
         if(hasDayFreeze(ds)){
           d.setDate(d.getDate()-1);
           continue;
@@ -4173,8 +4459,8 @@ function calculatePerfectBonus(streak){
 
       recalcAllStreaks();
 
-      const earnedTaskXp = Object.values(day.xp || {}).reduce((a,b)=>a+(Number(b)||0),0);
-      const perfectBonusXp = day.perfectBonusGiven ? Math.max(0, Math.floor(Number(day.perfectBonusXp) || 0)) : 0;
+      const earnedTaskXp = isExcludedDay(ds) ? 0 : Object.values(day.xp || {}).reduce((a,b)=>a+(Number(b)||0),0);
+      const perfectBonusXp = (!isExcludedDay(ds) && day.perfectBonusGiven) ? Math.max(0, Math.floor(Number(day.perfectBonusXp) || 0)) : 0;
       document.getElementById('todayXpSmall').textContent=`${earnedTaskXp + perfectBonusXp} XP`;
 
       const perfectStreak=computePerfectDayStreak();
@@ -4193,6 +4479,10 @@ function calculatePerfectBonus(streak){
       const d=new Date();
       for(;;){
         const s=formatDate(d);
+        if(isExcludedDay(s)){
+          d.setDate(d.getDate()-1);
+          continue;
+        }
         const dd=ensureDay(s);
         const anyCompleted = Object.entries(dd.items||{}).some(([k,v])=>v===true && /^(H|T):/.test(k));
         if(anyCompleted) dayStreak++;
@@ -4233,6 +4523,25 @@ function calculatePerfectBonus(streak){
       if(shopModal && shopModal.classList.contains('active')){
         renderShopItems();
       }
+    }
+    function getExcludedDayTrackedXpTotal(){
+      let total=0;
+      Object.entries(state.completionData || {}).forEach(([ds,day])=>{
+        if(!isExcludedDay(ds) || !day) return;
+        total += Object.values(day.xp || {}).reduce((sum,value)=>sum + (Number(value)||0),0);
+        if(day.perfectBonusGiven) total += Math.max(0, Math.floor(Number(day.perfectBonusXp) || 0));
+      });
+      (Array.isArray(state.manualXpLog) ? state.manualXpLog : []).forEach(entry=>{
+        if(entry && isExcludedDay(entry.date)) total += Number(entry.amount) || 0;
+      });
+      Object.values(state.questClaims || {}).forEach(claim=>{
+        if(!claim || claim.period!=='daily' || claim.rewardType!=='xp') return;
+        if(isExcludedDay(claim.periodKey)) total += Math.max(0, Math.floor(Number(claim.amount) || 0));
+      });
+      return total;
+    }
+    function getCountedTotalXp(){
+      return Math.max(0, Math.round((Number(state.xp) || 0) - getExcludedDayTrackedXpTotal()));
     }
 
     function addCoins(amount, source='general', ref=''){
@@ -4390,14 +4699,14 @@ function calculatePerfectBonus(streak){
     }
     function countOverdueTaskCompletionsOn(dateStr){
       const ds=normalizeDateOnly(dateStr);
-      if(!ds) return 0;
+      if(!ds || isExcludedDay(ds)) return 0;
       return getTaskCompletionLogEntries().filter(entry=>{
-        return entry.completionDate===ds && entry.dueDate && entry.dueDate<entry.completionDate;
+        return entry.completionDate===ds && entry.dueDate && !isExcludedDay(entry.dueDate) && entry.dueDate<entry.completionDate;
       }).length;
     }
     function recordTaskDebtSnapshot(dateStr){
       const ds=normalizeDateOnly(dateStr);
-      if(!ds) return;
+      if(!ds || isExcludedDay(ds)) return;
       normalizeTaskDebtEventLog();
       const overdueCompleted=countOverdueTaskCompletionsOn(ds);
       const overdueRemaining=countOverdueTasksAtEnd(ds);
@@ -4419,23 +4728,24 @@ function calculatePerfectBonus(streak){
     function wasDebtClearAtEnd(dateStr){
       const ds=normalizeDateOnly(dateStr);
       if(!ds) return false;
+      if(isExcludedDay(ds)) return true;
       if(countOverdueTasksAtEnd(ds)===0) return true;
       return normalizeTaskDebtEventLog().some(entry=>entry.date===ds && entry.cleared);
     }
     function hasDebtClearEvent(dateStr, minCompleted=0){
       const ds=normalizeDateOnly(dateStr);
-      if(!ds) return false;
+      if(!ds || isExcludedDay(ds)) return false;
       return normalizeTaskDebtEventLog().some(entry=>{
         return entry.date===ds && entry.cleared && Number(entry.overdueCompleted)>=minCompleted;
       });
     }
     function getTrackedStartDate(){
       const keys = [];
-      Object.keys(state.completionData||{}).forEach(ds=>keys.push(ds));
+      Object.keys(state.completionData||{}).forEach(ds=>{ if(!isExcludedDay(ds)) keys.push(ds); });
       (state.habits||[]).forEach(h=>{ if(h.startDate) keys.push(h.startDate); });
-      (state.oneTimeTasks||[]).forEach(t=>{ if(t.dueDate) keys.push(t.dueDate); });
-      (state.taskCompletionLog||[]).forEach(entry=>{ if(entry.completionDate) keys.push(entry.completionDate); if(entry.dueDate) keys.push(entry.dueDate); });
-      (state.shopPurchaseLog||[]).forEach(entry=>{ if(entry.date) keys.push(entry.date); });
+      (state.oneTimeTasks||[]).forEach(t=>{ if(t.dueDate && !isExcludedDay(t.dueDate)) keys.push(t.dueDate); });
+      (state.taskCompletionLog||[]).forEach(entry=>{ if(entry.completionDate && !isExcludedDay(entry.completionDate)) keys.push(entry.completionDate); if(entry.dueDate && !isExcludedDay(entry.dueDate)) keys.push(entry.dueDate); });
+      (state.shopPurchaseLog||[]).forEach(entry=>{ if(entry.date && !isExcludedDay(entry.date)) keys.push(entry.date); });
       return keys.filter(ds=>/^\d{4}-\d{2}-\d{2}$/.test(ds)).sort()[0] || todayStr();
     }
     function hasTrackingAge(days){
@@ -4446,9 +4756,10 @@ function calculatePerfectBonus(streak){
       const key=keyFor('onetime', taskId);
       const dates=new Set(getTaskCompletionLogEntries()
         .filter(entry=>String(entry.taskId)===String(taskId))
+        .filter(entry=>!isExcludedDay(entry.completionDate))
         .map(entry=>entry.completionDate));
       Object.keys(state.completionData||{})
-        .filter(ds=>!!(state.completionData[ds] && state.completionData[ds].items && state.completionData[ds].items[key]))
+        .filter(ds=>!isExcludedDay(ds) && !!(state.completionData[ds] && state.completionData[ds].items && state.completionData[ds].items[key]))
         .forEach(ds=>dates.add(ds));
       return Array.from(dates).sort();
     }
@@ -4462,19 +4773,22 @@ function calculatePerfectBonus(streak){
       return !!completionDate && completionDate<=dateStr;
     }
     function wasTaskCompletedOn(task, dateStr){
+      if(isExcludedDay(dateStr)) return false;
       return getTaskCompletionDates(task.id).includes(dateStr);
     }
     function isTaskOverdueAtEnd(task, dateStr){
       if(!task || isAlwaysTask(task) || !task.dueDate) return false;
+      if(isExcludedDay(dateStr) || isExcludedDay(task.dueDate)) return false;
       return task.dueDate < dateStr && !wasTaskCompletedOnOrBefore(task, dateStr);
     }
     function countOverdueTasksAtEnd(dateStr){
       const ds=normalizeDateOnly(dateStr);
-      if(!ds) return 0;
+      if(!ds || isExcludedDay(ds)) return 0;
       const counted=new Set();
       let count=0;
       const entries=getTaskCompletionLogEntries();
       entries.forEach(entry=>{
+        if(isExcludedDay(entry.dueDate) || isExcludedDay(entry.completionDate)) return;
         if(entry.dueDate && entry.dueDate<ds && entry.completionDate>ds){
           counted.add(String(entry.taskId));
           count++;
@@ -4492,29 +4806,35 @@ function calculatePerfectBonus(streak){
     }
     function countOverdueTasksCompletedOn(dateStr){
       const ds=normalizeDateOnly(dateStr);
-      if(!ds) return 0;
+      if(!ds || isExcludedDay(ds)) return 0;
       const counted=new Set();
       let count=0;
       getTaskCompletionLogEntries().forEach(entry=>{
-        if(entry.completionDate===ds && entry.dueDate && entry.dueDate<ds){
+        if(entry.completionDate===ds && entry.dueDate && !isExcludedDay(entry.dueDate) && entry.dueDate<ds){
           counted.add(String(entry.taskId));
           count++;
         }
       });
       (state.oneTimeTasks||[]).forEach(task=>{
         if(counted.has(String(task.id))) return;
-        if(!isAlwaysTask(task) && task.dueDate && task.dueDate < ds && wasTaskCompletedOn(task,ds)) count++;
+        if(!isAlwaysTask(task) && task.dueDate && !isExcludedDay(task.dueDate) && task.dueDate < ds && wasTaskCompletedOn(task,ds)) count++;
       });
       return count;
     }
     function hasNoOverdueDays(days){
       if(!hasTrackingAge(days)) return false;
-      let ds=shiftDateKey(todayStr(), -(days-1));
-      for(let i=0;i<days;i++){
+      let ds=todayStr();
+      let counted=0;
+      for(let guard=0; counted<days && guard<days+365; guard++){
+        if(isExcludedDay(ds)){
+          ds=shiftDateKey(ds,-1);
+          continue;
+        }
         if(!wasDebtClearAtEnd(ds)) return false;
-        ds=shiftDateKey(ds,1);
+        counted++;
+        ds=shiftDateKey(ds,-1);
       }
-      return true;
+      return counted>=days;
     }
     function countDueTasksInWindow(startDateStr, days){
       const endDateStr=shiftDateKey(startDateStr, days-1);
@@ -4522,6 +4842,7 @@ function calculatePerfectBonus(streak){
       let count=0;
       const entries=getTaskCompletionLogEntries();
       entries.forEach(entry=>{
+        if(isExcludedDay(entry.dueDate)) return;
         if(entry.dueDate && entry.dueDate>=startDateStr && entry.dueDate<=endDateStr){
           counted.add(String(entry.taskId));
           count++;
@@ -4530,7 +4851,7 @@ function calculatePerfectBonus(streak){
       const loggedTaskIds=new Set(entries.map(entry=>String(entry.taskId)));
       (state.oneTimeTasks||[]).forEach(task=>{
         if(loggedTaskIds.has(String(task.id))) return;
-        if(!isAlwaysTask(task) && task.dueDate && task.dueDate>=startDateStr && task.dueDate<=endDateStr){
+        if(!isAlwaysTask(task) && task.dueDate && !isExcludedDay(task.dueDate) && task.dueDate>=startDateStr && task.dueDate<=endDateStr){
           counted.add(String(task.id));
           count++;
         }
@@ -4545,37 +4866,81 @@ function calculatePerfectBonus(streak){
 
     function hasConsecutivePerfectDays(days, noFreeze=false){
       if(!hasTrackingAge(days)) return false;
-      let ds=shiftDateKey(todayStr(), -(days-1));
-      for(let i=0;i<days;i++){
+      let ds=todayStr();
+      let counted=0;
+      for(let guard=0; counted<days && guard<days+365; guard++){
+        if(isExcludedDay(ds)){
+          ds=shiftDateKey(ds,-1);
+          continue;
+        }
         const d=dateFromKey(ds);
         if(!d || !isPerfectDay(d)) return false;
         if(noFreeze && hasDayFreeze(ds)) return false;
-        ds=shiftDateKey(ds,1);
+        counted++;
+        ds=shiftDateKey(ds,-1);
       }
-      return true;
+      return counted>=days;
     }
     function hasNoFreezeDays(days){
       if(!hasTrackingAge(days)) return false;
-      let ds=shiftDateKey(todayStr(), -(days-1));
-      for(let i=0;i<days;i++){
+      let ds=todayStr();
+      let counted=0;
+      for(let guard=0; counted<days && guard<days+365; guard++){
+        if(isExcludedDay(ds)){
+          ds=shiftDateKey(ds,-1);
+          continue;
+        }
         if(hasDayFreeze(ds)) return false;
+        counted++;
+        ds=shiftDateKey(ds,-1);
+      }
+      return counted>=days;
+    }
+    function getNoFreezeRunProgress(startDateStr, days=30){
+      const start=normalizeDateOnly(startDateStr);
+      const today=todayStr();
+      const target=Math.max(1, Math.floor(Number(days) || 30));
+      if(!start || start>today) return { counted:0, target, failed:false, complete:false };
+      let ds=start;
+      let counted=0;
+      let failed=false;
+      for(let guard=0; ds<=today && guard<target+365; guard++){
+        if(!isExcludedDay(ds)){
+          if(hasDayFreeze(ds)) failed=true;
+          counted++;
+        }
         ds=shiftDateKey(ds,1);
       }
-      return true;
+      return {
+        counted:Math.min(counted,target),
+        rawCounted:counted,
+        target,
+        failed,
+        complete:!failed && counted>=target
+      };
+    }
+    function hasNoFreezeDaysFromStart(startDateStr, days=30){
+      return getNoFreezeRunProgress(startDateStr, days).complete;
     }
     function hasMultiBoxFullStreak(days, minBoxes){
       const tracked = (state.habits||[])
         .map(item=>({ item, type:'habit' }))
         .filter(entry=>getHabitBoxCount(entry.item)>=minBoxes);
       return tracked.some(entry=>{
-        let ds=shiftDateKey(todayStr(), -(days-1));
-        for(let i=0;i<days;i++){
+        let ds=todayStr();
+        let counted=0;
+        for(let guard=0; counted<days && guard<days+365; guard++){
+          if(isExcludedDay(ds)){
+            ds=shiftDateKey(ds,-1);
+            continue;
+          }
           const date=dateFromKey(ds);
           if(entry.type==='habit' && (!date || !shouldHabitExistOnDate(entry.item,date))) return false;
           if(getHabitBoxProgress(entry.type, entry.item.id, ds) < getHabitBoxCount(entry.item)) return false;
-          ds=shiftDateKey(ds,1);
+          counted++;
+          ds=shiftDateKey(ds,-1);
         }
-        return true;
+        return counted>=days;
       });
     }
     function countHardTasksCompletedInWindow(startDateStr, days){
@@ -4584,6 +4949,7 @@ function calculatePerfectBonus(streak){
       const endDateStr=shiftDateKey(startDateStr, days-1);
       getTaskCompletionLogEntries().forEach(entry=>{
         if(entry.difficulty!=='hard') return;
+        if(isExcludedDay(entry.completionDate)) return;
         if(entry.completionDate<startDateStr || entry.completionDate>endDateStr) return;
         counted.add(String(entry.taskId));
         count++;
@@ -4594,23 +4960,24 @@ function calculatePerfectBonus(streak){
         if(normalizeTaskDifficulty(task.difficulty)!=='hard') return;
         const completionDate=getTaskFirstCompletionDate(task);
         if(!completionDate) return;
+        if(isExcludedDay(completionDate)) return;
         if(completionDate>=startDateStr && completionDate<=endDateStr) count++;
       });
       return count;
     }
     function hasHardTaskSprint(required, days){
       const dates=Array.from(new Set([
-        ...Object.keys(state.completionData||{}),
-        ...getTaskCompletionLogEntries().map(entry=>entry.completionDate)
+        ...Object.keys(state.completionData||{}).filter(ds=>!isExcludedDay(ds)),
+        ...getTaskCompletionLogEntries().map(entry=>entry.completionDate).filter(ds=>!isExcludedDay(ds))
       ])).sort();
       const startCandidates = dates.length ? dates : [shiftDateKey(todayStr(), -(days-1))];
       return startCandidates.some(ds=>countHardTasksCompletedInWindow(ds, days)>=required);
     }
     function hasOperationCleanUp(){
       const dates=new Set([
-        ...Object.keys(state.completionData||{}),
-        ...getTaskCompletionLogEntries().map(entry=>entry.completionDate),
-        ...normalizeTaskDebtEventLog().map(entry=>entry.date)
+        ...Object.keys(state.completionData||{}).filter(ds=>!isExcludedDay(ds)),
+        ...getTaskCompletionLogEntries().map(entry=>entry.completionDate).filter(ds=>!isExcludedDay(ds)),
+        ...normalizeTaskDebtEventLog().map(entry=>entry.date).filter(ds=>!isExcludedDay(ds))
       ]);
       return Array.from(dates).sort().some(ds=>{
         if(shiftDateKey(ds,5)>todayStr()) return false;
@@ -4623,9 +4990,9 @@ function calculatePerfectBonus(streak){
     }
     function hasLateDebtRescue(minCompleted){
       const dates=new Set([
-        ...Object.keys(state.completionData||{}),
-        ...getTaskCompletionLogEntries().map(entry=>entry.completionDate),
-        ...normalizeTaskDebtEventLog().map(entry=>entry.date)
+        ...Object.keys(state.completionData||{}).filter(ds=>!isExcludedDay(ds)),
+        ...getTaskCompletionLogEntries().map(entry=>entry.completionDate).filter(ds=>!isExcludedDay(ds)),
+        ...normalizeTaskDebtEventLog().map(entry=>entry.date).filter(ds=>!isExcludedDay(ds))
       ]);
       return Array.from(dates).sort().some(ds=>{
         const completed=countOverdueTasksCompletedOn(ds);
@@ -4636,12 +5003,13 @@ function calculatePerfectBonus(streak){
       const start=String(state.shopDisciplineTrackingStarted || '');
       if(!/^\d{4}-\d{2}-\d{2}$/.test(start)) return false;
       if(daysBetweenKeys(start, todayStr()) < (days-1)) return false;
-      return !(state.shopPurchaseLog||[]).some(entry=>entry.date>=start && entry.date<=todayStr());
+      return !(state.shopPurchaseLog||[]).some(entry=>!isExcludedDay(entry.date) && entry.date>=start && entry.date<=todayStr());
     }
     function hasCoinEarnedInDay(amount){
       const byDate={};
       (state.coinEarningLog||[]).forEach(entry=>{
         const date = /^\d{4}-\d{2}-\d{2}$/.test(String(entry.date||'')) ? entry.date : todayStr();
+        if(isExcludedDay(date)) return;
         byDate[date]=(byDate[date]||0)+(Number(entry.amount)||0);
       });
       return Object.values(byDate).some(total=>total>=amount);
@@ -4653,6 +5021,7 @@ function calculatePerfectBonus(streak){
         let planned=0, done=0;
         for(let i=0;i<7 && shiftDateKey(start,i)<=todayStr();i++){
           const ds=shiftDateKey(start,i);
+          if(isExcludedDay(ds)) continue;
           const date=dateFromKey(ds);
           if(!date) continue;
           const progress=getHabitProgressForDate(ds);
@@ -4708,6 +5077,10 @@ function calculatePerfectBonus(streak){
       const start=String(state.shopDisciplineTrackingStarted || '');
       return /^\d{4}-\d{2}-\d{2}$/.test(start) ? start : '';
     }
+    function getNoFreezeMonthStart(){
+      const start=String(state.noFreezeMonthTrackingStarted || '');
+      return /^\d{4}-\d{2}-\d{2}$/.test(start) ? start : '';
+    }
     function getShopDisciplineCardHtml(status){
       const start=getShopDisciplineStart();
       const today=todayStr();
@@ -4728,6 +5101,25 @@ function calculatePerfectBonus(streak){
         </div>
       `;
     }
+    function getNoFreezeMonthCardHtml(status){
+      const start=getNoFreezeMonthStart();
+      const today=todayStr();
+      const progress=getNoFreezeRunProgress(start, 30);
+      const label=status && status.unlocked
+        ? `Gestartet am ${start || '-'}`
+        : start
+          ? `${progress.failed ? 'Fehlgeschlagen' : 'Aktiv'} seit ${start} (${progress.counted}/30 Tage)`
+          : 'Noch nicht gestartet';
+      return `
+        <div class="achievement-card-reward">
+          <span class="achievement-reward-chip">${escapeHtml(label)}</span>
+        </div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;margin-top:.45rem;">
+          <input class="form-input" id="noFreezeMonthStartInput" type="date" value="${escapeHtml(start || today)}" style="max-width:160px;padding:.45rem .55rem;font-size:.8rem;">
+          <button class="achievement-vault-btn" type="button" onclick="startNoFreezeMonthAchievement()">Startdatum speichern</button>
+        </div>
+      `;
+    }
     function startShopDisciplineAchievement(){
       ensureNewAchievementState();
       const input=document.getElementById('shopDisciplineStartInput');
@@ -4740,6 +5132,19 @@ function calculatePerfectBonus(streak){
       renderNewAchievementsGrid();
       saveData();
       showToast(`Shop Discipline startet ab ${start}`);
+    }
+    function startNoFreezeMonthAchievement(){
+      ensureNewAchievementState();
+      const input=document.getElementById('noFreezeMonthStartInput');
+      const start=normalizeDateOnly(input && input.value) || todayStr();
+      state.noFreezeMonthTrackingStarted = start;
+      if(state.newAchievements && state.newAchievements.no_freeze_month){
+        state.newAchievements.no_freeze_month.unlocked = false;
+        state.newAchievements.no_freeze_month.unlockedAt = 0;
+      }
+      renderNewAchievementsGrid();
+      saveData();
+      showToast(`No Freeze Month startet ab ${start}`);
     }
     function evaluateNewAchievement(id){
       const bestStreak=computeBestHistoricalHabitStreak();
@@ -4755,12 +5160,14 @@ function calculatePerfectBonus(streak){
         case 'shop_discipline': return hasNoShopPurchaseDays(7);
         case 'deep_work_sprint': return hasHardTaskSprint(10, 3);
         case 'task_debt_zero': {
-          const dates=new Set([...Object.keys(state.completionData||{}), ...getTaskCompletionLogEntries().map(entry=>entry.completionDate)]);
+          const dates=new Set([
+            ...Object.keys(state.completionData||{}).filter(ds=>!isExcludedDay(ds)),
+            ...getTaskCompletionLogEntries().map(entry=>entry.completionDate).filter(ds=>!isExcludedDay(ds))
+          ]);
           return Array.from(dates).some(ds=>countOverdueTasksCompletedOn(ds)>=7);
         }
-        case 'no_freeze_month': return hasNoFreezeDays(30);
+        case 'no_freeze_month': return hasNoFreezeDaysFromStart(getNoFreezeMonthStart(), 30);
         case 'money_maker': return hasCoinEarnedInDay(30);
-        case 'savety_first': return (Number(state.coins)||0)>=100;
         case 'the_long_game': return hasLongGame(90, 75);
         case 'perfect_month': return hasConsecutivePerfectDays(30, false);
         case 'debt_free_60': return hasNoOverdueDays(60);
@@ -4888,7 +5295,9 @@ function calculatePerfectBonus(streak){
                       <div class="achievement-card-desc">${escapeHtml(def.desc)}</div>
                       ${def.id==='shop_discipline'
                         ? `${getShopDisciplineCardHtml(status)}<div class="achievement-card-reward">${rewardHtml}</div>`
-                        : `<div class="achievement-card-reward">${rewardHtml}</div>`}
+                        : def.id==='no_freeze_month'
+                          ? `${getNoFreezeMonthCardHtml(status)}<div class="achievement-card-reward">${rewardHtml}</div>`
+                          : `<div class="achievement-card-reward">${rewardHtml}</div>`}
                     </div>
                     <div class="achievement-card-status">${status.unlocked?'Unlocked':'Locked'}</div>
                   </div>
@@ -5016,6 +5425,7 @@ function calculatePerfectBonus(streak){
     }
     function getTaskOverdueDays(task, completionDateStr){
       if(!task || isAlwaysTask(task) || !task.dueDate || !completionDateStr) return 0;
+      if(isExcludedDay(task.dueDate) || isExcludedDay(completionDateStr)) return 0;
       const dueDate = new Date(`${task.dueDate}T00:00:00`);
       const completionDate = new Date(`${completionDateStr}T00:00:00`);
       if(Number.isNaN(dueDate.getTime()) || Number.isNaN(completionDate.getTime())) return 0;
@@ -5124,6 +5534,7 @@ function calculatePerfectBonus(streak){
 
       if(tab==='onetime'){
         const today=todayStr();
+        if(isExcludedDay(today)) return { total:0, completed:0 };
         const totalIds=new Set();
         const completedIds=new Set();
 
@@ -5246,10 +5657,11 @@ function calculatePerfectBonus(streak){
 
       if(!hasAny){
         const rest=isRestDay(ds);
+        const excluded=isExcludedDay(ds);
         return `
           <div class="empty-state">
             <div class="empty-state-icon">${rest?'💤':'📝'}</div>
-            <p>${rest ? 'Rest Day: no scheduled habits (or they are excluded).' : 'No habits for this day.'}</p>
+            <p>${excluded ? 'Urlaub/Krankheit: Dieser Tag wird ignoriert.' : (rest ? 'Rest Day: no scheduled habits (or they are excluded).' : 'No habits for this day.')}</p>
           </div>
         `;
       }
@@ -5259,6 +5671,14 @@ function calculatePerfectBonus(streak){
     // --- Render: Extra habits ---
     function renderExtraHabits(){
       const ds=todayStr();
+      if(isExcludedDay(ds)){
+        return `
+          <div class="empty-state">
+            <div class="empty-state-icon">OFF</div>
+            <p>Urlaub/Krankheit: Extra Habits zaehlen heute nicht.</p>
+          </div>
+        `;
+      }
       const activeExtraHabits = getScheduledExtraHabits(new Date(`${ds}T00:00:00`));
       if(activeExtraHabits.length===0){
         return `
@@ -5280,6 +5700,14 @@ function calculatePerfectBonus(streak){
     function renderOneTimeTasks(){
       const today=new Date(); today.setHours(0,0,0,0);
       const todayISO=formatDate(today);
+      if(isExcludedDay(todayISO)){
+        return `
+          <div class="empty-state">
+            <div class="empty-state-icon">OFF</div>
+            <p>Urlaub/Krankheit: Tasks zaehlen heute nicht.</p>
+          </div>
+        `;
+      }
 
       const oneTimeTasks = state.oneTimeTasks
         .filter(t => !isAlwaysTask(t));
@@ -5321,10 +5749,11 @@ function calculatePerfectBonus(streak){
       saveData();
     }
 
-    function getQuestPeriodRange(period){
+    function getQuestPeriodRange(period, periodKey){
       const today = todayStr();
       if(period==='weekly'){
-        const startDate = dateFromKey(today) || new Date();
+        const anchor = normalizeDateOnly(periodKey) || today;
+        const startDate = dateFromKey(anchor) || new Date();
         startDate.setDate(startDate.getDate() - startDate.getDay());
         const start = formatDate(startDate);
         return {
@@ -5333,7 +5762,9 @@ function calculatePerfectBonus(streak){
           label: `${formatQuestShortDate(start)} - ${formatQuestShortDate(shiftDateKey(start, 6))}`
         };
       }
-      return { start: today, end: today, label: 'Heute' };
+      const start = normalizeDateOnly(periodKey) || today;
+      const label = start===today ? 'Heute' : formatQuestShortDate(start);
+      return { start, end: start, label };
     }
 
     function formatQuestShortDate(dateStr){
@@ -5344,6 +5775,15 @@ function calculatePerfectBonus(streak){
 
     function randomChoice(list){
       return Array.isArray(list) && list.length ? list[randomInt(0, list.length - 1)] : null;
+    }
+
+    function shuffleArray(list){
+      const items = Array.isArray(list) ? list.slice() : [];
+      for(let i=items.length-1; i>0; i--){
+        const j = randomInt(0, i);
+        [items[i], items[j]] = [items[j], items[i]];
+      }
+      return items;
     }
 
     function weightedChoice(options){
@@ -5428,22 +5868,982 @@ function calculatePerfectBonus(streak){
       };
     }
 
+    function normalizeWeeklyQuestScore(value){
+      return normalizeDailyQuestScore(value);
+    }
+
+    function getWeeklyCompletionDaysQuestScore(quest){
+      const days = Math.max(1, Math.floor(Number(quest && quest.target) || 1));
+      const percent = Math.max(1, Math.min(100, Math.floor(Number(quest && quest.targetPercent) || 1)));
+      if(days===2 && percent===50) return 3;
+      if(days===3 && percent===70) return 6;
+      if(days===5 && percent===80) return 9;
+      if((quest && quest.group)==='easy') return 3;
+      if((quest && quest.group)==='medium') return 6;
+      return 9;
+    }
+
+    function getWeeklyQuestScore(quest){
+      if(!quest) return 1;
+      const direct = Number(quest.score);
+      if(Number.isFinite(direct) && direct>0) return normalizeWeeklyQuestScore(direct);
+      if(quest.condition==='weeklyCompletionDays') return getWeeklyCompletionDaysQuestScore(quest);
+      if(quest.condition==='weeklyPerfectDays'){
+        const target = Math.max(1, Math.floor(Number(quest.target) || 1));
+        if(target<=1) return 3;
+        if(target===2) return 5;
+        return 8;
+      }
+      if(quest.condition==='weeklyPerfectStreak') return 8;
+      if(quest.condition==='weeklyCategoryFull'){
+        if(quest.title==='Kategorie Fokus') return 7;
+        if(quest.title==='Kategorie Comeback') return 10;
+        if(quest.title==='Alle Kategorien komplett') return 7;
+      }
+      if(quest.condition==='weeklyCategoryPercent'){
+        return quest.title==='Schwaechste Kategorie stabilisieren' ? 7 : 5;
+      }
+      if(quest.condition==='weeklyHabitCount'){
+        if(quest.title==='Habit Halbzeit') return 2;
+        if(quest.title==='Schwaechstes Habit x2') return 3;
+        if(quest.title==='Drei Habit Picks') return 6;
+        if(quest.title==='Habit Durchziehen') return 6;
+        if(quest.title==='Schwaechstes Habit komplett') return 8;
+        if(quest.title==='Schwaechstes Habit x5') return 6;
+        if(quest.title==='Schwaechste Drei x2') return 6;
+        if(quest.title==='Streak-0 Rettung') return 8;
+        if(quest.title==='Fuenf Schwachstellen x3') return 8;
+        if(quest.title==='Schwaechste Drei komplett') return 9;
+        if(quest.title==='Schwaechste Drei x5') return 8;
+      }
+      if(quest.condition==='weeklyStreakTarget') return 7;
+      if(quest.condition==='weeklyDailyQuests'){
+        if(quest.group==='easy') return 4;
+        if(quest.group==='medium') return 6;
+        return 8;
+      }
+      if(quest.condition==='weeklyTasks'){
+        if(quest.taskDifficulty==='hard'){
+          if(quest.group==='easy') return 4;
+          if(quest.group==='medium') return 6;
+          return 8;
+        }
+        if(quest.group==='easy') return 2;
+        if(quest.group==='medium') return 5;
+        return 8;
+      }
+      if(quest.condition==='weeklyAlwaysTaskDays'){
+        const target = Math.max(1, Math.floor(Number(quest.target) || 1));
+        return target>=7 ? 7 : 6;
+      }
+      if(quest.condition==='weeklyNoOverdue') return 5;
+      if(quest.condition==='weeklyBeatLastWeekCompletion') return 8;
+      if(quest.condition==='weeklyBeatLastWeekDays') return 10;
+      return quest.group==='hard' ? 8 : (quest.group==='medium' ? 6 : 4);
+    }
+
+    function getWeeklyQuestRewardOptions(group, family){
+      return QUEST_WEEKLY_REWARD_DEFINITIONS.filter(definition=>{
+        return definition.family===family && definition.groups.includes(group);
+      });
+    }
+
+    function getWeeklyQuestRewardOptionWeight(definition, options, score){
+      const qualities = options.map(option=>Number(option.quality) || 0);
+      const minQuality = Math.min(...qualities);
+      const maxQuality = Math.max(...qualities);
+      const qualityPosition = maxQuality>minQuality
+        ? ((Number(definition.quality) || 0) - minQuality) / (maxQuality - minQuality)
+        : 0.5;
+      const qualityAxis = (qualityPosition * 2) - 1;
+      const scoreAxis = (normalizeWeeklyQuestScore(score) - 5.5) / 4.5;
+      const baseWeight = Math.max(0.001, Number(definition.baseWeight) || 1);
+      return baseWeight * Math.exp(QUEST_REWARD_SCORE_STRENGTH * scoreAxis * qualityAxis);
+    }
+
+    function getWeeklyRewardAmountMultiplier(group){
+      return QUEST_WEEKLY_REWARD_AMOUNT_MULTIPLIERS[group] || 1.15;
+    }
+
+    function rollWeeklyScaledRewardAmount(definition, group){
+      const multiplier = getWeeklyRewardAmountMultiplier(group);
+      const min = Math.max(1, Math.round((Number(definition.min) || 1) * multiplier));
+      const max = Math.max(min, Math.round((Number(definition.max) || min) * multiplier));
+      return randomInt(min, max);
+    }
+
+    function rollWeeklyLootboxAmount(group){
+      const rolls = QUEST_WEEKLY_LOOTBOX_AMOUNT_ROLLS[group] || QUEST_WEEKLY_LOOTBOX_AMOUNT_ROLLS.easy;
+      const selected = weightedChoice(rolls);
+      return selected ? Math.max(1, Math.floor(Number(selected.amount) || 1)) : 1;
+    }
+
+    function rollWeeklyQuestRewardFromFamily(group, score, family){
+      const options = getWeeklyQuestRewardOptions(group, family);
+      if(!options.length) return null;
+      const weightedOptions = options.map(definition=>({
+        definition,
+        weight:getWeeklyQuestRewardOptionWeight(definition, options, score)
+      }));
+      const selected = weightedChoice(weightedOptions);
+      const definition = selected && selected.definition;
+      if(!definition) return null;
+      if(definition.family==='lootbox'){
+        return {
+          rewardId:definition.id,
+          type:'lootbox',
+          rarity:definition.rarity,
+          amount:rollWeeklyLootboxAmount(group)
+        };
+      }
+      return {
+        rewardId:definition.id,
+        type:definition.family,
+        amount:rollWeeklyScaledRewardAmount(definition, group)
+      };
+    }
+
+    function rollWeeklyQuestReward(group, score){
+      const families = QUEST_WEEKLY_REWARD_FAMILIES[group] || [];
+      const family = randomChoice(families);
+      return family ? rollWeeklyQuestRewardFromFamily(group, score, family) : null;
+    }
+
+    function attachWeeklyQuestReward(quest){
+      if(!quest || quest.condition==='placeholder' || quest.condition==='unavailable') return quest;
+      const rewardGroup = QUEST_DAILY_DIFFICULTIES.includes(quest.group) ? quest.group : quest.difficulty;
+      if(!QUEST_DAILY_DIFFICULTIES.includes(rewardGroup)) return quest;
+      const score = normalizeWeeklyQuestScore(getWeeklyQuestScore(quest));
+      return {
+        ...quest,
+        score,
+        rewardSystemVersion:QUEST_WEEKLY_REWARD_SYSTEM_VERSION,
+        reward:rollWeeklyQuestReward(rewardGroup, score)
+      };
+    }
+
     function rollQuestRandomLootboxRarity(){
       const selected = weightedChoice(QUEST_RANDOM_LOOTBOX_WEIGHTS);
       return selected ? selected.rarity : 'normal';
     }
 
+    function getWeeklyQuestSelection(weekStartStr){
+      ensureQuestState();
+      const weekStart = normalizeDateOnly(weekStartStr) || getQuestPeriodRange('weekly').start;
+      const current = state.questWeeklySelections[weekStart];
+      if(current && hasWeeklyQuestDifficulties(current)){
+        return current.quests;
+      }
+      const next = buildWeeklyQuestSelection(weekStart);
+      state.questWeeklySelections[weekStart] = next;
+      saveData();
+      return next.quests;
+    }
+
+    function getStoredWeeklyQuestSelection(weekStartStr){
+      ensureQuestState();
+      const weekStart = normalizeDateOnly(weekStartStr);
+      if(!weekStart) return [];
+      const entry = state.questWeeklySelections[weekStart];
+      if(!entry || typeof entry !== 'object' || !Array.isArray(entry.quests)) return [];
+      return entry.quests.filter(quest=>quest && typeof quest === 'object');
+    }
+
+    function hasWeeklyQuestDifficulties(entry){
+      if(!entry || Number(entry.poolVersion)!==QUEST_WEEKLY_POOL_VERSION || !Array.isArray(entry.quests)) return false;
+      const groups = new Set(entry.quests.map(quest=>quest && quest.group));
+      const completionQuest = entry.quests.find(quest=>quest && quest.condition==='weeklyCompletion');
+      const hasCompletionQuest = !!completionQuest
+        && completionQuest.group==='always'
+        && QUEST_DAILY_DIFFICULTIES.includes(completionQuest.difficulty)
+        && completionQuest.rewardSystemVersion===QUEST_WEEKLY_REWARD_SYSTEM_VERSION
+        && !!completionQuest.reward;
+      const hasRewards = entry.quests.every(quest=>{
+        if(!quest || quest.condition==='placeholder' || quest.condition==='unavailable') return true;
+        return quest.rewardSystemVersion===QUEST_WEEKLY_REWARD_SYSTEM_VERSION && !!quest.reward;
+      });
+      return hasCompletionQuest && hasRewards && QUEST_DAILY_DIFFICULTIES.every(group=>groups.has(group));
+    }
+
+    function countWeeklyPlannedHabitDays(weekStartStr){
+      let count = 0;
+      for(let offset=0; offset<7; offset++){
+        const date = dateFromKey(shiftDateKey(weekStartStr, offset));
+        if(date && getScheduledHabits(date).length>0) count++;
+      }
+      return count;
+    }
+
+    function createWeeklyCompletionDaysQuest(weekStartStr, group, plannedDays){
+      const variants = (QUEST_WEEKLY_COMPLETION_DAY_VARIANTS[group] || [])
+        .filter(variant=>variant.days<=plannedDays);
+      const selected = randomChoice(variants);
+      if(!selected){
+        return {
+          id:`weekly_${weekStartStr}_completion_days_unavailable_${group}`,
+          group,
+          icon:'-',
+          condition:'unavailable',
+          title:'Keine moegliche Wochenquest',
+          description:'In dieser Woche gibt es nicht genug Tage mit geplanten Habits.',
+          target:1,
+          targetPercent:1
+        };
+      }
+      return {
+        id:`weekly_${weekStartStr}_completion_days_${group}_${selected.days}_${selected.percent}`,
+        group,
+        icon:'%',
+        condition:'weeklyCompletionDays',
+        title:`${selected.days} Tage mit ${selected.percent}%`,
+        description:`Erreiche an mindestens ${selected.days} Tagen jeweils ${selected.percent}% Habit-Completion.`,
+        target:selected.days,
+        targetPercent:selected.percent,
+        rewardKey:`weekly_completion_days_${group}`
+      };
+    }
+
+    function getWeeklyHabitCompletion(weekStartStr){
+      let completed = 0;
+      let total = 0;
+      for(let offset=0; offset<7; offset++){
+        const dateStr = shiftDateKey(weekStartStr, offset);
+        const progress = getHabitProgressForDate(dateStr);
+        completed += Math.max(0, Number(progress.completed) || 0);
+        total += Math.max(0, Number(progress.total) || 0);
+      }
+      return {
+        completed,
+        total,
+        percent:total>0 ? Math.round((completed / total) * 100) : 0
+      };
+    }
+
+    function getPreviousFourWeeksCompletionAverage(weekStartStr){
+      let totalPercent = 0;
+      let countedWeeks = 0;
+      for(let weeksBack=1; weeksBack<=4; weeksBack++){
+        const previousWeekStart = shiftDateKey(weekStartStr, -(weeksBack * 7));
+        const progress = getWeeklyHabitCompletion(previousWeekStart);
+        if(progress.total<=0) continue;
+        totalPercent += progress.percent;
+        countedWeeks++;
+      }
+      return countedWeeks>0 ? Math.round(totalPercent / countedWeeks) : 0;
+    }
+
+    function getWeeklyCompletionTierForAverage(average){
+      const value = Math.max(0, Math.min(100, Math.round(Number(average) || 0)));
+      if(value<40) return QUEST_WEEKLY_COMPLETION_TIERS.find(tier=>tier.group==='easy');
+      if(value<=80) return QUEST_WEEKLY_COMPLETION_TIERS.find(tier=>tier.group==='medium');
+      return QUEST_WEEKLY_COMPLETION_TIERS.find(tier=>tier.group==='hard');
+    }
+
+    function createWeeklyCompletionQuest(weekStartStr){
+      const average = getPreviousFourWeeksCompletionAverage(weekStartStr);
+      const completionMode = Math.random()<0.25 ? 'random' : 'average';
+      const tier = completionMode==='random'
+        ? randomChoice(QUEST_WEEKLY_COMPLETION_TIERS)
+        : (getWeeklyCompletionTierForAverage(average) || QUEST_WEEKLY_COMPLETION_TIERS[0]);
+      const targetRoll = weightedChoice(tier.targetRolls) || tier.targetRolls[0];
+      const target = randomInt(targetRoll.min, targetRoll.max);
+      const score = getDailyCompletionQuestScore(target);
+      return {
+        id:`weekly_${weekStartStr}_completion_${tier.group}`,
+        group:'always',
+        difficulty:tier.group,
+        icon:'%',
+        condition:'weeklyCompletion',
+        title:'Weekly Completion Quest',
+        description:`Durchschnitt der letzten 4 Wochen: ${average}%.`,
+        target,
+        average,
+        completionMode,
+        score,
+        rewardSystemVersion:QUEST_WEEKLY_REWARD_SYSTEM_VERSION,
+        reward:rollWeeklyQuestReward(tier.group, score),
+        weekStart:weekStartStr,
+        weekEnd:shiftDateKey(weekStartStr, 6),
+        claimDate:shiftDateKey(weekStartStr, 7)
+      };
+    }
+
+    function getWeeklyDateKeys(weekStartStr){
+      return Array.from({ length:7 }, (_, index)=>shiftDateKey(weekStartStr, index));
+    }
+
+    function getWeeklyRangeForStart(weekStartStr){
+      return { start:weekStartStr, end:shiftDateKey(weekStartStr, 6) };
+    }
+
+    function getWeeklyCategoryName(categoryId){
+      const cat = (state.categories || []).find(entry=>entry.id===categoryId);
+      return cat ? cat.name : 'Uncategorized';
+    }
+
+    function getWeeklyCategoryEntries(weekStartStr){
+      const byId = new Map();
+      getWeeklyDateKeys(weekStartStr).forEach(dateStr=>{
+        const date = dateFromKey(dateStr);
+        if(!date) return;
+        (state.habits || []).forEach(habit=>{
+          if(!shouldHabitExistOnDate(habit, date)) return;
+          const id = habit.category || 'uncategorized';
+          if(!byId.has(id)){
+            byId.set(id, {
+              id,
+              name:getWeeklyCategoryName(id),
+              habitIds:[],
+              scheduled:[]
+            });
+          }
+          const entry = byId.get(id);
+          const habitId = String(habit.id);
+          if(!entry.habitIds.includes(habitId)) entry.habitIds.push(habitId);
+          entry.scheduled.push({ habitId, dateStr });
+        });
+      });
+      return Array.from(byId.values())
+        .filter(entry=>entry.scheduled.length>0)
+        .sort((a,b)=>a.name.localeCompare(b.name, 'de', { sensitivity:'base' }));
+    }
+
+    function getWeeklyCategoryPreviousRate(categoryId, weekStartStr){
+      let completed = 0;
+      let total = 0;
+      for(let offset=-7; offset<0; offset++){
+        const dateStr = shiftDateKey(weekStartStr, offset);
+        const date = dateFromKey(dateStr);
+        if(!date) continue;
+        (state.habits || []).forEach(habit=>{
+          const habitCategory = habit.category || 'uncategorized';
+          if(habitCategory!==categoryId || !shouldHabitExistOnDate(habit, date)) return;
+          total++;
+          if(isCompleted('habit', habit.id, dateStr)) completed++;
+        });
+      }
+      return { completed, total, rate:total>0 ? completed / total : 0 };
+    }
+
+    function getWeeklyWeakestCategoryEntries(weekStartStr, minHabits=1){
+      const minimum = Math.max(1, Math.floor(Number(minHabits) || 1));
+      return getWeeklyCategoryEntries(weekStartStr)
+        .filter(category=>category.habitIds.length>=minimum)
+        .map(category=>{
+          const stats = getWeeklyCategoryPreviousRate(category.id, weekStartStr);
+          return { ...category, previousCompleted:stats.completed, previousTotal:stats.total, previousRate:stats.rate };
+        })
+        .sort((a,b)=>{
+          const byRate = a.previousRate - b.previousRate;
+          if(byRate!==0) return byRate;
+          const byCompleted = a.previousCompleted - b.previousCompleted;
+          if(byCompleted!==0) return byCompleted;
+          const bySize = b.habitIds.length - a.habitIds.length;
+          if(bySize!==0) return bySize;
+          return a.name.localeCompare(b.name, 'de', { sensitivity:'base' });
+        });
+    }
+
+    function getWeeklyHabitScheduledDates(habit, weekStartStr){
+      return getWeeklyDateKeys(weekStartStr).filter(dateStr=>{
+        const date = dateFromKey(dateStr);
+        return !!(date && shouldHabitExistOnDate(habit, date));
+      });
+    }
+
+    function getWeeklyHabitPreviousRate(habit, weekStartStr){
+      let completed = 0;
+      let total = 0;
+      for(let offset=-7; offset<0; offset++){
+        const dateStr = shiftDateKey(weekStartStr, offset);
+        const date = dateFromKey(dateStr);
+        if(!date || !shouldHabitExistOnDate(habit, date)) continue;
+        total++;
+        if(isCompleted('habit', habit.id, dateStr)) completed++;
+      }
+      return { completed, total, rate:total>0 ? completed / total : 0 };
+    }
+
+    function getWeeklyHabitEntries(weekStartStr){
+      return (state.habits || [])
+        .map(habit=>{
+          const scheduledDates = getWeeklyHabitScheduledDates(habit, weekStartStr);
+          if(!scheduledDates.length) return null;
+          const stats = getWeeklyHabitPreviousRate(habit, weekStartStr);
+          return {
+            habit,
+            id:String(habit.id),
+            name:String(habit.name || 'Habit'),
+            scheduledDates,
+            scheduledCount:scheduledDates.length,
+            previousCompleted:stats.completed,
+            previousTotal:stats.total,
+            previousRate:stats.rate
+          };
+        })
+        .filter(Boolean)
+        .sort((a,b)=>{
+          const byRate = a.previousRate - b.previousRate;
+          if(byRate!==0) return byRate;
+          const byCompleted = a.previousCompleted - b.previousCompleted;
+          if(byCompleted!==0) return byCompleted;
+          const byCount = b.scheduledCount - a.scheduledCount;
+          if(byCount!==0) return byCount;
+          return a.name.localeCompare(b.name, 'de', { sensitivity:'base' });
+        });
+    }
+
+    function getWeeklyTaskCompletedCount(weekStartStr, difficulty=''){
+      const range = getWeeklyRangeForStart(weekStartStr);
+      return getTaskCompletionLogEntries().filter(entry=>{
+        if(!entry || entry.taskType==='always') return false;
+        if(isExcludedDay(entry.completionDate)) return false;
+        if(entry.completionDate<range.start || entry.completionDate>range.end) return false;
+        return !difficulty || entry.difficulty===difficulty;
+      }).length;
+    }
+
+    function getWeeklyTaskCapacity(weekStartStr, difficulty=''){
+      const range = getWeeklyRangeForStart(weekStartStr);
+      const ids = new Set();
+      getTaskCompletionLogEntries().forEach(entry=>{
+        if(!entry || entry.taskType==='always') return;
+        if(isExcludedDay(entry.completionDate)) return;
+        if(entry.completionDate<range.start || entry.completionDate>range.end) return;
+        if(difficulty && entry.difficulty!==difficulty) return;
+        ids.add(String(entry.taskId));
+      });
+      (state.oneTimeTasks || []).forEach(task=>{
+        if(!task || isAlwaysTask(task)) return;
+        if(difficulty && normalizeTaskDifficulty(task.difficulty)!==difficulty) return;
+        const completionDate = normalizeDateOnly(task.completedAt);
+        if(completionDate && isExcludedDay(completionDate)) return;
+        if(task.completed && completionDate && (completionDate<range.start || completionDate>range.end)) return;
+        const dueDate = normalizeDateOnly(task.dueDate);
+        if(dueDate && isExcludedDay(dueDate)) return;
+        if(!task.completed && dueDate && dueDate>range.end) return;
+        ids.add(String(task.id));
+      });
+      return ids.size;
+    }
+
+    function getWeeklyAlwaysTaskAvailableDays(weekStartStr){
+      return getWeeklyDateKeys(weekStartStr).filter(dateStr=>getDailyQuestAlwaysTaskAvailableIds(dateStr).length>0);
+    }
+
+    function getWeeklyZeroStreakHabitEntries(weekStartStr, minScheduled=1){
+      const previousDate = dateFromKey(shiftDateKey(weekStartStr, -1));
+      if(!previousDate) return [];
+      const minimum = Math.max(1, Math.floor(Number(minScheduled) || 1));
+      return getWeeklyHabitEntries(weekStartStr).filter(entry=>{
+        return entry.scheduledCount>=minimum && computeHabitStreakForDate(entry.habit, 'habit', previousDate)===0;
+      });
+    }
+
+    function makeWeeklyHabitTargets(entries, target){
+      return entries.map(entry=>({
+        id:String(entry.id),
+        name:String(entry.name || 'Habit'),
+        target:Math.max(1, Math.floor(Number(target) || 1))
+      }));
+    }
+
+    function addWeeklyQuestCandidate(candidates, quest){
+      if(!quest || quest.condition==='unavailable') return;
+      const group = QUEST_DAILY_DIFFICULTIES.includes(quest.group) ? quest.group : '';
+      if(!group || !candidates[group]) return;
+      candidates[group].push(quest);
+    }
+
+    function createUnavailableWeeklyQuest(weekStartStr, group){
+      return {
+        id:`weekly_${weekStartStr}_unavailable_${group}`,
+        group,
+        icon:'-',
+        condition:'unavailable',
+        title:'Keine moegliche Wochenquest',
+        description:'Fuer diese Schwierigkeit gab es beim Generieren keine machbare Quest.',
+        target:1
+      };
+    }
+
+    function createWeeklyPerfectDaysQuest(weekStartStr, group){
+      const targets = { easy:1, medium:2, hard:4 };
+      const target = targets[group] || 1;
+      if(countWeeklyPlannedHabitDays(weekStartStr)<target) return null;
+      const titles = { easy:'Perfect Einstieg', medium:'Perfect Duo', hard:'Vier Perfect Days' };
+      return {
+        id:`weekly_${weekStartStr}_perfect_days_${target}`,
+        group,
+        icon:'&#11088;',
+        condition:'weeklyPerfectDays',
+        title:titles[group] || 'Perfect Days',
+        description:`Schaffe ${target} Perfect Day${target>1?'s':''} in dieser Woche.`,
+        target
+      };
+    }
+
+    function createWeeklyPerfectStreakQuest(weekStartStr){
+      if(countWeeklyPlannedHabitDays(weekStartStr)<3) return null;
+      return {
+        id:`weekly_${weekStartStr}_perfect_streak_3`,
+        group:'hard',
+        icon:'&#11088;',
+        condition:'weeklyPerfectStreak',
+        title:'Perfect Serie',
+        description:'Schaffe 3 Perfect Days direkt hintereinander.',
+        target:3
+      };
+    }
+
+    function createWeeklyRandomCategoryFullQuest(weekStartStr){
+      const selected = randomChoice(getWeeklyCategoryEntries(weekStartStr));
+      if(!selected) return null;
+      return {
+        id:`weekly_${weekStartStr}_category_full_${normalizeShopId(selected.id) || 'category'}`,
+        group:'hard',
+        icon:'100%',
+        condition:'weeklyCategoryFull',
+        title:'Kategorie Fokus',
+        description:`Erreiche 100% Wochen-Completion in ${selected.name}.`,
+        target:1,
+        categoryTargets:[{ id:selected.id, name:selected.name, habitIds:selected.habitIds }]
+      };
+    }
+
+    function createWeeklyRandomCategoryPercentQuest(weekStartStr){
+      const selected = randomChoice(getWeeklyCategoryEntries(weekStartStr).filter(category=>category.scheduled.length>=2));
+      if(!selected) return null;
+      const target = Math.max(1, Math.ceil(selected.scheduled.length * 0.5));
+      return {
+        id:`weekly_${weekStartStr}_category_half_${normalizeShopId(selected.id) || 'category'}`,
+        group:'medium',
+        icon:'50%',
+        condition:'weeklyCategoryPercent',
+        title:'Kategorie Halbzeit',
+        description:`Erreiche mindestens 50% Completion in ${selected.name}.`,
+        target,
+        targetPercent:50,
+        categoryId:selected.id,
+        categoryName:selected.name,
+        habitIds:selected.habitIds
+      };
+    }
+
+    function createWeeklyWeakestCategoryFullQuest(weekStartStr){
+      const scored = getWeeklyWeakestCategoryEntries(weekStartStr);
+      if(!scored.length) return null;
+      const selected = scored[0];
+      const percent = Math.round(selected.previousRate * 100);
+      return {
+        id:`weekly_${weekStartStr}_weakest_category_full_${normalizeShopId(selected.id) || 'category'}`,
+        group:'hard',
+        icon:'100%',
+        condition:'weeklyCategoryFull',
+        title:'Kategorie Comeback',
+        description:`Erreiche 100% Wochen-Completion in deiner schwaechsten Kategorie ${selected.name} (${percent}% letzte Woche).`,
+        target:1,
+        categoryTargets:[{ id:selected.id, name:selected.name, habitIds:selected.habitIds }],
+        previousRate:percent
+      };
+    }
+
+    function createWeeklyWeakestCategoryPercentQuest(weekStartStr){
+      const scored = getWeeklyWeakestCategoryEntries(weekStartStr);
+      if(!scored.length) return null;
+      const selected = scored[0];
+      const target = Math.max(1, Math.ceil(selected.scheduled.length * 0.5));
+      const percent = Math.round(selected.previousRate * 100);
+      return {
+        id:`weekly_${weekStartStr}_weakest_category_half_${normalizeShopId(selected.id) || 'category'}`,
+        group:'hard',
+        icon:'50%',
+        condition:'weeklyCategoryPercent',
+        title:'Schwaechste Kategorie stabilisieren',
+        description:`Erreiche mindestens 50% in ${selected.name} (${percent}% letzte Woche).`,
+        target,
+        targetPercent:50,
+        categoryId:selected.id,
+        categoryName:selected.name,
+        habitIds:selected.habitIds,
+        previousRate:percent
+      };
+    }
+
+    function createWeeklyAllCategoriesFullQuest(weekStartStr){
+      const categories = getWeeklyCategoryEntries(weekStartStr);
+      if(categories.length<2) return null;
+      return {
+        id:`weekly_${weekStartStr}_all_categories_full`,
+        group:'medium',
+        icon:'&#128193;',
+        condition:'weeklyCategoryFull',
+        title:'Alle Kategorien komplett',
+        description:`Erreiche in jeder aktiven Kategorie 100% Wochen-Completion (${categories.length} Kategorien).`,
+        target:categories.length,
+        categoryTargets:categories.map(category=>({ id:category.id, name:category.name, habitIds:category.habitIds }))
+      };
+    }
+
+    function createWeeklyRandomHabitFullQuest(weekStartStr){
+      const selected = randomChoice(getWeeklyHabitEntries(weekStartStr));
+      if(!selected) return null;
+      const target = selected.scheduledCount;
+      return {
+        id:`weekly_${weekStartStr}_habit_full_${normalizeShopId(selected.id) || 'habit'}`,
+        group:'medium',
+        icon:'&#127919;',
+        condition:'weeklyHabitCount',
+        title:'Habit Durchziehen',
+        description:`Erledige "${selected.name}" an allen ${target} geplanten Tagen.`,
+        target,
+        habitTargets:makeWeeklyHabitTargets([selected], target)
+      };
+    }
+
+    function createWeeklyRandomHabitHalfQuest(weekStartStr){
+      const selected = randomChoice(getWeeklyHabitEntries(weekStartStr).filter(entry=>entry.scheduledCount>=2));
+      if(!selected) return null;
+      const target = Math.max(1, Math.ceil(selected.scheduledCount * 0.5));
+      return {
+        id:`weekly_${weekStartStr}_habit_half_${normalizeShopId(selected.id) || 'habit'}`,
+        group:'easy',
+        icon:'50%',
+        condition:'weeklyHabitCount',
+        title:'Habit Halbzeit',
+        description:`Erledige "${selected.name}" mindestens ${target} von ${selected.scheduledCount} mal.`,
+        target,
+        habitTargets:makeWeeklyHabitTargets([selected], target)
+      };
+    }
+
+    function createWeeklyWeakestHabitCountQuest(weekStartStr, target, group, idPart, title){
+      const selected = getWeeklyHabitEntries(weekStartStr).find(entry=>entry.scheduledCount>=target);
+      if(!selected) return null;
+      const percent = Math.round(selected.previousRate * 100);
+      return {
+        id:`weekly_${weekStartStr}_${idPart}_${normalizeShopId(selected.id) || 'habit'}`,
+        group,
+        icon:'&#128269;',
+        condition:'weeklyHabitCount',
+        title,
+        description:`Erledige dein schwaechstes Habit "${selected.name}" mindestens ${target} mal (${percent}% letzte Woche).`,
+        target,
+        habitTargets:makeWeeklyHabitTargets([selected], target),
+        previousRate:percent
+      };
+    }
+
+    function createWeeklyWeakestHabitFullQuest(weekStartStr){
+      const selected = getWeeklyHabitEntries(weekStartStr)[0];
+      if(!selected) return null;
+      const target = selected.scheduledCount;
+      const percent = Math.round(selected.previousRate * 100);
+      return {
+        id:`weekly_${weekStartStr}_weakest_habit_full_${normalizeShopId(selected.id) || 'habit'}`,
+        group:'medium',
+        icon:'&#128269;',
+        condition:'weeklyHabitCount',
+        title:'Schwaechstes Habit komplett',
+        description:`Erledige "${selected.name}" an allen ${target} geplanten Tagen (${percent}% letzte Woche).`,
+        target,
+        habitTargets:makeWeeklyHabitTargets([selected], target),
+        previousRate:percent
+      };
+    }
+
+    function createWeeklyWeakestHabitSetQuest(weekStartStr, count, target, group, idPart, title){
+      const selected = getWeeklyHabitEntries(weekStartStr).filter(entry=>entry.scheduledCount>=target).slice(0, count);
+      if(selected.length<count) return null;
+      const names = selected.map(entry=>entry.name).join(', ');
+      return {
+        id:`weekly_${weekStartStr}_${idPart}`,
+        group,
+        icon:'&#128269;',
+        condition:'weeklyHabitCount',
+        title,
+        description:`Erledige ${names} jeweils mindestens ${target} mal.`,
+        target:count,
+        habitTargets:makeWeeklyHabitTargets(selected, target),
+        previousRates:selected.map(entry=>Math.round(entry.previousRate * 100))
+      };
+    }
+
+    function createWeeklyWeakestHabitSetFullQuest(weekStartStr){
+      const selected = getWeeklyHabitEntries(weekStartStr).slice(0, 3);
+      if(selected.length<3) return null;
+      const names = selected.map(entry=>entry.name).join(', ');
+      return {
+        id:`weekly_${weekStartStr}_weakest_3_full`,
+        group:'hard',
+        icon:'&#128269;',
+        condition:'weeklyHabitCount',
+        title:'Schwaechste Drei komplett',
+        description:`Erledige ${names} jeweils an allen geplanten Tagen.`,
+        target:3,
+        habitTargets:selected.map(entry=>({ id:entry.id, name:entry.name, target:entry.scheduledCount })),
+        previousRates:selected.map(entry=>Math.round(entry.previousRate * 100))
+      };
+    }
+
+    function createWeeklyRandomThreeHabitsQuest(weekStartStr){
+      const pool = getWeeklyHabitEntries(weekStartStr).filter(entry=>entry.scheduledCount>=3);
+      if(pool.length<3) return null;
+      const selected = shuffleArray(pool).slice(0, 3);
+      const names = selected.map(entry=>entry.name).join(', ');
+      return {
+        id:`weekly_${weekStartStr}_random_3_habits_3x`,
+        group:'easy',
+        icon:'&#127919;',
+        condition:'weeklyHabitCount',
+        title:'Drei Habit Picks',
+        description:`Erledige ${names} jeweils mindestens 3 mal.`,
+        target:3,
+        habitTargets:makeWeeklyHabitTargets(selected, 3)
+      };
+    }
+
+    function createWeeklyZeroToSevenStreakQuest(weekStartStr){
+      const selected = randomChoice(getWeeklyZeroStreakHabitEntries(weekStartStr, 7));
+      if(!selected) return null;
+      return {
+        id:`weekly_${weekStartStr}_zero_to_7_${normalizeShopId(selected.id) || 'habit'}`,
+        group:'medium',
+        icon:'0',
+        condition:'weeklyStreakTarget',
+        title:'Von 0 auf 7',
+        description:`Bringe "${selected.name}" von Streak 0 auf mindestens Streak 7.`,
+        target:1,
+        targetStreak:7,
+        targetHabitId:selected.id,
+        targetHabitName:selected.name
+      };
+    }
+
+    function createWeeklyZeroStreakHabitsQuest(weekStartStr){
+      const selected = getWeeklyZeroStreakHabitEntries(weekStartStr, 3);
+      if(!selected.length) return null;
+      const names = selected.slice(0, 3).map(entry=>entry.name).join(', ');
+      const extra = selected.length>3 ? ` +${selected.length - 3}` : '';
+      return {
+        id:`weekly_${weekStartStr}_zero_streak_all_3x`,
+        group:'medium',
+        icon:'0',
+        condition:'weeklyHabitCount',
+        title:'Streak-0 Rettung',
+        description:`Erledige alle ${selected.length} Wochenstart-Streak-0-Habits mindestens 3 mal (${names}${extra}).`,
+        target:selected.length,
+        habitTargets:makeWeeklyHabitTargets(selected, 3)
+      };
+    }
+
+    function createWeeklyDailyQuestCountQuest(weekStartStr, group){
+      const targets = { easy:5, medium:10, hard:15 };
+      const target = targets[group] || 5;
+      return {
+        id:`weekly_${weekStartStr}_daily_quests_${target}`,
+        group,
+        icon:'Q',
+        condition:'weeklyDailyQuests',
+        title:group==='easy' ? 'Daily Sammler' : (group==='medium' ? 'Daily Grinder' : 'Daily Champion'),
+        description:`Schliesse ${target} Daily Quests in dieser Woche ab.`,
+        target
+      };
+    }
+
+    function createWeeklyTaskCountQuest(weekStartStr, group, difficulty=''){
+      const targets = difficulty==='hard'
+        ? { easy:1, medium:2, hard:4 }
+        : { easy:3, medium:7, hard:12 };
+      const target = targets[group] || 1;
+      if(getWeeklyTaskCapacity(weekStartStr, difficulty)<target) return null;
+      const isHardTaskQuest = difficulty==='hard';
+      return {
+        id:`weekly_${weekStartStr}_${isHardTaskQuest ? 'hard_tasks' : 'tasks'}_${target}`,
+        group,
+        icon:'&#9989;',
+        condition:'weeklyTasks',
+        title:isHardTaskQuest
+          ? (group==='easy' ? 'Schwere Task Probe' : (group==='medium' ? 'Schwere Task Runde' : 'Schwere Task Serie'))
+          : (group==='easy' ? 'Task Paket' : (group==='medium' ? 'Task Schub' : 'Task Marathon')),
+        description:`Erledige ${target} ${isHardTaskQuest ? 'schwere ' : ''}Task${target>1?'s':''} in dieser Woche.`,
+        target,
+        taskDifficulty:difficulty
+      };
+    }
+
+    function createWeeklyAlwaysTaskDaysQuest(weekStartStr, target, group, title){
+      if(getWeeklyAlwaysTaskAvailableDays(weekStartStr).length<target) return null;
+      return {
+        id:`weekly_${weekStartStr}_always_days_${target}`,
+        group,
+        icon:'&#9854;',
+        condition:'weeklyAlwaysTaskDays',
+        title,
+        description:`Erledige an ${target} verschiedenen Tagen mindestens eine Always Task.`,
+        target
+      };
+    }
+
+    function createWeeklyBeatLastWeekDaysQuest(weekStartStr){
+      const comparable = getWeeklyDateKeys(weekStartStr).filter((dateStr, index)=>{
+        const previous = shiftDateKey(dateStr, -7);
+        return getHabitProgressForDate(dateStr).total>0 && getHabitProgressForDate(previous).total>0 && index>=0;
+      });
+      if(comparable.length<7) return null;
+      return {
+        id:`weekly_${weekStartStr}_beat_last_week_days`,
+        group:'hard',
+        icon:'&#8593;',
+        condition:'weeklyBeatLastWeekDays',
+        title:'Besser als letzte Woche',
+        description:'Uebertriff jeden Wochentag gegen denselben Tag der letzten Woche.',
+        target:7
+      };
+    }
+
+    function createWeeklyNoOverdueQuest(weekStartStr){
+      const range = getWeeklyRangeForStart(weekStartStr);
+      const dueThisWeek = (state.oneTimeTasks || []).filter(task=>{
+        if(!task || isAlwaysTask(task)) return false;
+        const dueDate = normalizeDateOnly(task.dueDate);
+        if(isExcludedDay(dueDate)) return false;
+        return dueDate>=range.start && dueDate<=range.end;
+      });
+      if(!dueThisWeek.length) return null;
+      return {
+        id:`weekly_${weekStartStr}_no_overdue`,
+        group:'easy',
+        icon:'&#129529;',
+        condition:'weeklyNoOverdue',
+        title:'Saubere Woche',
+        description:'Lasse diese Woche keine faellige Task ueberfaellig werden.',
+        target:1
+      };
+    }
+
+    function createWeeklyBeatLastWeekCompletionQuest(weekStartStr){
+      const previousWeekStart = shiftDateKey(weekStartStr, -7);
+      const previous = getWeeklyHabitCompletion(previousWeekStart);
+      const current = getWeeklyHabitCompletion(weekStartStr);
+      if(previous.total<=0 || current.total<=0) return null;
+      return {
+        id:`weekly_${weekStartStr}_beat_previous_week_completion`,
+        group:'easy',
+        icon:'&#8593;',
+        condition:'weeklyBeatLastWeekCompletion',
+        title:'Wochenquote toppen',
+        description:`Uebertriff die Completion-Quote der letzten Woche (${previous.percent}%).`,
+        target:1,
+        previousPercent:previous.percent
+      };
+    }
+
+    function buildWeeklyQuestCandidates(weekStartStr){
+      const candidates = { easy:[], medium:[], hard:[] };
+      const plannedDays = countWeeklyPlannedHabitDays(weekStartStr);
+      QUEST_DAILY_DIFFICULTIES.forEach(group=>{
+        addWeeklyQuestCandidate(candidates, createWeeklyCompletionDaysQuest(weekStartStr, group, plannedDays));
+        addWeeklyQuestCandidate(candidates, createWeeklyPerfectDaysQuest(weekStartStr, group));
+        addWeeklyQuestCandidate(candidates, createWeeklyDailyQuestCountQuest(weekStartStr, group));
+        addWeeklyQuestCandidate(candidates, createWeeklyTaskCountQuest(weekStartStr, group));
+        addWeeklyQuestCandidate(candidates, createWeeklyTaskCountQuest(weekStartStr, group, 'hard'));
+      });
+      addWeeklyQuestCandidate(candidates, createWeeklyRandomCategoryFullQuest(weekStartStr));
+      addWeeklyQuestCandidate(candidates, createWeeklyRandomCategoryPercentQuest(weekStartStr));
+      addWeeklyQuestCandidate(candidates, createWeeklyWeakestCategoryFullQuest(weekStartStr));
+      addWeeklyQuestCandidate(candidates, createWeeklyWeakestCategoryPercentQuest(weekStartStr));
+      addWeeklyQuestCandidate(candidates, createWeeklyAllCategoriesFullQuest(weekStartStr));
+      addWeeklyQuestCandidate(candidates, createWeeklyRandomHabitFullQuest(weekStartStr));
+      addWeeklyQuestCandidate(candidates, createWeeklyRandomHabitHalfQuest(weekStartStr));
+      addWeeklyQuestCandidate(candidates, createWeeklyWeakestHabitFullQuest(weekStartStr));
+      addWeeklyQuestCandidate(candidates, createWeeklyWeakestHabitCountQuest(weekStartStr, 5, 'medium', 'weakest_habit_5x', 'Schwaechstes Habit x5'));
+      addWeeklyQuestCandidate(candidates, createWeeklyWeakestHabitCountQuest(weekStartStr, 2, 'easy', 'weakest_habit_2x', 'Schwaechstes Habit x2'));
+      addWeeklyQuestCandidate(candidates, createWeeklyWeakestHabitSetFullQuest(weekStartStr));
+      addWeeklyQuestCandidate(candidates, createWeeklyWeakestHabitSetQuest(weekStartStr, 3, 5, 'hard', 'weakest_3_5x', 'Schwaechste Drei x5'));
+      addWeeklyQuestCandidate(candidates, createWeeklyWeakestHabitSetQuest(weekStartStr, 3, 2, 'medium', 'weakest_3_2x', 'Schwaechste Drei x2'));
+      addWeeklyQuestCandidate(candidates, createWeeklyRandomThreeHabitsQuest(weekStartStr));
+      addWeeklyQuestCandidate(candidates, createWeeklyZeroToSevenStreakQuest(weekStartStr));
+      addWeeklyQuestCandidate(candidates, createWeeklyZeroStreakHabitsQuest(weekStartStr));
+      addWeeklyQuestCandidate(candidates, createWeeklyAlwaysTaskDaysQuest(weekStartStr, 5, 'easy', 'Always an 5 Tagen'));
+      addWeeklyQuestCandidate(candidates, createWeeklyAlwaysTaskDaysQuest(weekStartStr, 7, 'easy', 'Always jeden Tag'));
+      addWeeklyQuestCandidate(candidates, createWeeklyBeatLastWeekDaysQuest(weekStartStr));
+      addWeeklyQuestCandidate(candidates, createWeeklyNoOverdueQuest(weekStartStr));
+      addWeeklyQuestCandidate(candidates, createWeeklyBeatLastWeekCompletionQuest(weekStartStr));
+      addWeeklyQuestCandidate(candidates, createWeeklyPerfectStreakQuest(weekStartStr));
+      addWeeklyQuestCandidate(candidates, createWeeklyWeakestHabitSetQuest(weekStartStr, 5, 3, 'hard', 'weakest_5_3x', 'Fuenf Schwachstellen x3'));
+      return candidates;
+    }
+
+    function buildWeeklyQuestSelection(weekStartStr){
+      const candidates = buildWeeklyQuestCandidates(weekStartStr);
+      const normalQuests = QUEST_DAILY_DIFFICULTIES.map(group=>{
+        return randomChoice(candidates[group] || []) || createUnavailableWeeklyQuest(weekStartStr, group);
+      }).map(attachWeeklyQuestReward);
+      const quests = [createWeeklyCompletionQuest(weekStartStr), ...normalQuests];
+      return {
+        weekStart:weekStartStr,
+        generatedAt:Date.now(),
+        poolVersion:QUEST_WEEKLY_POOL_VERSION,
+        quests
+      };
+    }
+
+    function getWeeklyQuestsForDisplay(range){
+      const currentQuests = getWeeklyQuestSelection(range.start);
+      const normalQuests = currentQuests.filter(quest=>quest.condition!=='weeklyCompletion');
+      const completionQuest = currentQuests.find(quest=>quest.condition==='weeklyCompletion') || null;
+      return completionQuest ? [completionQuest, ...normalQuests] : normalQuests;
+    }
+
     function getDailyQuestSelection(dateStr=todayStr()){
       ensureQuestState();
       const ds = normalizeDateOnly(dateStr) || todayStr();
+      if(isExcludedDay(ds)) return [];
       const current = state.questDailySelections[ds];
       if(current && Array.isArray(current.quests) && hasDailyQuestDifficulties(current.quests, current)){
+        syncDynamicDailyQuestTargets(current.quests, ds);
         return current.quests;
       }
       const next = buildDailyQuestSelection(ds);
       state.questDailySelections[ds] = next;
       saveData();
       return next.quests;
+    }
+
+    function getStoredDailyQuestSelection(dateStr){
+      ensureQuestState();
+      const ds = normalizeDateOnly(dateStr);
+      if(!ds) return [];
+      if(isExcludedDay(ds)) return [];
+      const entry = state.questDailySelections[ds];
+      if(!entry || !Array.isArray(entry.quests) || !hasDailyQuestDifficulties(entry.quests, entry)) return [];
+      syncDynamicDailyQuestTargets(entry.quests, ds);
+      return entry.quests;
+    }
+
+    function setQuestYesterdayOpen(open){
+      state.questYesterdayOpen = !!open;
+      saveData();
+    }
+
+    function setQuestLastWeekOpen(open){
+      state.questLastWeekOpen = !!open;
+      saveData();
+    }
+
+    function syncDynamicDailyQuestTargets(quests,dateStr){
+      if(!Array.isArray(quests)) return;
+      const eligible=getDailyQuestZeroStreakHabitEntries(dateStr);
+      quests.forEach(quest=>{
+        if(!quest || !String(quest.id || '').endsWith('_all_zero_streak_habits')) return;
+        quest.target=eligible.length;
+        quest.targetHabitIds=eligible.map(entry=>entry.id);
+        quest.targetHabitNames=eligible.map(entry=>entry.name);
+        quest.description=eligible.length
+          ? `Mache heute alle ${eligible.length} Habits, die gestern Streak 0 hatten.`
+          : 'Gestern hatten keine heutigen Habits Streak 0.';
+      });
     }
 
     function hasDailyQuestDifficulties(quests, entry){
@@ -5463,6 +6863,9 @@ function calculatePerfectBonus(streak){
     }
 
     function buildDailyQuestSelection(dateStr){
+      if(isExcludedDay(dateStr)){
+        return { date:dateStr, generatedAt:Date.now(), poolVersion:QUEST_DAILY_POOL_VERSION, quests:[] };
+      }
       const candidates = buildDailyQuestCandidates(dateStr);
       const completionQuest = createDailyCompletionQuest(dateStr);
       const quests = QUEST_DAILY_DIFFICULTIES.map(group=>{
@@ -5899,10 +7302,7 @@ function calculatePerfectBonus(streak){
       const previousDate = dateFromKey(previousDateStr);
       if(!previousDate) return [];
       return getDailyQuestScheduledHabitEntries(dateStr).filter(entry=>{
-        const anchor = isCompleted('habit', entry.habit.id, dateStr)
-          ? dateFromKey(dateStr)
-          : previousDate;
-        return anchor && computeHabitStreakForDate(entry.habit, 'habit', anchor)===0;
+        return computeHabitStreakForDate(entry.habit, 'habit', previousDate)===0;
       });
     }
 
@@ -5926,7 +7326,7 @@ function calculatePerfectBonus(streak){
         icon:'0',
         condition:'habitSet',
         title:'Alle Habits mit Streak 0',
-        description:`Mache heute alle ${eligible.length} Habits, die mit Streak 0 gestartet sind.`,
+        description:`Mache heute alle ${eligible.length} Habits, die gestern Streak 0 hatten.`,
         target:eligible.length,
         targetHabitIds:eligible.map(entry=>entry.id),
         targetHabitNames:eligible.map(entry=>entry.name)
@@ -6117,23 +7517,23 @@ function calculatePerfectBonus(streak){
 
     function getDailyQuestOverdueCompletedTaskIds(dateStr){
       const ds = normalizeDateOnly(dateStr);
-      if(!ds) return [];
+      if(!ds || isExcludedDay(ds)) return [];
       const ids = new Set();
       getTaskCompletionLogEntries().forEach(entry=>{
-        if(entry.completionDate===ds && entry.dueDate && entry.dueDate<ds) ids.add(String(entry.taskId));
+        if(entry.completionDate===ds && entry.dueDate && !isExcludedDay(entry.dueDate) && entry.dueDate<ds) ids.add(String(entry.taskId));
       });
       return Array.from(ids);
     }
 
     function getDailyQuestOverdueAvailableTaskIds(dateStr){
       const ds = normalizeDateOnly(dateStr);
-      if(!ds) return [];
+      if(!ds || isExcludedDay(ds)) return [];
       const ids = new Set(getDailyQuestOverdueCompletedTaskIds(ds));
       getTaskCompletionLogEntries().forEach(entry=>{
-        if(entry.dueDate && entry.dueDate<ds && entry.completionDate>ds) ids.add(String(entry.taskId));
+        if(entry.dueDate && !isExcludedDay(entry.dueDate) && entry.dueDate<ds && entry.completionDate>ds) ids.add(String(entry.taskId));
       });
       (state.oneTimeTasks || []).forEach(task=>{
-        if(!task || isAlwaysTask(task) || !task.dueDate || task.dueDate>=ds) return;
+        if(!task || isAlwaysTask(task) || !task.dueDate || isExcludedDay(task.dueDate) || task.dueDate>=ds) return;
         const completedDate = getTaskFirstCompletionDate(task);
         if(!completedDate || completedDate>=ds) ids.add(String(task.id));
       });
@@ -6164,7 +7564,7 @@ function calculatePerfectBonus(streak){
 
     function getDailyQuestCompletedTaskIds(dateStr, difficulty=''){
       const ds = normalizeDateOnly(dateStr);
-      if(!ds) return [];
+      if(!ds || isExcludedDay(ds)) return [];
       const ids = new Set();
       getTaskCompletionLogEntries().forEach(entry=>{
         if(entry.completionDate!==ds || entry.taskType==='always') return;
@@ -6183,7 +7583,7 @@ function calculatePerfectBonus(streak){
 
     function getDailyQuestAvailableTaskIds(dateStr, difficulty=''){
       const ds = normalizeDateOnly(dateStr);
-      if(!ds) return [];
+      if(!ds || isExcludedDay(ds)) return [];
       const ids = new Set(getDailyQuestCompletedTaskIds(ds, difficulty));
       (state.oneTimeTasks || []).forEach(task=>{
         if(!task || isAlwaysTask(task)) return;
@@ -6196,7 +7596,7 @@ function calculatePerfectBonus(streak){
 
     function getDailyQuestSelectableTasks(dateStr, predicate){
       const ds = normalizeDateOnly(dateStr);
-      if(!ds) return [];
+      if(!ds || isExcludedDay(ds)) return [];
       return (state.oneTimeTasks || []).filter(task=>{
         if(!task || isAlwaysTask(task)) return false;
         const createdDate = normalizeDateOnly(task.createdAt);
@@ -6371,7 +7771,7 @@ function calculatePerfectBonus(streak){
 
     function getDailyQuestCompletedAlwaysTaskIds(dateStr){
       const ds = normalizeDateOnly(dateStr);
-      if(!ds) return [];
+      if(!ds || isExcludedDay(ds)) return [];
       const day = ensureDay(ds);
       return Object.keys(day.alwaysTaskCompletions || {})
         .filter(key=>!!day.alwaysTaskCompletions[key])
@@ -6380,7 +7780,7 @@ function calculatePerfectBonus(streak){
 
     function getDailyQuestAlwaysTaskAvailableIds(dateStr){
       const ds = normalizeDateOnly(dateStr);
-      if(!ds) return [];
+      if(!ds || isExcludedDay(ds)) return [];
       return (state.oneTimeTasks || [])
         .filter(task=>{
           if(!task || !isAlwaysTask(task)) return false;
@@ -6573,6 +7973,9 @@ function calculatePerfectBonus(streak){
       const date = dateFromKey(dateStr);
       if(!date) return { current:0, target:1, complete:false, label:'0/1 Habits' };
       const ids = Array.isArray(quest.targetHabitIds) ? quest.targetHabitIds.map(id=>String(id)) : [];
+      if(String(quest.id || '').endsWith('_all_zero_streak_habits') && ids.length===0){
+        return { current:0, target:1, complete:false, label:'Keine Ziel-Habits' };
+      }
       const completed = ids.filter(id=>{
         const habit = (state.habits || []).find(entry=>String(entry.id)===id);
         return habit
@@ -6661,12 +8064,14 @@ function calculatePerfectBonus(streak){
       const progress = getHabitProgressForDate(dateStr);
       const target = Math.max(1, Math.min(100, Math.floor(Number(quest.target) || 1)));
       const current = Math.max(0, Math.min(100, Math.floor(Number(progress.percent) || 0)));
+      const today = todayStr();
+      const dateLabel = dateStr===today ? 'Heute' : (dateStr===shiftDateKey(today, -1) ? 'Gestern' : formatQuestShortDate(dateStr));
       return {
         current:Math.min(current, target),
         rawCurrent:current,
         target,
         complete:current>=target,
-        label:`Heute: ${current}%`,
+        label:`${dateLabel}: ${current}%`,
         barPercent:0,
         hideProgressBar:true
       };
@@ -6681,6 +8086,297 @@ function calculatePerfectBonus(streak){
         target,
         complete:progress.total>0 && progress.completed>=progress.total,
         label:`${completed}/${target} Habits`
+      };
+    }
+
+    function getWeeklyCompletionDaysProgress(quest, range){
+      const target = Math.max(1, Math.floor(Number(quest.target) || 1));
+      const targetPercent = Math.max(1, Math.min(100, Math.floor(Number(quest.targetPercent) || 1)));
+      const today = todayStr();
+      let completedDays = 0;
+      for(let offset=0; offset<7; offset++){
+        const dateStr = shiftDateKey(range.start, offset);
+        if(dateStr>range.end || dateStr>today) continue;
+        const progress = getHabitProgressForDate(dateStr);
+        if(progress.total>0 && progress.percent>=targetPercent) completedDays++;
+      }
+      return {
+        current:Math.min(completedDays, target),
+        rawCurrent:completedDays,
+        target,
+        complete:completedDays>=target,
+        label:`${Math.min(completedDays, target)}/${target} Tage | ${targetPercent}%`
+      };
+    }
+
+    function getWeeklyVisibleDateKeys(range){
+      const today = todayStr();
+      return getWeeklyDateKeys(range.start).filter(dateStr=>dateStr<=range.end && dateStr<=today && !isExcludedDay(dateStr));
+    }
+
+    function getWeeklyPerfectDaysProgress(quest, range){
+      const target = Math.max(1, Math.floor(Number(quest.target) || 1));
+      const completed = getWeeklyVisibleDateKeys(range).filter(dateStr=>{
+        const date = dateFromKey(dateStr);
+        return !!(date && isPerfectDay(date));
+      }).length;
+      return {
+        current:Math.min(completed, target),
+        rawCurrent:completed,
+        target,
+        complete:completed>=target,
+        label:`${Math.min(completed, target)}/${target} Perfect`
+      };
+    }
+
+    function getWeeklyPerfectStreakProgress(quest, range){
+      const target = Math.max(1, Math.floor(Number(quest.target) || 1));
+      let current = 0;
+      let best = 0;
+      getWeeklyVisibleDateKeys(range).forEach(dateStr=>{
+        const date = dateFromKey(dateStr);
+        if(date && isPerfectDay(date)){
+          current++;
+          best = Math.max(best, current);
+        } else {
+          current = 0;
+        }
+      });
+      return {
+        current:Math.min(best, target),
+        rawCurrent:best,
+        target,
+        complete:best>=target,
+        label:`${Math.min(best, target)}/${target} in Folge`
+      };
+    }
+
+    function getWeeklyCategoryFullProgress(quest, range){
+      const targets = Array.isArray(quest.categoryTargets) ? quest.categoryTargets : [];
+      const completed = targets.filter(category=>{
+        const ids = Array.isArray(category.habitIds) ? category.habitIds.map(id=>String(id)) : [];
+        const stats = getWeeklyHabitOccurrenceStats(ids, range);
+        return stats.total>0 && stats.completed>=stats.total;
+      }).length;
+      const target = Math.max(1, targets.length || Math.floor(Number(quest.target) || 1));
+      return {
+        current:Math.min(completed, target),
+        rawCurrent:completed,
+        target,
+        complete:targets.length>0 && completed>=targets.length,
+        label:`${Math.min(completed, target)}/${target} Kategorien`
+      };
+    }
+
+    function getWeeklyHabitOccurrenceStats(habitIds, range){
+      const ids = new Set((Array.isArray(habitIds) ? habitIds : []).map(id=>String(id)));
+      let completed = 0;
+      let total = 0;
+      getWeeklyDateKeys(range.start).forEach(dateStr=>{
+        const date = dateFromKey(dateStr);
+        if(!date) return;
+        (state.habits || []).forEach(habit=>{
+          if(ids.size && !ids.has(String(habit.id))) return;
+          if(!shouldHabitExistOnDate(habit, date)) return;
+          total++;
+          if(isCompleted('habit', habit.id, dateStr)) completed++;
+        });
+      });
+      return { completed, total };
+    }
+
+    function getWeeklyCategoryPercentProgress(quest, range){
+      const stats = getWeeklyHabitOccurrenceStats(quest.habitIds, range);
+      const target = Math.max(1, Math.min(stats.total || 1, Math.floor(Number(quest.target) || 1)));
+      return {
+        current:Math.min(stats.completed, target),
+        rawCurrent:stats.completed,
+        target,
+        complete:stats.completed>=target,
+        label:`${Math.min(stats.completed, target)}/${target} Checks`
+      };
+    }
+
+    function getWeeklyHabitCompletedCount(habitId, range){
+      const id = String(habitId);
+      const habit = (state.habits || []).find(entry=>String(entry.id)===id);
+      if(!habit) return 0;
+      return getWeeklyDateKeys(range.start).filter(dateStr=>{
+        const date = dateFromKey(dateStr);
+        return !!(date && shouldHabitExistOnDate(habit, date) && isCompleted('habit', habit.id, dateStr));
+      }).length;
+    }
+
+    function getWeeklyHabitCountProgress(quest, range){
+      const targets = Array.isArray(quest.habitTargets) ? quest.habitTargets : [];
+      if(targets.length===1){
+        const target = Math.max(1, Math.floor(Number(targets[0].target || quest.target) || 1));
+        const count = getWeeklyHabitCompletedCount(targets[0].id, range);
+        return {
+          current:Math.min(count, target),
+          rawCurrent:count,
+          target,
+          complete:count>=target,
+          label:`${Math.min(count, target)}/${target}x`
+        };
+      }
+      const completed = targets.filter(entry=>getWeeklyHabitCompletedCount(entry.id, range)>=Math.max(1, Math.floor(Number(entry.target) || 1))).length;
+      const target = Math.max(1, targets.length || Math.floor(Number(quest.target) || 1));
+      return {
+        current:Math.min(completed, target),
+        rawCurrent:completed,
+        target,
+        complete:targets.length>0 && completed>=targets.length,
+        label:`${Math.min(completed, target)}/${target} Habits`
+      };
+    }
+
+    function getWeeklyStreakTargetProgress(quest, range){
+      const targetStreak = Math.max(1, Math.floor(Number(quest.targetStreak) || 1));
+      const habitId = String(quest.targetHabitId || '');
+      const habit = (state.habits || []).find(entry=>String(entry.id)===habitId);
+      const today = todayStr();
+      const anchorKey = today<range.start ? range.start : (today>range.end ? range.end : today);
+      const anchor = dateFromKey(anchorKey);
+      const streak = habit && anchor ? Math.max(0, computeHabitStreakForDate(habit, 'habit', anchor)) : 0;
+      return {
+        current:Math.min(streak, targetStreak),
+        rawCurrent:streak,
+        target:targetStreak,
+        complete:streak>=targetStreak,
+        label:`Streak ${Math.min(streak, targetStreak)}/${targetStreak}`
+      };
+    }
+
+    function getWeeklyDailyQuestProgress(quest, range){
+      const target = Math.max(1, Math.floor(Number(quest.target) || 1));
+      let completed = 0;
+      getWeeklyVisibleDateKeys(range).forEach(dateStr=>{
+        const entry = state.questDailySelections && state.questDailySelections[dateStr];
+        if(!entry || !Array.isArray(entry.quests) || !hasDailyQuestDifficulties(entry.quests, entry)) return;
+        entry.quests.forEach(dailyQuest=>{
+          if(getQuestProgress(dailyQuest, 'daily', dateStr).complete) completed++;
+        });
+      });
+      return {
+        current:Math.min(completed, target),
+        rawCurrent:completed,
+        target,
+        complete:completed>=target,
+        label:`${Math.min(completed, target)}/${target} Daily`
+      };
+    }
+
+    function getWeeklyTaskProgress(quest, range){
+      const target = Math.max(1, Math.floor(Number(quest.target) || 1));
+      const completed = getWeeklyTaskCompletedCount(range.start, quest.taskDifficulty || '');
+      return {
+        current:Math.min(completed, target),
+        rawCurrent:completed,
+        target,
+        complete:completed>=target,
+        label:`${Math.min(completed, target)}/${target} Tasks`
+      };
+    }
+
+    function getWeeklyAlwaysTaskDaysProgress(quest, range){
+      const target = Math.max(1, Math.floor(Number(quest.target) || 1));
+      const completed = getWeeklyVisibleDateKeys(range).filter(dateStr=>getDailyQuestCompletedAlwaysTaskIds(dateStr).length>0).length;
+      return {
+        current:Math.min(completed, target),
+        rawCurrent:completed,
+        target,
+        complete:completed>=target,
+        label:`${Math.min(completed, target)}/${target} Tage`
+      };
+    }
+
+    function getWeeklyBeatLastWeekDaysProgress(quest, range){
+      const target = Math.max(1, Math.floor(Number(quest.target) || 7));
+      const today = todayStr();
+      let better = 0;
+      getWeeklyDateKeys(range.start).forEach(dateStr=>{
+        if(dateStr>today) return;
+        const previousDateStr = shiftDateKey(dateStr, -7);
+        const current = getHabitProgressForDate(dateStr);
+        const previous = getHabitProgressForDate(previousDateStr);
+        if(current.total>0 && previous.total>0 && current.percent>previous.percent) better++;
+      });
+      return {
+        current:Math.min(better, target),
+        rawCurrent:better,
+        target,
+        complete:today>=range.end && better>=target,
+        label:`${Math.min(better, target)}/${target} Tage`
+      };
+    }
+
+    function getWeeklyNoOverdueProgress(quest, range){
+      const today = todayStr();
+      const failedByLog = getTaskCompletionLogEntries().some(entry=>{
+        if(!entry || entry.taskType==='always') return false;
+        if(isExcludedDay(entry.dueDate) || isExcludedDay(entry.completionDate)) return false;
+        return entry.dueDate>=range.start && entry.dueDate<=range.end && entry.completionDate>entry.dueDate;
+      });
+      const failedByOpenTask = (state.oneTimeTasks || []).some(task=>{
+        if(!task || isAlwaysTask(task)) return false;
+        const dueDate = normalizeDateOnly(task.dueDate);
+        if(isExcludedDay(dueDate)) return false;
+        if(dueDate<range.start || dueDate>range.end) return false;
+        const completedAt = normalizeDateOnly(task.completedAt);
+        if(task.completed && completedAt && completedAt>dueDate) return true;
+        return !task.completed && dueDate<today;
+      });
+      const failed = failedByLog || failedByOpenTask;
+      const complete = !failed && today>=range.end;
+      return {
+        current:complete ? 1 : 0,
+        target:1,
+        complete,
+        failed,
+        label:failed ? 'Ueberfaellig' : (complete ? 'Sauber' : 'Laeuft')
+      };
+    }
+
+    function getWeeklyBeatLastWeekCompletionProgress(quest, range){
+      const previousWeekStart = shiftDateKey(range.start, -7);
+      const previous = getWeeklyHabitCompletion(previousWeekStart);
+      const current = getWeeklyHabitCompletion(range.start);
+      const complete = todayStr()>=range.end && previous.total>0 && current.total>0 && current.percent>previous.percent;
+      return {
+        current:complete ? 1 : 0,
+        target:1,
+        complete,
+        failed:todayStr()>=range.end && !complete,
+        label:`${current.percent}% / ${previous.percent}%`
+      };
+    }
+
+    function getWeeklyCompletionProgress(quest){
+      const weekStart = normalizeDateOnly(quest.weekStart);
+      const weekEnd = normalizeDateOnly(quest.weekEnd) || shiftDateKey(weekStart, 6);
+      const claimDate = normalizeDateOnly(quest.claimDate) || shiftDateKey(weekStart, 7);
+      const range = {
+        start:weekStart,
+        end:weekEnd,
+        label:`${formatQuestShortDate(weekStart)} - ${formatQuestShortDate(weekEnd)}`
+      };
+      const progress = getWeeklyHabitCompletion(weekStart);
+      const target = Math.max(1, Math.min(100, Math.floor(Number(quest.target) || 1)));
+      const isClaimWindow = todayStr()>=claimDate;
+      const achieved = progress.total>0 && progress.percent>=target;
+      return {
+        current:0,
+        rawCurrent:progress.percent,
+        target:1,
+        complete:isClaimWindow && achieved,
+        failed:isClaimWindow && !achieved,
+        label:isClaimWindow
+          ? (achieved ? 'Wochenziel erreicht' : 'Wochenziel nicht erreicht')
+          : 'Auswertung am Sonntag',
+        barPercent:0,
+        hideProgressBar:true,
+        range
       };
     }
 
@@ -6716,8 +8412,11 @@ function calculatePerfectBonus(streak){
       return formatQuestReward({ type:claim.rewardType, amount:claim.amount, rarity:claim.rarity });
     }
 
-    function getQuestProgress(quest, period){
-      const range = getQuestPeriodRange(period);
+    function getQuestProgress(quest, period, periodKey){
+      const range = getQuestPeriodRange(period, periodKey);
+      if(period==='daily' && isExcludedDay(range.start)){
+        return { current:0, target:1, complete:false, label:'Urlaub/Krankheit', range, placeholder:true };
+      }
       if(!quest || quest.condition==='placeholder'){
         return { current:0, target:1, complete:false, label:'Spaeter', range, placeholder:true };
       }
@@ -6743,6 +8442,20 @@ function calculatePerfectBonus(streak){
       if(period==='daily' && quest.condition==='specificTask') return { ...getDailyQuestSpecificTaskProgress(quest, range.start), range };
       if(period==='daily' && quest.condition==='taskDifficulties') return { ...getDailyQuestTaskDifficultiesProgress(quest, range.start), range };
       if(period==='daily' && quest.condition==='alwaysTask') return { ...getDailyQuestAlwaysTaskProgress(quest, range.start), range };
+      if(period==='weekly' && quest.condition==='weeklyCompletionDays') return { ...getWeeklyCompletionDaysProgress(quest, range), range };
+      if(period==='weekly' && quest.condition==='weeklyPerfectDays') return { ...getWeeklyPerfectDaysProgress(quest, range), range };
+      if(period==='weekly' && quest.condition==='weeklyPerfectStreak') return { ...getWeeklyPerfectStreakProgress(quest, range), range };
+      if(period==='weekly' && quest.condition==='weeklyCategoryFull') return { ...getWeeklyCategoryFullProgress(quest, range), range };
+      if(period==='weekly' && quest.condition==='weeklyCategoryPercent') return { ...getWeeklyCategoryPercentProgress(quest, range), range };
+      if(period==='weekly' && quest.condition==='weeklyHabitCount') return { ...getWeeklyHabitCountProgress(quest, range), range };
+      if(period==='weekly' && quest.condition==='weeklyStreakTarget') return { ...getWeeklyStreakTargetProgress(quest, range), range };
+      if(period==='weekly' && quest.condition==='weeklyDailyQuests') return { ...getWeeklyDailyQuestProgress(quest, range), range };
+      if(period==='weekly' && quest.condition==='weeklyTasks') return { ...getWeeklyTaskProgress(quest, range), range };
+      if(period==='weekly' && quest.condition==='weeklyAlwaysTaskDays') return { ...getWeeklyAlwaysTaskDaysProgress(quest, range), range };
+      if(period==='weekly' && quest.condition==='weeklyBeatLastWeekDays') return { ...getWeeklyBeatLastWeekDaysProgress(quest, range), range };
+      if(period==='weekly' && quest.condition==='weeklyNoOverdue') return { ...getWeeklyNoOverdueProgress(quest, range), range };
+      if(period==='weekly' && quest.condition==='weeklyBeatLastWeekCompletion') return { ...getWeeklyBeatLastWeekCompletionProgress(quest, range), range };
+      if(period==='weekly' && quest.condition==='weeklyCompletion') return getWeeklyCompletionProgress(quest);
       const target = Math.max(1, Math.floor(Number(quest.target) || 1));
       return { current:0, target, complete:false, label:`0/${target}`, range };
     }
@@ -6754,6 +8467,89 @@ function calculatePerfectBonus(streak){
       return { total:entries.length, completed, placeholders };
     }
 
+    function getClaimableQuestCount(period, quests, periodKey){
+      return (Array.isArray(quests) ? quests : []).filter(quest=>{
+        const progress = getQuestProgress(quest, period, periodKey);
+        return progress.complete && !!quest.reward && !getQuestClaim(period, quest, progress.range.start);
+      }).length;
+    }
+
+    function renderYesterdayDailyQuests(){
+      const yesterday = shiftDateKey(todayStr(), -1);
+      const quests = getStoredDailyQuestSelection(yesterday);
+      const claimable = getClaimableQuestCount('daily', quests, yesterday);
+      const done = quests.filter(quest=>getQuestProgress(quest, 'daily', yesterday).complete).length;
+      const openAttr = state.questYesterdayOpen ? ' open' : '';
+      const statusLabel = quests.length
+        ? `${claimable} Belohnung${claimable===1 ? '' : 'en'} offen`
+        : 'Keine gespeichert';
+      return `
+        <details class="quest-yesterday-panel"${openAttr} ontoggle="setQuestYesterdayOpen(this.open)">
+          <summary class="quest-yesterday-summary">
+            <div class="quest-yesterday-title">
+              <span>G</span>
+              <div>Daily Quests von gestern</div>
+            </div>
+            <div class="quest-yesterday-meta">
+              <span class="quest-yesterday-badge">${escapeHtml(statusLabel)}</span>
+              ${quests.length ? `<span class="quest-yesterday-badge">${done}/${quests.length} erledigt</span>` : ''}
+              <span class="quest-yesterday-chevron">v</span>
+            </div>
+          </summary>
+          <div class="quest-yesterday-content">
+            ${quests.length ? renderQuestSections(quests, 'daily', yesterday) : renderStoredDailyQuestEmpty(yesterday)}
+          </div>
+        </details>
+      `;
+    }
+
+    function renderStoredDailyQuestEmpty(dateStr){
+      return `
+        <div class="empty-state" style="padding:1rem;">
+          <p>Fuer ${escapeHtml(formatQuestShortDate(dateStr))} wurden keine Daily Quests gespeichert.</p>
+        </div>
+      `;
+    }
+
+    function renderLastWeekWeeklyQuests(currentRange){
+      const lastWeekStart = shiftDateKey(currentRange.start, -7);
+      const lastWeekRange = getQuestPeriodRange('weekly', lastWeekStart);
+      const quests = getStoredWeeklyQuestSelection(lastWeekRange.start);
+      const claimable = getClaimableQuestCount('weekly', quests, lastWeekRange.start);
+      const done = quests.filter(quest=>getQuestProgress(quest, 'weekly', lastWeekRange.start).complete).length;
+      const openAttr = state.questLastWeekOpen ? ' open' : '';
+      const statusLabel = quests.length
+        ? `${claimable} Belohnung${claimable===1 ? '' : 'en'} offen`
+        : 'Keine gespeichert';
+      return `
+        <details class="quest-yesterday-panel"${openAttr} ontoggle="setQuestLastWeekOpen(this.open)">
+          <summary class="quest-yesterday-summary">
+            <div class="quest-yesterday-title">
+              <span>W</span>
+              <div>Weekly Quests von letzter Woche</div>
+            </div>
+            <div class="quest-yesterday-meta">
+              <span class="quest-yesterday-badge">${escapeHtml(statusLabel)}</span>
+              ${quests.length ? `<span class="quest-yesterday-badge">${done}/${quests.length} erledigt</span>` : ''}
+              <span class="quest-yesterday-badge">${escapeHtml(lastWeekRange.label)}</span>
+              <span class="quest-yesterday-chevron">v</span>
+            </div>
+          </summary>
+          <div class="quest-yesterday-content">
+            ${quests.length ? renderQuestSections(quests, 'weekly', lastWeekRange.start) : renderStoredWeeklyQuestEmpty(lastWeekRange)}
+          </div>
+        </details>
+      `;
+    }
+
+    function renderStoredWeeklyQuestEmpty(range){
+      return `
+        <div class="empty-state" style="padding:1rem;">
+          <p>Fuer die Woche ${escapeHtml(range.label)} wurden keine Weekly Quests gespeichert.</p>
+        </div>
+      `;
+    }
+
     function renderQuests(){
       ensureQuestState();
       const period = QUEST_PERIODS.includes(state.questPeriod) ? state.questPeriod : 'daily';
@@ -6762,8 +8558,12 @@ function calculatePerfectBonus(streak){
       const sub = period==='daily'
         ? `Reset: ${range.label}`
         : `Woche: ${range.label}`;
-      const quests = period==='daily' ? getDailyQuestSelection(range.start) : [];
+      const quests = period==='daily'
+        ? getDailyQuestSelection(range.start)
+        : getWeeklyQuestsForDisplay(range);
       const stats = getQuestStats(period, quests);
+      const yesterdayHtml = period==='daily' ? renderYesterdayDailyQuests() : '';
+      const lastWeekHtml = period==='weekly' ? renderLastWeekWeeklyQuests(range) : '';
 
       return `
         <div class="quest-shell">
@@ -6779,11 +8579,13 @@ function calculatePerfectBonus(streak){
             <div class="quest-board-score">${stats.completed}/${stats.total} erledigt${stats.placeholders ? ` | ${stats.placeholders} xx` : ''}</div>
           </div>
           ${quests.length ? renderQuestSections(quests, period) : renderQuestEmpty(period)}
+          ${yesterdayHtml}
+          ${lastWeekHtml}
         </div>
       `;
     }
 
-    function renderQuestSections(quests, period){
+    function renderQuestSections(quests, period, periodKey){
       return QUEST_GROUPS.map(group=>{
         const entries = quests.filter(quest=>(quest.group || 'always')===group.id);
         if(!entries.length) return '';
@@ -6797,7 +8599,7 @@ function calculatePerfectBonus(streak){
           <section class="quest-section" style="--quest-color:${group.color}">
             ${head}
             <div class="quest-grid">
-              ${entries.map(quest=>renderQuestCard(quest, period, group)).join('')}
+              ${entries.map(quest=>renderQuestCard(quest, period, group, periodKey)).join('')}
             </div>
           </section>
         `;
@@ -6813,8 +8615,8 @@ function calculatePerfectBonus(streak){
       `;
     }
 
-    function renderQuestCard(quest, period, group){
-      const progress = getQuestProgress(quest, period);
+    function renderQuestCard(quest, period, group, periodKey){
+      const progress = getQuestProgress(quest, period, periodKey);
       const completed = !!progress.complete;
       const placeholder = !!progress.placeholder;
       const claim = getQuestClaim(period, quest, progress.range.start);
@@ -6823,22 +8625,27 @@ function calculatePerfectBonus(streak){
       const pct = typeof progress.barPercent === 'number'
         ? Math.max(0, Math.min(100, Math.round(progress.barPercent)))
         : Math.min(100, Math.round((progress.current / progress.target) * 100));
-      const difficultyLabel = (QUEST_GROUPS.find(entry=>entry.id===quest.group) || {}).label || '';
+      const difficultyId = QUEST_DAILY_DIFFICULTIES.includes(quest.difficulty) ? quest.difficulty : quest.group;
+      const difficultyLabel = (QUEST_GROUPS.find(entry=>entry.id===difficultyId) || {}).label || '';
+      const failed = !!progress.failed;
       const statusClass = claimed || (completed && !hasReward) ? 'completed' : (placeholder ? 'placeholder' : (completed ? 'claimable' : ''));
+      const claimArgs = `${inlineJsonString(period)},${inlineJsonString(quest.id)},${inlineJsonString(progress.range.start)}`;
       const buttonHtml = claimed
         ? `<button class="quest-claim-btn done" type="button" disabled>${escapeHtml(formatQuestClaimReward(claim))}</button>`
         : completed && hasReward
-          ? `<button class="quest-claim-btn ready" type="button" onclick="claimQuestReward('${period}','${quest.id}')">Claim</button>`
+          ? `<button class="quest-claim-btn ready" type="button" onclick="claimQuestReward(${claimArgs})">Claim</button>`
         : completed
             ? `<button class="quest-claim-btn no-reward" type="button" disabled>Erledigt</button>`
         : placeholder
           ? `<button class="quest-claim-btn placeholder" type="button" disabled>Spaeter</button>`
+          : failed
+            ? `<button class="quest-claim-btn placeholder" type="button" disabled>Nicht geschafft</button>`
           : hasReward
             ? `<button class="quest-claim-btn" type="button" disabled>Offen</button>`
           : `<button class="quest-claim-btn" type="button" disabled>${progress.current}/${progress.target}</button>`;
       const visibleRewardLabel = claimed
         ? formatQuestClaimReward(claim)
-        : (quest.condition!=='dailyCompletion' && hasReward ? formatQuestReward(quest.reward) : '');
+        : (quest.condition!=='dailyCompletion' && quest.condition!=='weeklyCompletion' && hasReward ? formatQuestReward(quest.reward) : '');
 
       return `
         <div class="quest-card ${statusClass}" style="--quest-color:${group.color}">
@@ -6864,9 +8671,12 @@ function calculatePerfectBonus(streak){
       `;
     }
 
-    function findQuestById(period, questId){
-      const range = getQuestPeriodRange(period);
-      const quests = period==='daily' ? getDailyQuestSelection(range.start) : [];
+    function findQuestById(period, questId, periodKey){
+      const range = getQuestPeriodRange(period, periodKey);
+      const storedWeeklyQuests = period==='weekly' ? getStoredWeeklyQuestSelection(range.start) : [];
+      const quests = period==='daily'
+        ? getDailyQuestSelection(range.start)
+        : (storedWeeklyQuests.length ? storedWeeklyQuests : getWeeklyQuestsForDisplay(range));
       return quests.find(quest=>quest.id===questId) || null;
     }
 
@@ -6890,12 +8700,13 @@ function calculatePerfectBonus(streak){
       return { rewardType:'xp', amount, rarity:'normal' };
     }
 
-    function claimQuestReward(period, questId){
+    function claimQuestReward(period, questId, periodKey){
       ensureQuestState();
       const safePeriod = QUEST_PERIODS.includes(period) ? period : state.questPeriod;
-      const quest = findQuestById(safePeriod, questId);
+      const range = getQuestPeriodRange(safePeriod, periodKey);
+      const quest = findQuestById(safePeriod, questId, range.start);
       if(!quest || !quest.reward) return;
-      const progress = getQuestProgress(quest, safePeriod);
+      const progress = getQuestProgress(quest, safePeriod, range.start);
       if(!progress.complete){
         showToast('Quest noch nicht erledigt');
         return;
@@ -6952,7 +8763,7 @@ function calculatePerfectBonus(streak){
 
       const hasDueDate = isOneTime && oneTimeTaskType==='one_time' && !!item.dueDate;
       const dueDate = hasDueDate ? new Date(item.dueDate+'T00:00:00') : null;
-      const isOverdue = !!(hasDueDate && dueDate && (dueDate < new Date(new Date().setHours(0,0,0,0))));
+      const isOverdue = !!(hasDueDate && !isExcludedDay(item.dueDate) && dueDate && (dueDate < new Date(new Date().setHours(0,0,0,0))));
       const taskDifficulty = isOneTime ? normalizeTaskDifficulty(item.difficulty) : 'medium';
       const taskDifficultyMeta = isOneTime ? TASK_DIFFICULTY_META[taskDifficulty] : null;
       const taskChanceInfo = isOneTime ? getTaskCoinChanceInfo(item, ds) : null;
@@ -7083,6 +8894,10 @@ function calculatePerfectBonus(streak){
 
     function applyHabitProgressChange(item, type, ds, targetProgress){
       const id=item.id;
+      if(isExcludedDay(ds)){
+        showToast('Urlaub/Krankheit: Dieser Tag wird ignoriert');
+        return;
+      }
       const current=getHabitBoxProgress(type,id,ds);
       const target=Math.max(0, Math.min(getHabitBoxCount(item), Math.floor(Number(targetProgress) || 0)));
       if(target===current) return;
@@ -7154,6 +8969,10 @@ function calculatePerfectBonus(streak){
       const ds=(type==='habit') ? habitsViewStr() : todayStr();
       const item=getTrackedHabit(type,id);
       if(!item) return;
+      if(isExcludedDay(ds)){
+        showToast('Urlaub/Krankheit: Dieser Tag wird ignoriert');
+        return;
+      }
       if(type==='habit' && isMiniHabitModeActive()){
         toggleMiniHabitCompletion(item,type,ds);
         updateStats();
@@ -7173,6 +8992,10 @@ function calculatePerfectBonus(streak){
       const todayKey=todayStr();
 
       if(type==='onetime'){
+        if(isExcludedDay(todayKey)){
+          showToast('Urlaub/Krankheit: Tasks zaehlen heute nicht');
+          return;
+        }
         const item=state.oneTimeTasks.find(t=>t.id===id);
         if(!item) return;
         const taskType = normalizeTaskType(item.taskType);
@@ -7256,6 +9079,10 @@ function calculatePerfectBonus(streak){
       const list = (type==='habit') ? state.habits : state.extraHabits;
       const item = list.find(h=>h.id===id);
       if(!item) return;
+      if(isExcludedDay(ds)){
+        showToast('Urlaub/Krankheit: Dieser Tag wird ignoriert');
+        return;
+      }
 
       if(type==='habit' && isMiniHabitModeActive()){
         toggleMiniHabitCompletion(item,type,ds);
@@ -7316,7 +9143,7 @@ function calculatePerfectBonus(streak){
     function closeModalOnOverlay(e){
       if(e.target!==e.currentTarget) return;
       closeModal(); closeCategoryManager(); closeEditModal(); closeManualXpModal();
-      closeShop(); closeHistory(); closeStats(); closeAchievements(); closeHabitOverview(); closeSettings(); closeMilestone();
+      closeShop(); closeHistory(); closeStats(); closeAchievements(); closeHabitOverview(); closeNotes(); closeSettings(); closeMilestone();
       updateModalScrollLock();
     }
 
@@ -7852,6 +9679,10 @@ const newItem={
     function closeManualXpModal(){ document.getElementById('manualXpModal').classList.remove('active'); updateModalScrollLock(); }
 
     function applyManualXp(){
+      if(isExcludedDay(todayStr())){
+        showToast('Urlaub/Krankheit: Heute wird ignoriert');
+        return;
+      }
       const amount = parseInt(document.getElementById('manualXpInput').value);
       if(!Number.isFinite(amount) || amount===0){
         showToast('Enter a non-zero number');
@@ -8374,6 +10205,10 @@ const newItem={
 
       const targetDateStr = /^\d{4}-\d{2}-\d{2}$/.test(String(dateStr || '')) ? String(dateStr) : todayStr();
       const targetLabel = getLootboxDateLabel(targetDateStr);
+      if(isExcludedDay(targetDateStr)){
+        showToast(`Urlaub/Krankheit: ${targetLabel} wird ignoriert`);
+        return;
+      }
       const progress = getHabitProgressForDate(targetDateStr);
       const openedState = ensureLootboxStateForDate(targetDateStr);
       if(openedState[boxId]){
@@ -8458,6 +10293,7 @@ const newItem={
       updateModalScrollLock();
       state.currentWeekStart=new Date();
       state.currentWeekStart.setDate(state.currentWeekStart.getDate()-state.currentWeekStart.getDay());
+      historyExpandedDays = {};
       renderWeekView();
     }
     function closeHistory(){ document.getElementById('historyModal').classList.remove('active'); updateModalScrollLock(); }
@@ -8468,6 +10304,12 @@ const newItem={
 
     function renderWeekView(){
       renderWeekViewInto('weekViewContent','calendarWeekRange');
+    }
+    function toggleHistoryDay(dateStr){
+      const ds=normalizeDateOnly(dateStr);
+      if(!ds) return;
+      historyExpandedDays[ds] = !historyExpandedDays[ds];
+      renderWeekView();
     }
 
     function renderWeekViewInto(containerId, rangeId){
@@ -8492,14 +10334,18 @@ const newItem={
         const isFuture = date > new Date(new Date().setHours(0,0,0,0));
         const isFrozen = hasDayFreeze(ds);
         const isRest = isRestDay(ds);
+        const isExcluded = isExcludedDay(ds);
+        const isOpen = !!historyExpandedDays[ds];
 
         const scheduled = state.habits.filter(h => shouldHabitExistOnDate(h, date));
         const dayObj = ensureDay(ds);
-        getDailyHabitCoinReward(ds);
+        if(!isExcluded) getDailyHabitCoinReward(ds);
 
-        const oneTimes = state.oneTimeTasks.filter(t => !isAlwaysTask(t) && t.dueDate === ds);
+        const oneTimes = isExcluded ? [] : state.oneTimeTasks.filter(t => !isAlwaysTask(t) && t.dueDate === ds);
 
-        const habitItemsHtml = scheduled.length===0
+        const habitItemsHtml = isExcluded
+          ? `<div style="color:var(--text-secondary);font-size:.875rem;font-style:italic;font-weight:800;">Urlaub/Krankheit: Tag wird ignoriert</div>`
+          : scheduled.length===0
           ? `<div style="color:var(--text-secondary);font-size:.875rem;font-style:italic;font-weight:800;">${isRest?'Rest day / excluded':'No habits'}</div>`
           : scheduled.map(h=>{
               const done = isCompleted('habit',h.id,ds);
@@ -8538,22 +10384,35 @@ const newItem={
         const itemsHtml = habitItemsHtml + oneTimeHtml;
 
         const restBadge = isRest ? `<span style="color:var(--yellow);font-weight:900;">Rest Day</span>` : '';
+        const excludedBadge = isExcluded ? `<span class="week-excluded-badge">Urlaub/Krankheit</span>` : '';
 
         return `
-          <div class="week-day" style="${isToday?'border:2px solid var(--primary);':''}">
+          <div class="week-day ${isExcluded?'excluded':''} ${isOpen?'':'collapsed'}" style="${isToday?'border:2px solid var(--primary);':''}">
             <div class="week-day-header">
-              <span>${dayNames[date.getDay()]}${isToday?' (Today)':''} ${restBadge}</span>
+              <span>${dayNames[date.getDay()]}${isToday?' (Today)':''} ${restBadge} ${excludedBadge}</span>
               <div class="week-day-tools">
+                <button
+                  class="week-collapse-btn"
+                  type="button"
+                  onclick="toggleHistoryDay('${ds}')"
+                  aria-expanded="${isOpen?'true':'false'}"
+                  aria-label="${isOpen?'Tag einklappen':'Tag aufklappen'}"
+                >${isOpen ? '-' : '+'}</button>
                 <span class="week-day-date">${date.toLocaleDateString()}</span>
+                <button
+                  class="week-excluded-btn ${isExcluded?'active':''}"
+                  onclick="toggleExcludedDayForDate('${ds}')"
+                  ${isFuture ? 'disabled' : ''}
+                >${isExcluded ? 'Aktiv' : 'Urlaub/Krankheit'}</button>
                 <button
                   class="week-rest-btn ${isRest?'active':''}"
                   onclick="toggleRestDayForDate('${ds}')"
-                  ${isFuture ? 'disabled' : ''}
+                  ${(isFuture || isExcluded) ? 'disabled' : ''}
                 >${isRest ? 'Rest Day On' : 'Rest Day'}</button>
                 <button
                   class="week-freeze-btn ${isFrozen?'active':''}"
                   onclick="applyStreakFreezeForDay('${ds}')"
-                  ${(!isFuture && (isFrozen || (state.streakFreezes || 0) > 0)) ? '' : 'disabled'}
+                  ${(!isFuture && !isExcluded && (isFrozen || (state.streakFreezes || 0) > 0)) ? '' : 'disabled'}
                 >${isFrozen ? 'Frozen' : `Freeze (${state.streakFreezes || 0})`}</button>
               </div>
             </div>
@@ -8567,6 +10426,10 @@ const newItem={
     function applyStreakFreezeForDay(dateStr){
       const target = new Date(dateStr+'T00:00:00');
       const today = new Date(); today.setHours(0,0,0,0);
+      if(isExcludedDay(dateStr)){
+        showToast('Urlaub/Krankheit: Dieser Tag braucht keinen Freeze');
+        return;
+      }
       if(target > today){
         showToast('You can only freeze today or past days');
         return;
@@ -8595,6 +10458,10 @@ const newItem={
     function toggleHabitInHistory(habitId, dateStr){
       const h=state.habits.find(x=>x.id===habitId);
       if(!h) return;
+      if(isExcludedDay(dateStr)){
+        showToast('Urlaub/Krankheit: Dieser Tag wird ignoriert');
+        return;
+      }
 
       ensureDay(dateStr);
       const target = getHabitBoxProgress('habit', habitId, dateStr)>0 ? 0 : getHabitBoxCount(h);
@@ -8608,6 +10475,10 @@ const newItem={
     function toggleOneTimeInHistory(taskId, dateStr){
       const t=state.oneTimeTasks.find(x=>x.id===taskId);
       if(!t) return;
+      if(isExcludedDay(dateStr)){
+        showToast('Urlaub/Krankheit: Tasks zaehlen an diesem Tag nicht');
+        return;
+      }
 
       const wasDone = !!t.completed;
       const ds = wasDone ? getTaskCompletionDateKey(t, dateStr) : (normalizeDateOnly(dateStr) || todayStr());
@@ -8696,7 +10567,8 @@ const newItem={
 
     function updateStatsModal(){
       const totalCompleted =
-        Object.values(state.completionData).reduce((sum,day)=>{
+        Object.entries(state.completionData).reduce((sum,[ds,day])=>{
+          if(isExcludedDay(ds)) return sum;
           const items=day.items||{};
           return sum + Object.entries(items).filter(([k,v])=>v===true && /^(H|T):/.test(k)).length;
         },0);
@@ -8705,11 +10577,12 @@ const newItem={
 
       let perfectDays=0;
       Object.keys(state.completionData).forEach(ds=>{
+        if(isExcludedDay(ds)) return;
         const date=new Date(ds+'T00:00:00');
         if(isPerfectDay(date)) perfectDays++;
       });
 
-      document.getElementById('statTotalXp').textContent = state.xp;
+      document.getElementById('statTotalXp').textContent = getCountedTotalXp();
       document.getElementById('statTotalCompleted').textContent = totalCompleted;
       document.getElementById('statBestStreak').textContent = bestStreak;
       document.getElementById('statPerfectDays').textContent = perfectDays;
@@ -8737,6 +10610,11 @@ const newItem={
       for(let i=6;i>=0;i--){
         const d=new Date(today); d.setDate(d.getDate()-i);
         const ds=formatDate(d);
+        if(isExcludedDay(ds)){
+          labels.push(d.toLocaleDateString(undefined,{month:'short',day:'numeric'}));
+          points.push({done:0, total:0, pct:0});
+          continue;
+        }
         const day=ensureDay(ds);
         const done = Object.entries(day.items||{})
           .filter(([k,v])=>v===true && (/^(H|T):/.test(k)))
@@ -8823,6 +10701,11 @@ const newItem={
       for(let i=6;i>=0;i--){
         const d=new Date(today); d.setDate(d.getDate()-i);
         const ds=formatDate(d);
+        if(isExcludedDay(ds)){
+          labels.push(d.toLocaleDateString(undefined,{month:'short',day:'numeric'}));
+          points.push({done:0, total:0, pct:0});
+          continue;
+        }
         const day=ensureDay(ds);
         const scheduledHabitList = getScheduledHabits(d);
         const scheduledHabitIds = new Set(scheduledHabitList.map(habit=>String(habit.id)));
@@ -8906,6 +10789,143 @@ const newItem={
       const nav=document.getElementById('habitOverviewNav');
       if(nav) nav.classList.remove('active');
       updateModalScrollLock();
+    }
+
+    function sanitizeNoteText(value){
+      return String(value || '')
+        .replace(/\r/g, '')
+        .replace(/[ \t]+/g, ' ')
+        .replace(/\n{3,}/g, '\n\n')
+        .trim()
+        .slice(0, 280);
+    }
+
+    function ensureNotesState(){
+      const rawNotes = Array.isArray(state.notes) ? state.notes : [];
+      const seen = new Set();
+      state.notes = rawNotes.map(note=>{
+        const rawId = String(note && note.id || '').trim();
+        let id = rawId || createShopUid('note');
+        if(seen.has(id)) id = createShopUid('note');
+        seen.add(id);
+        return {
+          id,
+          text: sanitizeNoteText(note && note.text),
+          pinned: !!(note && note.pinned),
+          createdAt: Number(note && note.createdAt) || Date.now(),
+          pinnedAt: Number(note && note.pinnedAt) || 0
+        };
+      }).filter(note=>note.text);
+    }
+
+    function getSortedNotes(){
+      ensureNotesState();
+      return [...state.notes].sort((a,b)=>{
+        if(!!a.pinned !== !!b.pinned) return a.pinned ? -1 : 1;
+        if(a.pinned && b.pinned){
+          const pinDiff = (Number(b.pinnedAt) || 0) - (Number(a.pinnedAt) || 0);
+          if(pinDiff) return pinDiff;
+        }
+        return (Number(b.createdAt) || 0) - (Number(a.createdAt) || 0);
+      });
+    }
+
+    function formatNoteTime(ts){
+      const d = new Date(Number(ts) || Date.now());
+      if(Number.isNaN(d.getTime())) return '';
+      return d.toLocaleDateString('de-DE', { day:'2-digit', month:'2-digit', year:'numeric' });
+    }
+
+    function renderNotes(){
+      const list=document.getElementById('notesList');
+      if(!list) return;
+      const notes = getSortedNotes();
+      if(!notes.length){
+        list.innerHTML = '<div class="notes-empty">Keine Notizen.</div>';
+        return;
+      }
+      list.innerHTML = notes.map(note=>`
+        <div class="note-item${note.pinned ? ' pinned' : ''}">
+          <button class="note-done-btn" type="button" onclick="completeNote(${inlineJsonString(note.id)})" title="Abhaken und entfernen" aria-label="Abhaken und entfernen">&#10003;</button>
+          <div>
+            <div class="note-text">${escapeHtml(note.text)}</div>
+            <div class="note-meta">${note.pinned ? 'Angepinnt' : 'Notiz'} - ${escapeHtml(formatNoteTime(note.createdAt))}</div>
+          </div>
+          <button class="note-pin-btn${note.pinned ? ' active' : ''}" type="button" onclick="toggleNotePinned(${inlineJsonString(note.id)})" title="Oben anpinnen" aria-label="Oben anpinnen">PIN</button>
+        </div>
+      `).join('');
+      initInteractiveUi(list);
+    }
+
+    function bindNotesInput(){
+      const input=document.getElementById('noteTextInput');
+      if(!input || input.dataset.noteBound) return;
+      input.dataset.noteBound = '1';
+      input.addEventListener('keydown', ev=>{
+        if((ev.ctrlKey || ev.metaKey) && ev.key==='Enter'){
+          ev.preventDefault();
+          addNote();
+        }
+      });
+    }
+
+    function openNotes(){
+      ensureNotesState();
+      renderNotes();
+      bindNotesInput();
+      const modal=document.getElementById('notesModal');
+      if(modal) modal.classList.add('active');
+      const nav=document.getElementById('notesNav');
+      if(nav) nav.classList.add('active');
+      updateModalScrollLock();
+      setTimeout(()=>document.getElementById('noteTextInput')?.focus(), 0);
+    }
+
+    function closeNotes(){
+      const modal=document.getElementById('notesModal');
+      if(modal) modal.classList.remove('active');
+      const nav=document.getElementById('notesNav');
+      if(nav) nav.classList.remove('active');
+      updateModalScrollLock();
+    }
+
+    function addNote(){
+      ensureNotesState();
+      const input=document.getElementById('noteTextInput');
+      const text=sanitizeNoteText(input && input.value);
+      if(!text){ showToast('Bitte Notiz eingeben'); return; }
+      state.notes.push({
+        id:createShopUid('note'),
+        text,
+        pinned:false,
+        createdAt:Date.now(),
+        pinnedAt:0
+      });
+      if(input) input.value='';
+      renderNotes();
+      saveData();
+      showToast('Notiz erstellt');
+    }
+
+    function completeNote(noteId){
+      ensureNotesState();
+      const before = state.notes.length;
+      state.notes = state.notes.filter(note=>String(note.id)!==String(noteId));
+      if(state.notes.length===before) return;
+      renderNotes();
+      saveData();
+      showToast('Notiz abgehakt');
+    }
+
+    function toggleNotePinned(noteId){
+      ensureNotesState();
+      const note = state.notes.find(entry=>String(entry.id)===String(noteId));
+      if(!note) return;
+      note.pinned = !note.pinned;
+      note.pinnedAt = note.pinned ? Date.now() : 0;
+      renderNotes();
+      saveData();
+      showToast(note.pinned ? 'Notiz angepinnt' : 'Pin entfernt');
     }
 
     function updateModalScrollLock(){
@@ -9284,6 +11304,7 @@ const newItem={
       if(declaredStart) return declaredStart;
       let firstStoredDate='';
       Object.keys(state.completionData||{}).sort().some(ds=>{
+        if(isExcludedDay(ds)) return false;
         const day=state.completionData[ds] || {};
         const hasStoredProgress=!!(day.itemProgress && Object.prototype.hasOwnProperty.call(day.itemProgress,key));
         const hasStoredDone=!!(day.items && Object.prototype.hasOwnProperty.call(day.items,key));
@@ -9299,6 +11320,7 @@ const newItem={
 
     function isHabitScheduledForOverview(item,type,date,startOverride=''){
       const dateStr=formatDate(date);
+      if(isExcludedDay(dateStr)) return false;
       const start=normalizeDateOnly(startOverride) || normalizeDateOnly(item.startDate) || (item.createdAt ? normalizeDateOnly(item.createdAt) : '');
       if(start && dateStr < start) return false;
       const deletedAt=normalizeDateOnly(item.deletedAt);
@@ -9312,6 +11334,7 @@ const newItem={
     }
 
     function getStoredHabitProgress(item,type,dateStr){
+      if(isExcludedDay(dateStr)) return 0;
       const day=(state.completionData||{})[dateStr];
       if(!day) return 0;
       const key=keyFor(type,item.id);
@@ -9816,11 +11839,13 @@ function renderHabitOverviewMetric(value,label){
       state.currentTab = 'habits';
       state.completionData = state.completionData || {};
       state.restDays = state.restDays || {};
+      ensureExcludedDayState();
       state.miniHabitMode = !!state.miniHabitMode;
       state.habits = Array.isArray(state.habits) ? state.habits : [];
       state.extraHabits = Array.isArray(state.extraHabits) ? state.extraHabits : [];
       state.oneTimeTasks = Array.isArray(state.oneTimeTasks) ? state.oneTimeTasks : [];
       state.oneTimeTasks.forEach(normalizeTaskRecord);
+      ensureNotesState();
       state.categories = (Array.isArray(state.categories) && state.categories.length)
         ? state.categories
         : JSON.parse(JSON.stringify(DEFAULT_CATEGORIES));
@@ -9862,6 +11887,8 @@ function renderHabitOverviewMetric(value,label){
       if(achievementsModal && achievementsModal.classList.contains('active')) renderNewAchievementsGrid();
       const habitOverviewModal = document.getElementById('habitOverviewModal');
       if(habitOverviewModal && habitOverviewModal.classList.contains('active')) updateHabitOverview();
+      const notesModal = document.getElementById('notesModal');
+      if(notesModal && notesModal.classList.contains('active')) renderNotes();
       const shopModal = document.getElementById('shopModal');
       if(shopModal && shopModal.classList.contains('active')) renderShopItems();
       const historyModal = document.getElementById('historyModal');
@@ -9949,6 +11976,7 @@ function renderHabitOverviewMetric(value,label){
           state.appName = normalizeAppName(state.appName);
           state.completionData = state.completionData || {};
           state.restDays = state.restDays || {};
+          ensureExcludedDayState();
           state.miniHabitMode = !!state.miniHabitMode;
           state.habits = state.habits || [];
           state.taskCoinNoDropBonus = normalizeTaskCoinNoDropBonus(state.taskCoinNoDropBonus);
@@ -9968,6 +11996,7 @@ state.habits.forEach(h=>{
           state.extraHabits.forEach(normalizeHabitRecord);
           state.oneTimeTasks = state.oneTimeTasks || [];
           state.oneTimeTasks.forEach(normalizeTaskRecord);
+          ensureNotesState();
           state.categories = (Array.isArray(state.categories) && state.categories.length)
             ? state.categories
             : JSON.parse(JSON.stringify(DEFAULT_CATEGORIES));
@@ -10028,10 +12057,12 @@ state.habits.forEach(h=>{
 
         state.completionData = state.completionData || {};
         state.restDays = state.restDays || {};
+        ensureExcludedDayState();
         state.miniHabitMode = !!state.miniHabitMode;
         state.extraHabits = state.extraHabits || [];
         state.oneTimeTasks = state.oneTimeTasks || [];
         state.oneTimeTasks.forEach(normalizeTaskRecord);
+        ensureNotesState();
         state.habits = state.habits || [];
         state.manualXpLog = Array.isArray(state.manualXpLog) ? state.manualXpLog : [];
         state.taskCoinNoDropBonus = normalizeTaskCoinNoDropBonus(state.taskCoinNoDropBonus);
@@ -10090,7 +12121,7 @@ state.habits.forEach(h=>{
     document.addEventListener('keydown', (e)=>{
       if(e.key==='Escape'){
         closeModal(); closeCategoryManager(); closeEditModal(); closeManualXpModal();
-        closeShop(); closeHistory(); closeStats(); closeAchievements(); closeHabitOverview(); closeSettings(); closeMilestone();
+        closeShop(); closeHistory(); closeStats(); closeAchievements(); closeHabitOverview(); closeNotes(); closeSettings(); closeMilestone();
         closeLootboxAnimationOverlay();
         updateModalScrollLock();
       }
