@@ -430,7 +430,7 @@
       color:#9a3412;font-size:.8rem;font-weight:900;white-space:nowrap
     }
     .shop-tabbar{
-      position:sticky;top:74px;z-index:7;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.45rem;padding:.35rem;border-radius:20px;
+      position:sticky;top:74px;z-index:7;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.45rem;padding:.35rem;border-radius:20px;
       border:1px solid #ffedd5;background:rgba(255,255,255,.9);box-shadow:0 12px 24px rgba(31,41,55,.06);backdrop-filter:blur(10px)
     }
     .shop-tab-btn{
@@ -647,6 +647,34 @@
     .shop-buy-btn.lootbox-open-btn:disabled{
       background:#f8fafc;color:#94a3b8;border-color:#e5e7eb;box-shadow:none
     }
+    .youtube-shop-layout{display:grid;grid-template-columns:minmax(260px,.9fr) minmax(300px,1.1fr);gap:1rem;align-items:start}
+    .youtube-shop-builder{position:sticky;top:144px}
+    .youtube-shop-preview{
+      min-height:112px;border:1px dashed #fecaca;border-radius:18px;background:#fffafa;overflow:hidden;
+      display:grid;place-items:center;color:#9f1239;font-size:.8rem;font-weight:900;text-align:center
+    }
+    .youtube-shop-preview.ready{grid-template-columns:150px 1fr;text-align:left;place-items:stretch;background:#fff}
+    .youtube-shop-preview img{width:100%;height:100%;min-height:112px;object-fit:cover;background:#f3f4f6}
+    .youtube-preview-copy{display:grid;align-content:center;gap:.28rem;padding:.75rem;min-width:0}
+    .youtube-preview-title{font-size:.9rem;font-weight:900;color:#111827;line-height:1.2;overflow-wrap:anywhere}
+    .youtube-preview-id{font-size:.7rem;font-weight:900;color:#9a3412;letter-spacing:.2px}
+    .youtube-sync-card{display:grid;gap:.62rem;padding:.82rem;border:1px solid #ffedd5;border-radius:18px;background:#fffdfb}
+    .youtube-sync-head{display:flex;align-items:center;justify-content:space-between;gap:.55rem;flex-wrap:wrap}
+    .youtube-sync-title{font-size:.82rem;font-weight:900;color:#7c2d12}
+    .youtube-sync-status{font-size:.7rem;font-weight:900;padding:.2rem .52rem;border-radius:999px;border:1px solid #fecaca;background:#fff1f2;color:#be123c}
+    .youtube-sync-status.ready{border-color:#bbf7d0;background:#f0fdf4;color:#15803d}
+    .youtube-sync-actions{display:flex;gap:.45rem;flex-wrap:wrap}
+    .youtube-sync-actions .shop-mini-btn{min-width:140px}
+    .youtube-sync-actions a{text-decoration:none;text-align:center}
+    .youtube-library{display:grid;gap:.7rem}
+    .youtube-library-card{display:grid;grid-template-columns:132px minmax(0,1fr);gap:.75rem;align-items:stretch;border:1px solid #ffedd5;border-radius:18px;background:#fff;overflow:hidden;box-shadow:0 8px 18px rgba(31,41,55,.04)}
+    .youtube-library-card img{width:100%;height:100%;min-height:92px;object-fit:cover;background:#f3f4f6}
+    .youtube-library-copy{display:grid;align-content:center;gap:.3rem;padding:.68rem .7rem .68rem 0;min-width:0}
+    .youtube-library-title{font-size:.86rem;font-weight:900;color:#111827;line-height:1.2;overflow-wrap:anywhere}
+    .youtube-library-meta{font-size:.7rem;font-weight:800;color:#6b7280}
+    .youtube-library-actions{display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;margin-top:.12rem}
+    .youtube-library-actions a{text-decoration:none;text-align:center}
+    .youtube-price-row{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.56rem .7rem;border:1px solid #fecaca;border-radius:15px;background:#fffafa;color:#9f1239;font-size:.8rem;font-weight:900}
 
     .settings-shell{display:grid;gap:1rem}
     .settings-card{
@@ -1697,6 +1725,10 @@
         background:transparent;
       }
       .shop-grid{grid-template-columns:1fr;gap:.7rem}
+      .youtube-shop-layout{grid-template-columns:1fr}
+      .youtube-shop-builder{position:static}
+      .youtube-shop-preview.ready{grid-template-columns:118px 1fr}
+      .youtube-library-card{grid-template-columns:105px minmax(0,1fr)}
       .shop-card,.shop-category-section,.shop-owned-shell{
         border-radius:16px;
         padding:.82rem;
@@ -2337,6 +2369,9 @@
             <button class="shop-tab-btn" type="button" data-shop-tab="one_time" onclick="switchShopTab('one_time')">
               <span>One-Time</span>
             </button>
+            <button class="shop-tab-btn" type="button" data-shop-tab="youtube" onclick="switchShopTab('youtube')">
+              <span>YouTube</span>
+            </button>
             <button class="shop-tab-btn plus-tab" type="button" data-shop-tab="create" onclick="switchShopTab('create')" title="Neuen Gegenstand erstellen">
               <span>+</span>
             </button>
@@ -2357,6 +2392,42 @@
             <div class="shop-section-title">One-Time Purchase Gegenstaende</div>
             <div class="shop-grid" id="shopOneTimeGrid"></div>
             <div id="shopOneTimeOwned"></div>
+          </div>
+
+          <div class="shop-tab-panel" data-shop-tab-panel="youtube">
+            <div class="shop-section-title">YouTube Videos</div>
+            <div class="youtube-shop-layout">
+              <div class="shop-item-builder youtube-shop-builder">
+                <div class="shop-builder-head">
+                  <div class="shop-builder-title">Video dauerhaft freischalten</div>
+                  <div class="shop-builder-subtitle">Fuege einen YouTube-Link ein. Die Freischaltung gilt danach auf allen verbundenen Geraeten.</div>
+                </div>
+                <div>
+                  <label class="shop-builder-label" for="youtubeVideoLink">YouTube-Link</label>
+                  <input type="url" id="youtubeVideoLink" class="form-input" placeholder="https://www.youtube.com/watch?v=..." maxlength="500" oninput="updateYoutubePurchasePreview()">
+                </div>
+                <div>
+                  <label class="shop-builder-label" for="youtubeVideoTitle">Titel (optional)</label>
+                  <input type="text" id="youtubeVideoTitle" class="form-input" placeholder="z.B. Lieblingsvideo" maxlength="100" oninput="updateYoutubePurchasePreview()">
+                </div>
+                <div class="youtube-shop-preview" id="youtubeVideoPreview">Fuege einen gueltigen Link ein.</div>
+                <div class="youtube-price-row"><span>Einmaliger Preis</span><span id="youtubeVideoPrice">10 Coins</span></div>
+                <button class="shop-buy-btn" id="youtubePurchaseButton" type="button" onclick="buyYoutubeVideo()" disabled>Link eingeben</button>
+                <div class="youtube-sync-card">
+                  <div class="youtube-sync-head"><div class="youtube-sync-title">Geraete-Synchronisierung</div><div class="youtube-sync-status" id="youtubeSyncStatus">Nicht verbunden</div></div>
+                  <div class="shop-builder-subtitle" id="youtubeSyncHint">Supabase Auto Sync muss fuer geraeteuebergreifende Kaeufe aktiv sein.</div>
+                  <div class="youtube-sync-actions">
+                    <button class="shop-mini-btn" type="button" onclick="copyYoutubeExtensionSetup()">Extension-Setup kopieren</button>
+                    <button class="shop-mini-btn" type="button" onclick="syncYoutubeUnlocksFromSupabase({silent:false})">Jetzt aktualisieren</button>
+                    <a class="shop-mini-btn" href="feelwrite-youtube-extension.zip" download>Extension herunterladen</a>
+                  </div>
+                </div>
+              </div>
+              <div class="shop-owned-shell">
+                <div class="shop-owned-head"><div class="shop-owned-title">Freigeschaltete Videos</div><div class="shop-owned-active" id="youtubeUnlockCount">0 Videos</div></div>
+                <div class="youtube-library" id="youtubeVideoLibrary"></div>
+              </div>
+            </div>
           </div>
 
           <div class="shop-tab-panel" data-shop-tab-panel="create">
@@ -2637,6 +2708,7 @@
       shopOwnedItems: [],
       shopActiveItems: {},
       shopCurrentTab: 'lootboxen',
+      youtubeUnlocks: [],
 
       habits: [],
       extraHabits: [],
@@ -2826,7 +2898,9 @@
     ];
     const NEW_ACHIEVEMENT_DEFS = NEW_ACHIEVEMENT_TIERS.flatMap(tier=>tier.achievements.map(entry=>({ ...entry, tier:tier.id })));
     const NEW_ACHIEVEMENT_BY_ID = Object.fromEntries(NEW_ACHIEVEMENT_DEFS.map(entry=>[entry.id, entry]));
-    const SHOP_TABS = ['lootboxen','always','one_time','create'];
+    const SHOP_TABS = ['lootboxen','always','one_time','youtube','create'];
+    const YOUTUBE_VIDEO_PRICE = 10;
+    const YOUTUBE_UNLOCK_SYNC_INTERVAL_MS = 15000;
     const TASK_DIFFICULTY_META = {
       easy: { label: 'Einfach', color: 'var(--blue)', baseChance: 0.30 },
       medium: { label: 'Mittel', color: '#f59e0b', baseChance: 0.45 },
@@ -3000,6 +3074,10 @@
     let editingShopCustomItemId = null;
     let lootboxAnimationBusy = false;
     let activeLootboxAnimation = null;
+    let youtubePurchaseBusy = false;
+    let youtubeUnlockSyncBusy = false;
+    let youtubeUnlockSyncTimer = null;
+    let youtubeUnlockLastSyncedAt = 0;
 
     // --- Init ---
     document.addEventListener('DOMContentLoaded', async () => {
@@ -3041,6 +3119,8 @@
       initInteractiveUi(document);
       setupValuePulseObservers();
       await autoLoadCloudOnStart();
+      await syncYoutubeUnlocksFromSupabase({ silent:true });
+      startYoutubeUnlockCloudPolling();
     });
 
     // --- UI helpers ---
@@ -4045,6 +4125,47 @@ function normalizeStreakFreezeState(sourceData){
     function sanitizeShopText(value, maxLen=80){
       return String(value || '').replace(/\s+/g, ' ').trim().slice(0, maxLen);
     }
+    function normalizeYoutubeVideoId(value){
+      const raw = String(value || '').trim();
+      return /^[a-zA-Z0-9_-]{11}$/.test(raw) ? raw : '';
+    }
+    function extractYoutubeVideoId(value){
+      const raw = String(value || '').trim();
+      const directId = normalizeYoutubeVideoId(raw);
+      if(directId) return directId;
+      if(!raw) return '';
+      let parsed;
+      try{ parsed = new URL(/^https?:\/\//i.test(raw) ? raw : `https://${raw}`); }
+      catch(e){ return ''; }
+      const host = parsed.hostname.toLowerCase().replace(/^www\./, '');
+      if(host==='youtu.be') return normalizeYoutubeVideoId(parsed.pathname.split('/').filter(Boolean)[0]);
+      if(!['youtube.com','m.youtube.com','music.youtube.com','youtube-nocookie.com'].includes(host)) return '';
+      const queryId = normalizeYoutubeVideoId(parsed.searchParams.get('v'));
+      if(queryId) return queryId;
+      const parts = parsed.pathname.split('/').filter(Boolean);
+      if(['shorts','live','embed'].includes(parts[0])) return normalizeYoutubeVideoId(parts[1]);
+      return '';
+    }
+    function getCanonicalYoutubeUrl(videoId){
+      const normalized = normalizeYoutubeVideoId(videoId);
+      return normalized ? `https://www.youtube.com/watch?v=${normalized}` : '';
+    }
+    function normalizeYoutubeUnlock(raw){
+      if(!raw || typeof raw !== 'object') return null;
+      const videoId = normalizeYoutubeVideoId(raw.videoId || raw.video_id || extractYoutubeVideoId(raw.url));
+      if(!videoId) return null;
+      return { videoId, url:getCanonicalYoutubeUrl(videoId), title:sanitizeShopText(raw.title,100) || `YouTube Video ${videoId}`, cost:Math.max(0,Math.floor(Number(raw.cost)||YOUTUBE_VIDEO_PRICE)), purchasedAt:Number(raw.purchasedAt||raw.purchased_at)||Date.now() };
+    }
+    function mergeYoutubeUnlocks(...collections){
+      const byId = new Map();
+      collections.flat().forEach(raw=>{
+        const unlock = normalizeYoutubeUnlock(raw);
+        if(!unlock) return;
+        const existing = byId.get(unlock.videoId);
+        if(!existing || unlock.purchasedAt < existing.purchasedAt) byId.set(unlock.videoId, unlock);
+      });
+      return [...byId.values()].sort((a,b)=>b.purchasedAt-a.purchasedAt);
+    }
     function normalizeShopId(value){
       return sanitizeShopText(value, 72).replace(/[^a-zA-Z0-9_-]/g, '_');
     }
@@ -4192,6 +4313,7 @@ function normalizeStreakFreezeState(sourceData){
         if(!Number.isFinite(state.shopPurchases[item.id])) state.shopPurchases[item.id] = 0;
         state.shopPurchases[item.id] = Math.max(0, Math.floor(state.shopPurchases[item.id]));
       });
+      state.youtubeUnlocks = mergeYoutubeUnlocks(Array.isArray(state.youtubeUnlocks) ? state.youtubeUnlocks : []);
       if(!SHOP_TABS.includes(state.shopCurrentTab)){
         state.shopCurrentTab = 'lootboxen';
       }
@@ -9559,6 +9681,7 @@ const newItem={
         updateShopCategoryDropdown();
       }
       renderShopItems();
+      if(state.shopCurrentTab==='youtube') syncYoutubeUnlocksFromSupabase({ silent:true });
     }
     function updateShopTabUi(){
       const activeTab = SHOP_TABS.includes(state.shopCurrentTab) ? state.shopCurrentTab : 'lootboxen';
@@ -10122,6 +10245,249 @@ const newItem={
       updateModalScrollLock();
     }
     function closeShop(){ document.getElementById('shopModal').classList.remove('active'); updateModalScrollLock(); }
+    function getYoutubeSyncState(){
+      const config = getSupabaseSyncConfig();
+      const configured = isSupabaseSyncConfigured(config);
+      return {
+        config,
+        configured,
+        ready:configured && !!config.autoSync
+      };
+    }
+    function updateYoutubePurchasePreview(){
+      ensureShopState();
+      const linkInput = document.getElementById('youtubeVideoLink');
+      const titleInput = document.getElementById('youtubeVideoTitle');
+      const preview = document.getElementById('youtubeVideoPreview');
+      const buyButton = document.getElementById('youtubePurchaseButton');
+      if(!linkInput || !preview || !buyButton) return;
+
+      const videoId = extractYoutubeVideoId(linkInput.value);
+      const title = sanitizeShopText(titleInput?.value, 100) || (videoId ? `YouTube Video ${videoId}` : '');
+      const alreadyUnlocked = !!videoId && state.youtubeUnlocks.some(entry=>entry.videoId===videoId);
+      const syncState = getYoutubeSyncState();
+      const hasCoins = state.coins >= YOUTUBE_VIDEO_PRICE;
+
+      if(videoId){
+        preview.classList.add('ready');
+        preview.innerHTML = `
+          <img src="https://i.ytimg.com/vi/${videoId}/hqdefault.jpg" alt="YouTube Vorschau" loading="lazy">
+          <div class="youtube-preview-copy">
+            <div class="youtube-preview-title">${escapeHtml(title)}</div>
+            <div class="youtube-preview-id">Video-ID: ${videoId}</div>
+          </div>
+        `;
+      } else {
+        preview.classList.remove('ready');
+        preview.textContent = linkInput.value.trim() ? 'Dieser YouTube-Link ist nicht gueltig.' : 'Fuege einen gueltigen Link ein.';
+      }
+
+      let buttonText = `Buy for ${YOUTUBE_VIDEO_PRICE} Coins`;
+      if(youtubePurchaseBusy) buttonText = 'Kauf wird gespeichert...';
+      else if(!videoId) buttonText = 'Link eingeben';
+      else if(alreadyUnlocked) buttonText = 'Bereits freigeschaltet';
+      else if(!syncState.ready) buttonText = 'Cloud Auto Sync aktivieren';
+      else if(!hasCoins) buttonText = 'Not enough Coins';
+      buyButton.textContent = buttonText;
+      buyButton.disabled = youtubePurchaseBusy || !videoId || alreadyUnlocked || !syncState.ready || !hasCoins;
+    }
+    function renderYoutubeLibrary(){
+      const library = document.getElementById('youtubeVideoLibrary');
+      const count = document.getElementById('youtubeUnlockCount');
+      if(count) count.textContent = `${state.youtubeUnlocks.length} ${state.youtubeUnlocks.length===1 ? 'Video' : 'Videos'}`;
+      if(!library) return;
+      if(!state.youtubeUnlocks.length){
+        library.innerHTML = '<div class="shop-empty-note">Noch keine YouTube-Videos freigeschaltet.</div>';
+        return;
+      }
+      library.innerHTML = state.youtubeUnlocks.map(entry=>{
+        const purchasedAt = new Date(entry.purchasedAt);
+        const dateLabel = Number.isNaN(purchasedAt.getTime()) ? '' : purchasedAt.toLocaleDateString('de-DE');
+        return `
+          <div class="youtube-library-card">
+            <img src="https://i.ytimg.com/vi/${entry.videoId}/mqdefault.jpg" alt="YouTube Vorschau" loading="lazy">
+            <div class="youtube-library-copy">
+              <div class="youtube-library-title">${escapeHtml(entry.title)}</div>
+              <div class="youtube-library-meta">${entry.videoId}${dateLabel ? ` | Gekauft am ${escapeHtml(dateLabel)}` : ''}</div>
+              <div class="youtube-library-actions">
+                <a class="shop-mini-btn" href="${entry.url}" target="_blank" rel="noopener noreferrer">Auf YouTube oeffnen</a>
+                <span class="shop-pill use-always">Freigeschaltet</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    function renderYoutubeSyncStatus(){
+      const status = document.getElementById('youtubeSyncStatus');
+      const hint = document.getElementById('youtubeSyncHint');
+      if(!status || !hint) return;
+      const syncState = getYoutubeSyncState();
+      status.classList.toggle('ready', syncState.ready);
+      if(!syncState.configured){
+        status.textContent = 'Nicht eingerichtet';
+        hint.textContent = 'Supabase zuerst in den Einstellungen einrichten.';
+      } else if(!syncState.config.autoSync){
+        status.textContent = 'Auto Sync aus';
+        hint.textContent = 'Aktiviere Auto Sync in den Einstellungen, damit jeder Kauf sofort in die Cloud kommt.';
+      } else {
+        status.textContent = 'Cloud verbunden';
+        hint.textContent = youtubeUnlockLastSyncedAt
+          ? `Letzte Video-Aktualisierung: ${new Date(youtubeUnlockLastSyncedAt).toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit', second:'2-digit'})}`
+          : 'Freischaltungen werden automatisch auf allen Geraeten aktualisiert.';
+      }
+    }
+    function renderYoutubeShop(){
+      const price = document.getElementById('youtubeVideoPrice');
+      if(price) price.textContent = `${YOUTUBE_VIDEO_PRICE} Coins`;
+      renderYoutubeSyncStatus();
+      renderYoutubeLibrary();
+      updateYoutubePurchasePreview();
+    }
+    async function copyYoutubeExtensionSetup(){
+      const syncState = getYoutubeSyncState();
+      if(!syncState.configured){
+        showToast('Supabase zuerst in den Einstellungen einrichten');
+        return;
+      }
+      const setup = JSON.stringify({
+        version:1,
+        supabaseUrl:syncState.config.url,
+        anonKey:syncState.config.anonKey,
+        syncCode:syncState.config.syncCode,
+        trackerUrl:location.href.split('#')[0]
+      });
+      try{
+        if(navigator.clipboard && window.isSecureContext){
+          await navigator.clipboard.writeText(setup);
+        } else {
+          const area = document.createElement('textarea');
+          area.value = setup;
+          area.style.position = 'fixed';
+          area.style.opacity = '0';
+          document.body.appendChild(area);
+          area.select();
+          document.execCommand('copy');
+          area.remove();
+        }
+        showToast('Extension-Setup kopiert');
+      } catch(e){
+        console.error(e);
+        showToast('Setup konnte nicht kopiert werden');
+      }
+    }
+    async function syncYoutubeUnlocksFromSupabase(options={}){
+      const silent = options.silent!==false;
+      if(youtubeUnlockSyncBusy) return false;
+      const syncState = getYoutubeSyncState();
+      if(!syncState.configured){
+        if(!silent) showToast('Supabase Sync ist nicht eingerichtet');
+        renderYoutubeSyncStatus();
+        return false;
+      }
+      const client = getSupabaseClient();
+      if(!client) return false;
+      youtubeUnlockSyncBusy = true;
+      try{
+        const { data, error } = await client.rpc('load_youtube_unlocks', { p_sync_code:syncState.config.syncCode });
+        if(error) throw error;
+        const row = Array.isArray(data) ? data[0] : data;
+        const incoming = row && Array.isArray(row.unlocks) ? row.unlocks : [];
+        const previousCount = state.youtubeUnlocks.length;
+        state.youtubeUnlocks = mergeYoutubeUnlocks(state.youtubeUnlocks, incoming);
+        youtubeUnlockLastSyncedAt = Date.now();
+        localStorage.setItem('feelwriteData', JSON.stringify(state));
+        if(!silent){
+          const added = Math.max(0, state.youtubeUnlocks.length - previousCount);
+          showToast(added ? `${added} neue Video-Freischaltung${added===1 ? '' : 'en'} geladen` : 'YouTube-Freischaltungen sind aktuell');
+        }
+        return true;
+      } catch(e){
+        console.error('YouTube unlock sync failed', e);
+        if(!silent){
+          const message = String(e && (e.message || e.details || e.hint) || '');
+          showToast(message.includes('load_youtube_unlocks') ? 'Supabase YouTube-Funktion fehlt. SQL-Setup erneut ausfuehren.' : 'Video-Freischaltungen konnten nicht geladen werden');
+        }
+        return false;
+      } finally {
+        youtubeUnlockSyncBusy = false;
+        if(document.getElementById('shopModal')?.classList.contains('active') && state.shopCurrentTab==='youtube') renderYoutubeShop();
+      }
+    }
+    function startYoutubeUnlockCloudPolling(){
+      clearInterval(youtubeUnlockSyncTimer);
+      youtubeUnlockSyncTimer = null;
+      if(!getYoutubeSyncState().configured) return;
+      youtubeUnlockSyncTimer = setInterval(()=>{
+        if(document.visibilityState==='visible') syncYoutubeUnlocksFromSupabase({ silent:true });
+      }, YOUTUBE_UNLOCK_SYNC_INTERVAL_MS);
+    }
+    async function buyYoutubeVideo(){
+      if(youtubePurchaseBusy) return;
+      ensureShopState();
+      const syncState = getYoutubeSyncState();
+      const videoId = extractYoutubeVideoId(document.getElementById('youtubeVideoLink')?.value);
+      const title = sanitizeShopText(document.getElementById('youtubeVideoTitle')?.value, 100) || (videoId ? `YouTube Video ${videoId}` : '');
+      if(!videoId){ showToast('Bitte einen gueltigen YouTube-Link eingeben'); return; }
+      if(state.youtubeUnlocks.some(entry=>entry.videoId===videoId)){ showToast('Dieses Video ist bereits freigeschaltet'); return; }
+      if(!syncState.ready){ showToast('Fuer YouTube-Kaeufe muss Supabase Auto Sync aktiv sein'); return; }
+      if(state.coins < YOUTUBE_VIDEO_PRICE){ showToast('Not enough Coins'); return; }
+
+      const purchaseKey = `youtube_${videoId}`;
+      const previousCoins = state.coins;
+      const previousUnlocks = state.youtubeUnlocks.slice();
+      const previousLog = Array.isArray(state.shopPurchaseLog) ? state.shopPurchaseLog.slice() : [];
+      const previousPurchaseCount = Number(state.shopPurchases[purchaseKey]) || 0;
+      const purchasedAt = Date.now();
+
+      state.coins -= YOUTUBE_VIDEO_PRICE;
+      state.youtubeUnlocks = mergeYoutubeUnlocks(state.youtubeUnlocks, [{
+        videoId,
+        url:getCanonicalYoutubeUrl(videoId),
+        title,
+        cost:YOUTUBE_VIDEO_PRICE,
+        purchasedAt
+      }]);
+      state.shopPurchases[purchaseKey] = previousPurchaseCount + 1;
+      state.shopPurchaseLog.push({
+        date:todayStr(),
+        itemId:purchaseKey,
+        cost:YOUTUBE_VIDEO_PRICE,
+        createdAt:purchasedAt,
+        type:'youtube',
+        videoId
+      });
+      localStorage.setItem('feelwriteData', JSON.stringify(state));
+      youtubePurchaseBusy = true;
+      renderShopItems();
+      clearTimeout(supabaseSaveTimer);
+
+      const cloudSaved = await saveStateToSupabase(false);
+      youtubePurchaseBusy = false;
+      if(!cloudSaved){
+        state.coins = previousCoins;
+        state.youtubeUnlocks = previousUnlocks;
+        state.shopPurchaseLog = previousLog;
+        if(previousPurchaseCount>0) state.shopPurchases[purchaseKey] = previousPurchaseCount;
+        else delete state.shopPurchases[purchaseKey];
+        localStorage.setItem('feelwriteData', JSON.stringify(state));
+        renderShopItems();
+        updateLevelDisplay();
+        showToast('Kauf abgebrochen. Zuerst den aktuellen Cloud-Stand laden.');
+        return;
+      }
+
+      const linkInput = document.getElementById('youtubeVideoLink');
+      const titleInput = document.getElementById('youtubeVideoTitle');
+      if(linkInput) linkInput.value = '';
+      if(titleInput) titleInput.value = '';
+      youtubeUnlockLastSyncedAt = Date.now();
+      renderShopItems();
+      updateLevelDisplay();
+      updateStats();
+      showToast(`${title} freigeschaltet (-${YOUTUBE_VIDEO_PRICE} Coins)`);
+    }
+
     function renderShopItemsLegacy(){
       ensureShopState();
       const grid=document.getElementById('shopItemsGrid');
@@ -10179,6 +10545,7 @@ const newItem={
       if(oneTimeGrid) oneTimeGrid.innerHTML = renderRewardShopCards('one_time');
       if(alwaysOwned) alwaysOwned.innerHTML = renderOwnedShopItemsCard('always');
       if(oneTimeOwned) oneTimeOwned.innerHTML = renderOwnedShopItemsCard('one_time');
+      renderYoutubeShop();
 
       const shopCoinsEl = document.getElementById('shopCoinsValue');
       if(shopCoinsEl) shopCoinsEl.textContent = `${state.coins} Coins`;
@@ -10190,7 +10557,7 @@ const newItem={
         activeItemsEl.textContent = String(activeCount);
       }
       const availableItemsEl = document.getElementById('shopAvailableItemsValue');
-      if(availableItemsEl) availableItemsEl.textContent = String(getAllBuyableShopItems().length);
+      if(availableItemsEl) availableItemsEl.textContent = String(getAllBuyableShopItems().length + 1);
       const shopShell = document.querySelector('#shopModal .shop-shell');
       if(shopShell) initInteractiveUi(shopShell);
     }
@@ -11783,6 +12150,8 @@ function renderHabitOverviewMetric(value,label){
         return;
       }
       setSupabaseSyncConfig(config);
+      startYoutubeUnlockCloudPolling();
+      syncYoutubeUnlocksFromSupabase({ silent:true });
       showToast('Cloud sync settings saved');
     }
 
