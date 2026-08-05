@@ -675,6 +675,7 @@
     .youtube-library-actions{display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;margin-top:.12rem}
     .youtube-library-actions a{text-decoration:none;text-align:center}
     .youtube-price-row{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.56rem .7rem;border:1px solid #fecaca;border-radius:15px;background:#fffafa;color:#9f1239;font-size:.8rem;font-weight:900}
+    .youtube-price-row .form-input{width:120px;padding:.48rem .62rem;text-align:right;background:#fff}
 
     .settings-shell{display:grid;gap:1rem}
     .settings-card{
@@ -2411,7 +2412,7 @@
                   <input type="text" id="youtubeVideoTitle" class="form-input" placeholder="z.B. Lieblingsvideo" maxlength="100" oninput="updateYoutubePurchasePreview()">
                 </div>
                 <div class="youtube-shop-preview" id="youtubeVideoPreview">Fuege einen gueltigen Link ein.</div>
-                <div class="youtube-price-row"><span>Einmaliger Preis</span><span id="youtubeVideoPrice">10 Coins</span></div>
+                <div class="youtube-price-row"><label for="youtubeVideoPrice">Dein Preis (Coins)</label><input type="number" id="youtubeVideoPrice" class="form-input" value="10" min="1" max="99999" step="1" inputmode="numeric" oninput="updateYoutubePurchasePreview()"></div>
                 <button class="shop-buy-btn" id="youtubePurchaseButton" type="button" onclick="buyYoutubeVideo()" disabled>Link eingeben</button>
                 <div class="youtube-sync-card">
                   <div class="youtube-sync-head"><div class="youtube-sync-title">Geraete-Synchronisierung</div><div class="youtube-sync-status" id="youtubeSyncStatus">Nicht verbunden</div></div>
@@ -2899,7 +2900,8 @@
     const NEW_ACHIEVEMENT_DEFS = NEW_ACHIEVEMENT_TIERS.flatMap(tier=>tier.achievements.map(entry=>({ ...entry, tier:tier.id })));
     const NEW_ACHIEVEMENT_BY_ID = Object.fromEntries(NEW_ACHIEVEMENT_DEFS.map(entry=>[entry.id, entry]));
     const SHOP_TABS = ['lootboxen','always','one_time','youtube','create'];
-    const YOUTUBE_VIDEO_PRICE = 10;
+    const DEFAULT_YOUTUBE_VIDEO_PRICE = 10;
+    const MAX_YOUTUBE_VIDEO_PRICE = 99999;
     const YOUTUBE_UNLOCK_SYNC_INTERVAL_MS = 15000;
     const TASK_DIFFICULTY_META = {
       easy: { label: 'Einfach', color: 'var(--blue)', baseChance: 0.30 },
@@ -4154,7 +4156,7 @@ function normalizeStreakFreezeState(sourceData){
       if(!raw || typeof raw !== 'object') return null;
       const videoId = normalizeYoutubeVideoId(raw.videoId || raw.video_id || extractYoutubeVideoId(raw.url));
       if(!videoId) return null;
-      return { videoId, url:getCanonicalYoutubeUrl(videoId), title:sanitizeShopText(raw.title,100) || `YouTube Video ${videoId}`, cost:Math.max(0,Math.floor(Number(raw.cost)||YOUTUBE_VIDEO_PRICE)), purchasedAt:Number(raw.purchasedAt||raw.purchased_at)||Date.now() };
+      return { videoId, url:getCanonicalYoutubeUrl(videoId), title:sanitizeShopText(raw.title,100) || `YouTube Video ${videoId}`, cost:Math.max(0,Math.floor(Number(raw.cost)||DEFAULT_YOUTUBE_VIDEO_PRICE)), purchasedAt:Number(raw.purchasedAt||raw.purchased_at)||Date.now() };
     }
     function mergeYoutubeUnlocks(...collections){
       const byId = new Map();
@@ -10254,6 +10256,12 @@ const newItem={
         ready:configured && !!config.autoSync
       };
     }
+    function getYoutubeVideoPrice(){
+      const input = document.getElementById('youtubeVideoPrice');
+      const raw = String(input?.value ?? '').trim();
+      const price = Number(raw);
+      return /^\d+$/.test(raw) && Number.isInteger(price) && price>=1 && price<=MAX_YOUTUBE_VIDEO_PRICE ? price : null;
+    }
     function updateYoutubePurchasePreview(){
       ensureShopState();
       const linkInput = document.getElementById('youtubeVideoLink');
@@ -10266,7 +10274,8 @@ const newItem={
       const title = sanitizeShopText(titleInput?.value, 100) || (videoId ? `YouTube Video ${videoId}` : '');
       const alreadyUnlocked = !!videoId && state.youtubeUnlocks.some(entry=>entry.videoId===videoId);
       const syncState = getYoutubeSyncState();
-      const hasCoins = state.coins >= YOUTUBE_VIDEO_PRICE;
+      const price = getYoutubeVideoPrice();
+      const hasCoins = price!==null && state.coins >= price;
 
       if(videoId){
         preview.classList.add('ready');
@@ -10282,14 +10291,15 @@ const newItem={
         preview.textContent = linkInput.value.trim() ? 'Dieser YouTube-Link ist nicht gueltig.' : 'Fuege einen gueltigen Link ein.';
       }
 
-      let buttonText = `Buy for ${YOUTUBE_VIDEO_PRICE} Coins`;
+      let buttonText = price===null ? 'Gueltigen Preis eingeben' : `Buy for ${price} Coins`;
       if(youtubePurchaseBusy) buttonText = 'Kauf wird gespeichert...';
       else if(!videoId) buttonText = 'Link eingeben';
       else if(alreadyUnlocked) buttonText = 'Bereits freigeschaltet';
       else if(!syncState.ready) buttonText = 'Cloud Auto Sync aktivieren';
+      else if(price===null) buttonText = 'Gueltigen Preis eingeben';
       else if(!hasCoins) buttonText = 'Not enough Coins';
       buyButton.textContent = buttonText;
-      buyButton.disabled = youtubePurchaseBusy || !videoId || alreadyUnlocked || !syncState.ready || !hasCoins;
+      buyButton.disabled = youtubePurchaseBusy || !videoId || alreadyUnlocked || !syncState.ready || price===null || !hasCoins;
     }
     function renderYoutubeLibrary(){
       const library = document.getElementById('youtubeVideoLibrary');
@@ -10308,7 +10318,7 @@ const newItem={
             <img src="https://i.ytimg.com/vi/${entry.videoId}/mqdefault.jpg" alt="YouTube Vorschau" loading="lazy">
             <div class="youtube-library-copy">
               <div class="youtube-library-title">${escapeHtml(entry.title)}</div>
-              <div class="youtube-library-meta">${entry.videoId}${dateLabel ? ` | Gekauft am ${escapeHtml(dateLabel)}` : ''}</div>
+              <div class="youtube-library-meta">${entry.videoId} | ${entry.cost} Coins${dateLabel ? ` | Gekauft am ${escapeHtml(dateLabel)}` : ''}</div>
               <div class="youtube-library-actions">
                 <a class="shop-mini-btn" href="${entry.url}" target="_blank" rel="noopener noreferrer">Auf YouTube oeffnen</a>
                 <span class="shop-pill use-always">Freigeschaltet</span>
@@ -10338,8 +10348,6 @@ const newItem={
       }
     }
     function renderYoutubeShop(){
-      const price = document.getElementById('youtubeVideoPrice');
-      if(price) price.textContent = `${YOUTUBE_VIDEO_PRICE} Coins`;
       renderYoutubeSyncStatus();
       renderYoutubeLibrary();
       updateYoutubePurchasePreview();
@@ -10428,10 +10436,12 @@ const newItem={
       const syncState = getYoutubeSyncState();
       const videoId = extractYoutubeVideoId(document.getElementById('youtubeVideoLink')?.value);
       const title = sanitizeShopText(document.getElementById('youtubeVideoTitle')?.value, 100) || (videoId ? `YouTube Video ${videoId}` : '');
+      const price = getYoutubeVideoPrice();
       if(!videoId){ showToast('Bitte einen gueltigen YouTube-Link eingeben'); return; }
       if(state.youtubeUnlocks.some(entry=>entry.videoId===videoId)){ showToast('Dieses Video ist bereits freigeschaltet'); return; }
       if(!syncState.ready){ showToast('Fuer YouTube-Kaeufe muss Supabase Auto Sync aktiv sein'); return; }
-      if(state.coins < YOUTUBE_VIDEO_PRICE){ showToast('Not enough Coins'); return; }
+      if(price===null){ showToast(`Bitte einen ganzen Preis zwischen 1 und ${MAX_YOUTUBE_VIDEO_PRICE} Coins eingeben`); return; }
+      if(state.coins < price){ showToast('Not enough Coins'); return; }
 
       const purchaseKey = `youtube_${videoId}`;
       const previousCoins = state.coins;
@@ -10440,19 +10450,19 @@ const newItem={
       const previousPurchaseCount = Number(state.shopPurchases[purchaseKey]) || 0;
       const purchasedAt = Date.now();
 
-      state.coins -= YOUTUBE_VIDEO_PRICE;
+      state.coins -= price;
       state.youtubeUnlocks = mergeYoutubeUnlocks(state.youtubeUnlocks, [{
         videoId,
         url:getCanonicalYoutubeUrl(videoId),
         title,
-        cost:YOUTUBE_VIDEO_PRICE,
+        cost:price,
         purchasedAt
       }]);
       state.shopPurchases[purchaseKey] = previousPurchaseCount + 1;
       state.shopPurchaseLog.push({
         date:todayStr(),
         itemId:purchaseKey,
-        cost:YOUTUBE_VIDEO_PRICE,
+        cost:price,
         createdAt:purchasedAt,
         type:'youtube',
         videoId
@@ -10479,13 +10489,15 @@ const newItem={
 
       const linkInput = document.getElementById('youtubeVideoLink');
       const titleInput = document.getElementById('youtubeVideoTitle');
+      const priceInput = document.getElementById('youtubeVideoPrice');
       if(linkInput) linkInput.value = '';
       if(titleInput) titleInput.value = '';
+      if(priceInput) priceInput.value = String(DEFAULT_YOUTUBE_VIDEO_PRICE);
       youtubeUnlockLastSyncedAt = Date.now();
       renderShopItems();
       updateLevelDisplay();
       updateStats();
-      showToast(`${title} freigeschaltet (-${YOUTUBE_VIDEO_PRICE} Coins)`);
+      showToast(`${title} freigeschaltet (-${price} Coins)`);
     }
 
     function renderShopItemsLegacy(){
