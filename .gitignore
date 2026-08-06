@@ -4,4 +4,5 @@ feelwrite-data*.json
 *.log
 .DS_Store
 Thumbs.db
+familienboard_v2/supabase-setup.sql
 
