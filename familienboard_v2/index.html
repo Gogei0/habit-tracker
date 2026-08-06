@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#a96e3f">
+  <meta name="description" content="Mach Ma! – Aufgaben und Projekte gemeinsam auf einer digitalen Familien-Pinnwand organisieren.">
+  <title>Mach Ma!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=DM+Sans:wght@500;600;700&family=Kalam:wght@400;700&family=Permanent+Marker&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="board.css">
+</head>
+<body>
+  <a class="sprunglink" href="#hauptbereich">Zum Inhalt springen</a>
+
+  <section class="zugang-tor" id="zugang-tor" aria-labelledby="zugang-titel">
+    <div class="zugang-zettel">
+      <span class="zugang-pin" aria-hidden="true"></span>
+      <div class="zugang-logo" aria-hidden="true">MACH<br>MA!</div>
+      <small>Familienpinnwand</small>
+      <h1 id="zugang-titel">Willkommen zu Hause</h1>
+      <p id="zugang-hinweis">Familiencode und PIN eingeben. Dieses Handy merkt sich den Zugang.</p>
+      <form id="zugang-form">
+        <label class="feld"><span>Familiencode</span><input id="zugang-code" autocomplete="username" autocapitalize="characters" spellcheck="false" required></label>
+        <label class="feld"><span>PIN</span><input id="zugang-pin" type="password" inputmode="numeric" autocomplete="current-password" minlength="6" required></label>
+        <button class="papier-speichern" type="submit">Pinnwand öffnen</button>
+      </form>
+      <p class="zugang-status" id="zugang-status" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <div class="brett-buehne">
+    <main class="brett-rahmen" id="hauptbereich">
+      <div class="brett-flaeche">
+        <button class="logo-magnet" type="button" data-view="uebersicht" aria-label="Zur Tagesansicht">
+          <span class="nur-vorlesen" id="seiten-titel">Mach Ma!</span>
+        </button>
+
+        <button class="familien-dach" type="button" data-action="mitglieder-oeffnen" aria-label="Familie verwalten">
+          <span id="haushalt-name">Familie Sommer</span>
+          <small>Unser Zuhause</small>
+        </button>
+
+        <section class="brett-ansicht tagesansicht aktiv" data-view-panel="uebersicht" aria-label="Tagesansicht">
+          <aside class="papier-kalender" aria-label="Papierkalender">
+            <div class="kalender-ringe" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+            <div class="kalender-datum">
+              <span class="kalender-monat" id="datum-zeile">August 2026</span>
+              <strong id="kalender-tag">05</strong>
+              <span id="kalender-wochentag">Mittwoch</span>
+            </div>
+            <div class="kalender-linie" aria-hidden="true"></div>
+            <div class="kalender-aufgaben" id="kalender-aufgaben"></div>
+            <div class="kalender-wechsel" aria-label="Tag wechseln">
+              <button type="button" data-tag-wechsel="-1" aria-label="Vorheriger Tag"><i data-lucide="arrow-left"></i></button>
+              <button type="button" data-tag-wechsel="1" aria-label="Nächster Tag"><i data-lucide="arrow-right"></i></button>
+            </div>
+          </aside>
+
+          <section class="tageszettel-bereich" aria-label="Aufgaben des ausgewählten Tages">
+            <div class="tageszettel-raster" id="heute-aufgaben"></div>
+          </section>
+        </section>
+
+        <section class="brett-ansicht detailansicht" data-view-panel="aufgaben" aria-label="Alle Aufgaben">
+          <article class="detail-papier aufgaben-papier">
+            <div class="detail-kopf">
+              <button class="papier-zurueck" type="button" data-view="uebersicht"><i data-lucide="arrow-left"></i>Zurück</button>
+              <div><h1>Aufgaben</h1><p id="aufgaben-treffer"></p></div>
+              <button class="papier-hinzufuegen" type="button" data-action="aufgabe-neu"><i data-lucide="plus"></i>Neue Aufgabe</button>
+            </div>
+            <details class="filter-falte">
+              <summary><span>Sortieren und filtern</span><i data-lucide="chevron-down"></i></summary>
+              <div class="filter-zeile">
+                <label><span>Status</span><select id="filter-status"><option value="offen">Offen</option><option value="alle">Alle</option><option value="erledigt">Erledigt</option></select></label>
+                <label><span>Person</span><select id="filter-person"><option value="alle">Alle Personen</option></select></label>
+                <label><span>Bereich</span><select id="filter-bereich"><option value="alle">Alle Bereiche</option></select></label>
+                <button id="filter-reset" type="button">Zurücksetzen</button>
+              </div>
+            </details>
+            <div class="aufgaben-gruppen" id="aufgaben-gruppen"></div>
+          </article>
+        </section>
+
+        <section class="brett-ansicht detailansicht" data-view-panel="projekte" aria-label="Projekte">
+          <article class="detail-papier projekte-papier">
+            <div class="detail-kopf">
+              <button class="papier-zurueck" type="button" data-view="uebersicht"><i data-lucide="arrow-left"></i>Zurück</button>
+              <div><h1>Projekte</h1><p id="projekte-kurzinfo">0 aktive Projekte</p></div>
+              <button class="papier-hinzufuegen" type="button" data-action="projekt-neu"><i data-lucide="plus"></i>Neues Projekt</button>
+            </div>
+            <div class="projekt-filter" id="projekt-filter" role="group" aria-label="Projekte filtern">
+              <button class="aktiv" type="button" data-projekt-filter="aktiv">Aktiv</button>
+              <button type="button" data-projekt-filter="alle">Alle</button>
+              <button type="button" data-projekt-filter="fertig">Fertig</button>
+            </div>
+            <div class="projekte-wand" id="projekte-wand"></div>
+          </article>
+        </section>
+
+        <nav class="brett-navigation" aria-label="Bereiche">
+          <button class="nav-zettel aufgaben-nav" type="button" data-view="aufgaben">
+            <span class="nav-pin"></span><i data-lucide="clipboard-check"></i><strong>Aufgaben</strong><small id="nav-aufgaben-zaehler">0</small>
+          </button>
+          <button class="nav-zettel projekte-nav" type="button" data-view="projekte">
+            <span class="nav-pin"></span><i data-lucide="folder-kanban"></i><strong>Projekte</strong><small id="nav-projekte-zaehler">0</small>
+          </button>
+        </nav>
+
+        <button class="einstellungen-papier" type="button" data-action="info-oeffnen" aria-label="Einstellungen">
+          <i data-lucide="settings"></i><span>Einstellungen</span>
+        </button>
+
+        <div class="sync-mini" id="sync-karte" aria-live="polite">
+          <span class="sync-punkt" id="sync-punkt"></span><span><strong id="sync-titel">Lokal</strong><small id="sync-text">Prototyp</small></span>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <dialog class="papier-dialog" id="aufgabe-dialog">
+    <form method="dialog" id="aufgabe-form">
+      <div class="dialog-kopf"><div><small>Neuer Zettel</small><h2 id="aufgabe-dialog-titel">Neue Aufgabe</h2></div><button class="dialog-schliessen" type="button" data-dialog-schliessen aria-label="Fenster schließen">×</button></div>
+      <input type="hidden" id="aufgabe-id">
+      <div class="formular-inhalt">
+        <label class="feld voll"><span>Was ist zu tun?</span><input id="aufgabe-titel" maxlength="80" required placeholder="z. B. Altglas wegbringen"></label>
+        <label class="feld"><span>Fällig am</span><input id="aufgabe-faellig" type="date" required></label>
+        <div class="feld bereich-feld"><span>Bereich</span><select id="aufgabe-bereich" required></select><button class="feld-link" type="button" data-action="bereich-neu-zeigen">+ Eigener Bereich</button><div class="bereich-neu-zeile" id="bereich-neu-zeile" hidden><input id="bereich-neu-name" maxlength="28" placeholder="z. B. Garage"><button type="button" id="bereich-hinzufuegen">Hinzufügen</button></div></div>
+        <fieldset class="feld voll zustandigkeitswahl"><legend>Wer übernimmt das?</legend><label class="alle-familie"><input id="aufgabe-alle" type="checkbox"><span><i data-lucide="users"></i>Ganze Familie</span></label><div id="aufgabe-personen"></div></fieldset>
+        <details class="formular-mehr voll">
+          <summary><span>Weitere Angaben</span><i data-lucide="chevron-down"></i></summary>
+          <div class="formular-mehr-inhalt">
+            <label class="feld voll"><span>Notiz <em>optional</em></span><textarea id="aufgabe-beschreibung" maxlength="240" rows="3"></textarea></label>
+            <label class="feld"><span>Markierung</span><select id="aufgabe-prioritaet"><option value="normal">Normal</option><option value="hoch">Wichtig</option><option value="niedrig">Wenn Zeit ist</option></select></label>
+            <label class="feld"><span>Projekt <em>optional</em></span><select id="aufgabe-projekt"><option value="">Kein Projekt</option></select></label>
+            <fieldset class="farbwahl feld voll"><legend>Zettelfarbe</legend><div><label><input type="radio" name="farbe" value="gelb" checked><span class="farbe gelb">Gelb</span></label><label><input type="radio" name="farbe" value="rosa"><span class="farbe rosa">Rosa</span></label><label><input type="radio" name="farbe" value="blau"><span class="farbe blau">Blau</span></label><label><input type="radio" name="farbe" value="gruen"><span class="farbe gruen">Grün</span></label></div></fieldset>
+          </div>
+        </details>
+      </div>
+      <div class="dialog-fuss"><button class="loeschen-knopf" id="aufgabe-loeschen" type="button">Löschen</button><span></span><button class="papier-abbrechen" type="button" data-dialog-schliessen>Abbrechen</button><button class="papier-speichern" type="submit">Speichern</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="papier-dialog" id="projekt-dialog">
+    <form method="dialog" id="projekt-form">
+      <div class="dialog-kopf"><div><small>Neues Vorhaben</small><h2 id="projekt-dialog-titel">Neues Projekt</h2></div><button class="dialog-schliessen" type="button" data-dialog-schliessen aria-label="Fenster schließen">×</button></div>
+      <input type="hidden" id="projekt-id">
+      <div class="formular-inhalt">
+        <label class="feld voll"><span>Projektname</span><input id="projekt-titel" maxlength="80" required></label>
+        <label class="feld"><span>Zieldatum</span><input id="projekt-faellig" type="date" required></label>
+        <label class="feld"><span>Verantwortlich</span><select id="projekt-person" required></select></label>
+        <details class="formular-mehr voll">
+          <summary><span>Details und Etappen</span><i data-lucide="chevron-down"></i></summary>
+          <div class="formular-mehr-inhalt">
+            <label class="feld voll"><span>Beschreibung</span><textarea id="projekt-beschreibung" maxlength="320" rows="3"></textarea></label>
+            <fieldset class="feld voll personenwahl"><legend>Wer macht mit?</legend><div id="projekt-mitglieder"></div></fieldset>
+            <label class="feld voll"><span>Etappen <em>eine pro Zeile</em></span><textarea id="projekt-etappen" rows="5"></textarea></label>
+            <fieldset class="farbwahl feld voll"><legend>Papierfarbe</legend><div><label><input type="radio" name="projekt-farbe" value="creme" checked><span class="farbe creme">Creme</span></label><label><input type="radio" name="projekt-farbe" value="salbei"><span class="farbe salbei">Salbei</span></label><label><input type="radio" name="projekt-farbe" value="himmel"><span class="farbe himmel">Himmel</span></label></div></fieldset>
+          </div>
+        </details>
+      </div>
+      <div class="dialog-fuss"><button class="loeschen-knopf" id="projekt-loeschen" type="button">Löschen</button><span></span><button class="papier-abbrechen" type="button" data-dialog-schliessen>Abbrechen</button><button class="papier-speichern" type="submit">Speichern</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="papier-dialog klein" id="mitglieder-dialog">
+    <form method="dialog" id="mitglied-form">
+      <div class="dialog-kopf"><div><small>Unser Zuhause</small><h2>Familie</h2></div><button class="dialog-schliessen" type="button" data-dialog-schliessen aria-label="Fenster schließen">×</button></div>
+      <div class="familienname-bearbeiten">
+        <label class="feld"><span>Name der Familie</span><input id="familienname-eingabe" maxlength="36" placeholder="z. B. Familie Sommer"></label>
+        <button class="papier-speichern" id="familienname-speichern" type="button">Übernehmen</button>
+      </div>
+      <div class="mitglieder-verwalten" id="mitglieder-verwalten"></div>
+      <div class="mitglied-neu"><label class="feld"><span>Name</span><input id="mitglied-name" maxlength="28" placeholder="Vorname"></label><label class="feld"><span>Zeichen</span><select id="mitglied-avatar"><option>🙂</option><option>👩</option><option>👨</option><option>👧</option><option>👦</option><option>🧑</option><option>👵</option><option>👴</option><option>🐶</option></select></label><button class="papier-speichern" id="mitglied-hinzufuegen" type="button">Hinzufügen</button></div>
+      <div class="dialog-fuss"><span></span><button class="papier-speichern" type="button" data-dialog-schliessen>Fertig</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="papier-dialog klein" id="info-dialog">
+    <form method="dialog">
+      <div class="dialog-kopf"><div><small>Familienbrett</small><h2>Einstellungen</h2></div><button class="dialog-schliessen" type="button" data-dialog-schliessen aria-label="Fenster schließen">×</button></div>
+      <div class="einstellungen-inhalt"><div class="sync-einstellung"><span class="sync-punkt"></span><div><strong>Familienspeicher</strong><small id="einstellung-sync-text">Verbindung wird geprüft.</small></div></div><button type="button" data-action="mitglieder-oeffnen" data-dialog-schliessen>Familie verwalten</button><button type="button" data-action="abmelden">Zugang auf diesem Gerät vergessen</button></div>
+      <div class="dialog-fuss"><span></span><button class="papier-speichern" type="button" data-dialog-schliessen>Schließen</button></div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <script src="supabase-config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

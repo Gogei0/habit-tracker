@@ -1,0 +1,1523 @@
+:root {
+  --tinte: #25211c;
+  --tinte-weich: #615548;
+  --rot: #a63e32;
+  --rot-dunkel: #74271f;
+  --kork: #ad7044;
+  --papier: #f5eedc;
+  --gelb: #f5da72;
+  --rosa: #e8ada8;
+  --blau: #a9cddd;
+  --gruen: #b7cf9a;
+  --creme: #eee1c3;
+  --salbei: #b8c6a6;
+  --himmel: #b7d0d8;
+  --marker: "Kalam", "Comic Sans MS", cursive;
+  --eding: "Permanent Marker", "Kalam", cursive;
+  --lesbar: "DM Sans", system-ui, sans-serif;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+html { min-width: 320px; background: #d8d0c2; }
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  color: var(--tinte);
+  font-family: var(--lesbar);
+  background:
+    radial-gradient(circle at 20% 10%, rgba(255, 255, 255, .64), transparent 34%),
+    repeating-linear-gradient(88deg, rgba(82, 65, 47, .035) 0 1px, transparent 1px 7px),
+    #d8d0c2;
+}
+
+.zugang-tor { position: fixed; inset: 0; z-index: 5000; display: none; place-items: center; padding: 22px; background: radial-gradient(circle at 50% 36%, rgba(126,78,40,.28), rgba(37,24,15,.78)), var(--kork); }
+.zugang-tor.sichtbar { display: grid; }
+.zugang-zettel { position: relative; width: min(430px, 100%); padding: 54px 38px 36px; color: #2c241d; background: #f5e9c9; clip-path: polygon(2% 1%, 98% 0, 100% 96%, 94% 100%, 4% 98%, 0 5%); box-shadow: 12px 18px 25px rgba(32,20,10,.38); transform: rotate(-.45deg); }
+.zugang-zettel::before { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .34; background: repeating-linear-gradient(0deg, transparent 0 23px, rgba(90,66,43,.1) 24px 25px); }
+.zugang-pin { position: absolute; top: 16px; left: 50%; width: 19px; height: 19px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ff8b73 0 12%, #c72d20 35%, #78140e 78%); box-shadow: 2px 5px 6px rgba(40,20,10,.38); }
+.zugang-logo { position: absolute; top: 24px; left: 30px; padding: 8px 12px 5px; color: #d52619; background: #f5cf3f; box-shadow: 3px 5px 6px rgba(54,36,18,.23); font: 700 20px/.78 var(--marker); transform: rotate(-5deg); }
+.zugang-zettel > small { display: block; margin-top: 12px; text-align: center; font: 700 15px/1 var(--schrift); letter-spacing: .08em; text-transform: uppercase; }
+.zugang-zettel h1 { margin: 14px 0 5px; text-align: center; font: 700 38px/1 var(--marker); }
+.zugang-zettel > p { margin: 0 auto 20px; max-width: 330px; text-align: center; font: 600 17px/1.3 var(--schrift); }
+.zugang-zettel form { position: relative; display: grid; gap: 14px; }
+.zugang-zettel form > button { min-height: 50px; margin-top: 4px; font-size: 19px; }
+.zugang-status { min-height: 22px; margin: 16px 0 0 !important; color: #9b231b; }
+.zugang-zettel button:disabled { cursor: wait; filter: grayscale(.4); }
+
+button, input, select, textarea { font: inherit; color: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+button, summary, select { cursor: pointer; }
+svg { width: 1em; height: 1em; stroke-width: 2.3; }
+
+.sprunglink {
+  position: fixed;
+  z-index: 1000;
+  top: 8px;
+  left: 8px;
+  padding: 10px 14px;
+  color: #fff;
+  background: var(--rot-dunkel);
+  transform: translateY(-150%);
+}
+.sprunglink:focus { transform: translateY(0); }
+
+:focus-visible {
+  outline: 3px solid #1d4f63;
+  outline-offset: 4px;
+}
+
+.brett-buehne {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.brett-rahmen {
+  width: min(1580px, 100%);
+  min-height: clamp(822px, calc(100vh - 40px), 900px);
+  padding: clamp(16px, 1.7vw, 28px);
+  border: 2px solid #5c371e;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.3), transparent 18%, rgba(71,31,11,.28) 54%, transparent 78%),
+    repeating-linear-gradient(5deg, #c08b55 0 5px, #b47b47 5px 9px, #d19b61 9px 15px);
+  box-shadow:
+    0 24px 45px rgba(48, 31, 18, .35),
+    inset 0 0 0 5px #d7a86f,
+    inset 0 0 0 9px #7e4b28;
+  position: relative;
+}
+
+.brett-rahmen::before,
+.brett-rahmen::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: 20;
+}
+.brett-rahmen::before {
+  inset: 8px;
+  border: 3px solid rgba(255, 224, 170, .45);
+  box-shadow: inset 0 0 18px rgba(62, 29, 10, .5);
+}
+.brett-rahmen::after {
+  inset: clamp(16px, 1.7vw, 28px);
+  box-shadow: inset 0 0 28px rgba(59, 29, 13, .38);
+}
+
+.brett-flaeche {
+  position: relative;
+  isolation: isolate;
+  min-height: clamp(770px, calc(100vh - 82px), 848px);
+  overflow: hidden;
+  background-color: var(--kork);
+  background-image:
+    linear-gradient(rgba(133, 73, 34, .12), rgba(87, 43, 19, .13)),
+    url("assets/kork-pinnwand.webp");
+  background-size: cover, cover;
+  background-position: center;
+  box-shadow: inset 0 0 22px rgba(63, 31, 14, .55);
+}
+
+.brett-flaeche::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: .33;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 23% 17%, rgba(255,255,255,.28) 0 1px, transparent 2px),
+    radial-gradient(circle at 69% 76%, rgba(66,34,15,.3) 0 1px, transparent 2px);
+  background-size: 13px 11px, 17px 15px;
+}
+
+.logo-magnet,
+.familien-dach,
+.nav-zettel,
+.einstellungen-papier,
+.kalender-wechsel button,
+.papier-zurueck,
+.papier-hinzufuegen,
+.projekt-filter button,
+.filter-zeile button,
+.sekundaer-knopf,
+.leerer-zettel button,
+.dialog-fuss button,
+.feld-link,
+.bereich-neu-zeile button,
+.einstellungen-inhalt button,
+.mitglied-neu > button {
+  border: 0;
+  background: none;
+}
+
+.logo-magnet {
+  position: absolute;
+  z-index: 8;
+  left: 34px;
+  top: 28px;
+  width: 146px;
+  min-height: 102px;
+  padding: 54px 10px 10px;
+  transform: rotate(-3deg);
+  filter: drop-shadow(2px 7px 4px rgba(55, 30, 14, .32));
+}
+.logo-magnet::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  z-index: -1;
+  background:
+    linear-gradient(rgba(255,255,255,.14), rgba(122,65,25,.12)),
+    url("assets/papier-zerknittert.webp") center / cover;
+  clip-path: polygon(3% 6%, 96% 0, 100% 89%, 88% 98%, 9% 94%, 0 72%);
+}
+.logo-magnet::after {
+  content: "";
+  position: absolute;
+  left: 63px;
+  top: 2px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 28%, #fff9dc 0 7%, #d5513f 18%, #8e261e 64%, #53140f 100%);
+  box-shadow: 1px 5px 5px rgba(55, 22, 10, .5);
+}
+.logo-magnet strong {
+  display: block;
+  font: 700 23px/1 var(--marker);
+  letter-spacing: -.5px;
+}
+.logo-papiere {
+  position: absolute;
+  left: 31px;
+  top: 18px;
+  width: 82px;
+  height: 42px;
+}
+.logo-papiere i {
+  position: absolute;
+  display: block;
+  width: 36px;
+  height: 34px;
+  border: 2px solid var(--tinte);
+  background: #f2d06d;
+  box-shadow: 2px 3px 0 rgba(53,36,23,.18);
+}
+.logo-papiere i:nth-child(1) { left: 2px; top: 2px; transform: rotate(-12deg); }
+.logo-papiere i:nth-child(2) { left: 24px; top: 0; background: #a8c9d5; transform: rotate(5deg); }
+.logo-papiere i:nth-child(3) { left: 44px; top: 5px; background: #dda3a1; transform: rotate(13deg); }
+
+.familien-dach {
+  position: absolute;
+  z-index: 9;
+  top: 8px;
+  left: 50%;
+  width: min(620px, 48vw);
+  height: 142px;
+  padding: 58px 60px 20px;
+  color: #fff7e8;
+  transform: translateX(-50%) rotate(.3deg);
+  clip-path: polygon(50% 0, 100% 70%, 91% 75%, 89% 100%, 11% 100%, 9% 75%, 0 70%);
+  background-color: #a94134;
+  background-image:
+    linear-gradient(102deg, rgba(255,255,255,.15), transparent 32%, rgba(91,19,15,.25)),
+    url("assets/papier-zerknittert.webp");
+  background-size: cover;
+  background-blend-mode: multiply;
+  filter: drop-shadow(0 8px 5px rgba(72, 28, 16, .42));
+  text-shadow: 1px 2px 0 var(--rot-dunkel);
+}
+.familien-dach::after {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: 11px;
+  height: 3px;
+  background: rgba(89, 25, 20, .55);
+  transform: rotate(-.5deg);
+}
+.familien-dach span {
+  display: block;
+  overflow: hidden;
+  font: 400 clamp(34px, 3.4vw, 54px)/.95 var(--eding);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.familien-dach small {
+  display: block;
+  margin-top: 3px;
+  font: 700 13px/1 var(--marker);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.brett-ansicht { display: none; }
+.brett-ansicht.aktiv { display: block; }
+.tagesansicht { position: absolute; inset: 0; }
+
+.papier-kalender {
+  position: absolute;
+  z-index: 4;
+  left: 34px;
+  top: 168px;
+  bottom: 34px;
+  width: 300px;
+  min-height: 560px;
+  padding: 28px 25px 78px;
+  background:
+    linear-gradient(96deg, rgba(113,85,54,.08), transparent 20%, rgba(255,255,255,.16) 68%, rgba(73,53,35,.08)),
+    url("assets/papier-zerknittert.webp") center / cover,
+    #f6f1e5;
+  clip-path: polygon(1% 1%, 98% 0, 100% 5%, 99% 97%, 93% 99%, 85% 97.5%, 75% 100%, 64% 98%, 53% 100%, 42% 98%, 31% 99.5%, 20% 98%, 9% 100%, 1% 96%);
+  box-shadow: 7px 12px 13px rgba(57, 31, 17, .28), inset 0 0 22px rgba(108, 83, 54, .12);
+  transform: rotate(-.35deg);
+}
+.papier-kalender::after {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  pointer-events: none;
+  border: 1px solid rgba(75, 61, 44, .12);
+}
+.kalender-ringe {
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  top: -12px;
+  display: flex;
+  justify-content: space-around;
+}
+.kalender-ringe span {
+  width: 13px;
+  height: 37px;
+  border: 4px solid #3e3832;
+  border-bottom-color: #716a61;
+  border-radius: 9px;
+  background: transparent;
+  box-shadow: 2px 2px 2px rgba(43,31,20,.25);
+}
+.kalender-datum { text-align: center; font-family: var(--marker); }
+.kalender-monat {
+  display: block;
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+.kalender-datum strong {
+  display: block;
+  margin: -3px 0 -8px;
+  font: 400 82px/1 var(--eding);
+  letter-spacing: -5px;
+}
+.kalender-datum > span:last-child {
+  font: 700 24px/1 var(--marker);
+  text-transform: capitalize;
+}
+.kalender-linie {
+  height: 3px;
+  margin: 17px 2px 10px;
+  background: var(--tinte);
+  transform: rotate(-.6deg);
+  box-shadow: 0 2px 0 rgba(37,33,28,.15);
+}
+.kalender-aufgaben {
+  display: grid;
+  align-content: start;
+  gap: 5px;
+  min-height: 280px;
+}
+.kalender-eintrag {
+  display: grid;
+  grid-template-columns: 1fr 32px;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  padding: 6px 1px 7px 7px;
+  border-bottom: 2px solid rgba(49,43,36,.34);
+  transform: rotate(var(--zeilen-winkel, -.15deg));
+}
+.kalender-eintrag:nth-child(even) { --zeilen-winkel: .25deg; }
+.kalender-text {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  text-align: left;
+  background: transparent;
+}
+.kalender-text span {
+  display: block;
+  color: var(--tinte-weich);
+  font: 700 12px/1.1 var(--marker);
+}
+.kalender-text strong {
+  display: block;
+  overflow: hidden;
+  font: 700 18px/1.15 var(--marker);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.kalender-haken {
+  width: 29px;
+  height: 29px;
+  padding: 0;
+  border: 3px solid var(--tinte);
+  border-radius: 50%;
+  font: 700 20px/24px var(--marker);
+  background: transparent;
+  transform: rotate(-6deg);
+}
+.kalender-eintrag.erledigt .kalender-text { opacity: .52; text-decoration: line-through 2px; }
+.kalender-leer {
+  margin: 28px 8px;
+  color: var(--tinte-weich);
+  font: 700 19px/1.35 var(--marker);
+  text-align: center;
+  transform: rotate(-2deg);
+}
+.kalender-wechsel {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 26px;
+  display: grid;
+  grid-template-columns: 50px 1fr 50px;
+  align-items: center;
+  gap: 9px;
+}
+.kalender-wechsel button {
+  min-height: 46px;
+  border: 2px solid var(--tinte);
+  background:
+    linear-gradient(rgba(255,255,255,.1), rgba(80,60,38,.1)),
+    url("assets/papier-zerknittert.webp") center / cover;
+  box-shadow: 2px 4px 3px rgba(50,35,20,.18);
+  font: 700 17px/1 var(--marker);
+  clip-path: polygon(4% 3%, 96% 0, 100% 91%, 93% 100%, 5% 96%, 0 10%);
+}
+.kalender-wechsel button:first-child { transform: rotate(-2deg); }
+.kalender-wechsel button:last-child { transform: rotate(2deg); }
+.kalender-wechsel .kalender-heute { border-width: 0 0 3px; box-shadow: none; background: transparent; clip-path: none; }
+
+.tageszettel-bereich {
+  position: absolute;
+  z-index: 3;
+  left: 375px;
+  right: 220px;
+  top: 174px;
+  bottom: 30px;
+}
+.tages-label {
+  width: max-content;
+  max-width: 100%;
+  min-width: 290px;
+  margin: 0 auto 22px;
+  padding: 10px 26px 8px;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 18px;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.2), transparent 25%, rgba(89,64,39,.1)),
+    url("assets/papier-zerknittert.webp") center / cover;
+  clip-path: polygon(1% 9%, 98% 0, 100% 86%, 93% 100%, 4% 94%);
+  box-shadow: 3px 7px 7px rgba(58,31,16,.24);
+  transform: rotate(.35deg);
+}
+.tages-label::before {
+  content: "";
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 25%, #fff4cc 0 8%, #b33e32 18%, #671a14 70%);
+  box-shadow: 1px 3px 3px rgba(58,22,14,.4);
+}
+.tages-label span { font: 700 22px/1 var(--marker); text-transform: capitalize; }
+.tages-label strong { color: var(--rot-dunkel); font: 700 15px/1 var(--lesbar); }
+
+.tageszettel-raster {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(180px, 1fr));
+  align-content: start;
+  gap: 30px clamp(20px, 2.2vw, 38px);
+  padding: 15px 5px 25px;
+}
+
+.notizzettel {
+  position: relative;
+  min-width: 0;
+  min-height: 220px;
+  padding: 34px 25px 57px;
+  color: var(--tinte);
+  background:
+    linear-gradient(106deg, rgba(255,255,255,.18), transparent 26%, rgba(71,48,21,.08) 74%, rgba(255,255,255,.08)),
+    url("assets/papier-zerknittert.webp") center / cover,
+    var(--zettel);
+  background-blend-mode: soft-light, multiply, normal;
+  clip-path: polygon(1% 2%, 96% 0, 100% 94%, 91% 99%, 74% 97%, 57% 100%, 38% 98%, 18% 100%, 0 95%);
+  box-shadow: 6px 11px 10px rgba(55,30,14,.32);
+  transform: rotate(-1.2deg);
+  transition: transform .16s ease, filter .16s ease;
+}
+.notizzettel:nth-child(3n+2), .zettel-form-1 { transform: rotate(1.1deg); }
+.notizzettel:nth-child(3n), .zettel-form-2 { transform: rotate(-.35deg); }
+.notizzettel:hover { transform: rotate(0) translateY(-3px); filter: saturate(1.03); }
+.notizzettel .pin,
+.nav-pin {
+  position: absolute;
+  left: 50%;
+  top: 7px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 28%, #fff5d0 0 7%, #c44b3b 17%, #8e251e 63%, #4e120f 100%);
+  box-shadow: 1px 5px 5px rgba(52,20,11,.52);
+  transform: translateX(-50%);
+}
+.notizzettel.prio-normal .pin { background: radial-gradient(circle at 36% 28%, #fff7dc 0 7%, #537f8f 17%, #2d5967 63%, #183741 100%); }
+.notizzettel.prio-niedrig .pin { background: radial-gradient(circle at 36% 28%, #fff7dc 0 7%, #c69255 17%, #875826 63%, #503116 100%); }
+.notiz-bearbeiten {
+  position: absolute;
+  top: 16px;
+  right: 15px;
+  width: 33px;
+  height: 33px;
+  padding: 7px;
+  border: 0;
+  border-bottom: 2px solid var(--tinte);
+  opacity: .48;
+  background: transparent;
+  transform: rotate(5deg);
+}
+.notiz-bearbeiten:hover, .notiz-bearbeiten:focus-visible { opacity: 1; }
+.notiz-schild {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 36px;
+  padding: 5px 9px 3px;
+  border: 3px solid var(--tinte);
+  font: 700 15px/1 var(--marker);
+  transform: rotate(.4deg);
+  box-shadow: 1px 1px 0 rgba(37,33,28,.22);
+}
+.notiz-schild span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.notiz-schild time { flex: 0 0 auto; color: var(--tinte-weich); }
+.notizzettel h3 {
+  margin: 19px 0 8px;
+  font: 400 clamp(25px, 2vw, 32px)/1.08 var(--eding);
+  overflow-wrap: anywhere;
+}
+.notizzettel > p {
+  margin: 0;
+  display: -webkit-box;
+  overflow: hidden;
+  color: #4d443a;
+  font: 700 16px/1.25 var(--marker);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.notiz-fuss {
+  position: absolute;
+  left: 23px;
+  right: 70px;
+  bottom: 19px;
+}
+.notiz-person { display: flex; align-items: center; min-width: 0; gap: 7px; font: 700 13px/1 var(--marker); }
+.notiz-person > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.notiz-haken {
+  position: absolute;
+  right: 18px;
+  bottom: 15px;
+  width: 45px;
+  height: 45px;
+  display: grid;
+  place-items: center;
+  padding: 7px;
+  border: 4px solid var(--tinte);
+  border-radius: 50%;
+  color: var(--tinte);
+  background: rgba(255,255,255,.08);
+  transform: rotate(-7deg);
+}
+.notiz-haken svg { width: 26px; height: 26px; stroke-width: 4; }
+.notizzettel.erledigt { opacity: .56; filter: grayscale(.35); }
+.notizzettel.erledigt h3 { text-decoration: line-through 4px rgba(37,33,28,.7); }
+.notizzettel.erledigt .notiz-haken { color: #244e35; border-color: #244e35; }
+
+.avatar-stapel { display: inline-flex; flex: 0 0 auto; }
+.avatar {
+  width: 28px;
+  height: 28px;
+  display: inline-grid;
+  place-items: center;
+  border: 2px solid rgba(45,38,30,.55);
+  border-radius: 50%;
+  background: var(--avatar-farbe, #eee0bf);
+  font-size: 14px;
+  box-shadow: 1px 2px 2px rgba(48,32,18,.2);
+}
+.avatar + .avatar { margin-left: -7px; }
+.avatar.klein { width: 25px; height: 25px; font-size: 13px; }
+.avatar.sehr-klein { width: 22px; height: 22px; font-size: 11px; }
+
+.leerer-zettel {
+  grid-column: 1 / -1;
+  width: min(420px, 90%);
+  margin: 70px auto 0;
+  padding: 28px 34px;
+  text-align: center;
+  background: url("assets/papier-zerknittert.webp") center / cover, #eee1c4;
+  clip-path: polygon(2% 3%, 98% 0, 100% 92%, 92% 100%, 8% 96%, 0 9%);
+  box-shadow: 5px 9px 9px rgba(52,29,15,.27);
+  transform: rotate(-1deg);
+}
+.leerer-zettel p { margin: 0 0 17px; font: 700 22px/1.25 var(--marker); }
+.leerer-zettel button,
+.sekundaer-knopf { padding: 7px 4px; border-bottom: 3px solid var(--tinte); font: 700 17px/1 var(--marker); }
+
+.brett-navigation {
+  position: absolute;
+  z-index: 10;
+  top: 215px;
+  right: 31px;
+  width: 150px;
+  display: grid;
+  gap: 42px;
+}
+.nav-zettel {
+  position: relative;
+  min-height: 122px;
+  padding: 35px 13px 12px;
+  color: var(--tinte);
+  background:
+    linear-gradient(105deg, rgba(255,255,255,.18), transparent 42%, rgba(73,46,18,.1)),
+    url("assets/papier-zerknittert.webp") center / cover,
+    var(--nav-farbe, #efd270);
+  background-blend-mode: soft-light, multiply, normal;
+  clip-path: polygon(3% 3%, 96% 0, 100% 91%, 91% 99%, 4% 96%, 0 12%);
+  box-shadow: 5px 9px 8px rgba(51,28,15,.31);
+  transform: rotate(2.1deg);
+}
+.nav-zettel.projekte-nav { --nav-farbe: #a7c7d2; transform: rotate(-1.7deg); }
+.nav-zettel.aktiv { filter: saturate(1.15) brightness(.93); }
+.nav-zettel svg { display: block; width: 31px; height: 31px; margin: 0 auto 4px; stroke-width: 2.5; }
+.nav-zettel strong { display: block; font: 700 22px/1 var(--marker); }
+.nav-zettel small {
+  position: absolute;
+  right: 10px;
+  bottom: 9px;
+  min-width: 25px;
+  height: 25px;
+  padding: 2px 4px;
+  border: 2px solid var(--tinte);
+  border-radius: 50%;
+  font: 700 14px/18px var(--marker);
+}
+.nav-pin { top: 8px; width: 16px; height: 16px; }
+
+.einstellungen-papier {
+  position: absolute;
+  z-index: 10;
+  right: 43px;
+  bottom: 27px;
+  width: 127px;
+  min-height: 105px;
+  padding: 20px 11px 13px;
+  background:
+    linear-gradient(120deg, rgba(255,255,255,.1), rgba(77,53,27,.11)),
+    url("assets/papier-zerknittert.webp") center / cover;
+  clip-path: polygon(3% 2%, 97% 5%, 100% 92%, 91% 100%, 4% 95%, 0 11%);
+  box-shadow: 5px 8px 7px rgba(50,27,14,.3);
+  transform: rotate(1.5deg);
+}
+.einstellungen-papier::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 45%;
+  width: 33px;
+  height: 17px;
+  background: rgba(220,198,150,.7);
+  transform: rotate(-5deg);
+  box-shadow: 0 1px 2px rgba(66,42,21,.2);
+}
+.einstellungen-papier svg { display: block; width: 43px; height: 43px; margin: 0 auto 3px; stroke-width: 2.4; }
+.einstellungen-papier span { font: 700 16px/1 var(--marker); }
+.sync-mini { display: none; }
+
+.detailansicht {
+  position: absolute;
+  z-index: 6;
+  inset: 155px 215px 28px 31px;
+}
+.detailansicht.aktiv { display: block; }
+.detail-papier {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  padding: 28px clamp(24px, 3vw, 48px) 45px;
+  background:
+    linear-gradient(98deg, rgba(83,61,36,.07), transparent 24%, rgba(255,255,255,.14) 63%, rgba(73,53,34,.06)),
+    url("assets/papier-zerknittert.webp") center / cover,
+    #f4eddd;
+  clip-path: polygon(.5% .8%, 99% 0, 100% 96%, 96% 99%, 87% 98%, 78% 100%, 69% 98.5%, 58% 100%, 47% 98.5%, 36% 100%, 25% 98%, 13% 99.5%, 1% 97%);
+  box-shadow: 8px 13px 15px rgba(52,29,15,.33), inset 0 0 25px rgba(82,58,31,.1);
+}
+.detail-kopf {
+  display: grid;
+  grid-template-columns: minmax(100px, 1fr) auto minmax(130px, 1fr);
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 15px;
+  border-bottom: 3px solid var(--tinte);
+}
+.detail-kopf > div { text-align: center; }
+.detail-kopf h1 { margin: 0; font: 400 43px/1 var(--eding); }
+.detail-kopf p { margin: 4px 0 0; color: var(--tinte-weich); font: 700 14px/1 var(--lesbar); }
+.papier-zurueck,
+.papier-hinzufuegen {
+  width: max-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 5px 5px;
+  border-bottom: 3px solid var(--tinte);
+  font: 700 17px/1 var(--marker);
+}
+.papier-hinzufuegen { justify-self: end; background: #efd372; padding: 11px 16px 8px; clip-path: polygon(2% 4%, 98% 0, 100% 91%, 92% 100%, 4% 95%); box-shadow: 3px 5px 4px rgba(60,41,22,.2); }
+
+.filter-falte { margin: 17px 0 20px; border-bottom: 2px solid rgba(44,38,31,.3); }
+.filter-falte summary,
+.projekt-etappen-details summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 2px;
+  font: 700 17px/1 var(--marker);
+  list-style: none;
+}
+summary::-webkit-details-marker { display: none; }
+details[open] > summary .aufklapp-pfeil,
+details[open] > summary > svg { transform: rotate(180deg); }
+.filter-zeile {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(150px, 1fr)) auto;
+  gap: 13px;
+  padding: 8px 0 18px;
+}
+.filter-zeile label,
+.feld { display: grid; gap: 6px; }
+.filter-zeile label span,
+.feld > span,
+.feld legend,
+.farbwahl legend,
+.zustandigkeitswahl legend,
+.personenwahl legend { font: 700 13px/1 var(--lesbar); }
+.filter-zeile select,
+.feld input,
+.feld select,
+.feld textarea,
+.bereich-neu-zeile input {
+  width: 100%;
+  min-height: 43px;
+  padding: 8px 10px;
+  border: 0;
+  border-bottom: 3px solid var(--tinte);
+  border-radius: 0;
+  background: rgba(255,255,255,.22);
+  font-family: var(--lesbar);
+}
+.filter-zeile button { align-self: end; padding: 11px 7px 7px; border-bottom: 3px solid var(--tinte); font: 700 15px/1 var(--marker); }
+.aufgaben-gruppe { margin-top: 16px; border-top: 2px dashed rgba(51,43,35,.42); }
+.aufgaben-gruppe > summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 4px 6px;
+  list-style: none;
+  font: 700 23px/1 var(--marker);
+}
+.aufgaben-gruppe > summary span { min-width: 28px; height: 28px; padding: 4px; border: 2px solid; border-radius: 50%; text-align: center; font-size: 14px; }
+.aufgaben-gruppe > summary svg { margin-left: auto; }
+.aufgaben-raster {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 27px;
+  padding: 18px 10px 28px;
+}
+
+.projekt-filter { display: flex; justify-content: center; gap: 12px; margin: 19px 0 26px; }
+.projekt-filter button { padding: 7px 14px 5px; border-bottom: 3px solid transparent; font: 700 17px/1 var(--marker); }
+.projekt-filter button.aktiv { border-color: var(--tinte); background: rgba(229,195,105,.42); transform: rotate(-1deg); }
+.projekte-wand { display: grid; grid-template-columns: repeat(2, minmax(270px, 1fr)); gap: 28px; }
+.projekt-gross,
+.projekt-karte {
+  position: relative;
+  padding: 27px 27px 23px;
+  background:
+    linear-gradient(105deg, rgba(255,255,255,.15), transparent 35%, rgba(65,43,22,.08)),
+    url("assets/papier-zerknittert.webp") center / cover,
+    var(--projekt-papier);
+  background-blend-mode: soft-light, multiply, normal;
+  clip-path: polygon(1% 2%, 98% 0, 100% 92%, 94% 100%, 75% 97%, 51% 100%, 27% 97%, 3% 100%, 0 10%);
+  box-shadow: 5px 8px 8px rgba(49,31,16,.24);
+}
+.projekt-gross:nth-child(even) { transform: rotate(.6deg); }
+.projekt-gross h3,
+.projekt-karte h3 { margin: 8px 36px 7px 0; font: 700 28px/1.08 var(--marker); }
+.projekt-gross > p,
+.projekt-karte > p { margin: 0 0 16px; color: var(--tinte-weich); line-height: 1.45; }
+.projekt-bearbeiten { position: absolute; top: 20px; right: 19px; width: 34px; height: 34px; padding: 6px; border: 0; border-bottom: 2px solid; background: transparent; }
+.projekt-status,
+.ueberzeile { display: inline-block; padding: 4px 8px; border: 2px solid; font: 700 12px/1 var(--lesbar); text-transform: uppercase; letter-spacing: .05em; }
+.projekt-status.fertig { color: #31543c; }
+.projekt-etappen-details { margin: 13px 0; border-top: 2px dashed rgba(47,40,32,.35); border-bottom: 2px dashed rgba(47,40,32,.35); }
+.etappen { padding: 4px 0 12px; display: grid; gap: 6px; }
+.etappe { display: grid; grid-template-columns: 29px 1fr; align-items: center; gap: 8px; padding: 5px; border: 0; text-align: left; background: transparent; font: 700 16px/1.2 var(--marker); }
+.etappe-box { width: 26px; height: 26px; border: 3px solid; border-radius: 50%; text-align: center; }
+.etappe.erledigt { opacity: .55; text-decoration: line-through; }
+.projekt-detail-fuss { margin-top: 14px; }
+.projekt-detail-zeile,
+.projekt-meta,
+.projekt-unten { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 13px; }
+.fortschritt-balken { height: 9px; margin: 8px 0; border: 2px solid var(--tinte); transform: rotate(-.2deg); }
+.fortschritt-balken span { display: block; width: var(--prozent); height: 100%; background: var(--rot); }
+.leer-projekte { grid-column: 1 / -1; text-align: center; padding: 40px; font: 700 20px/1.3 var(--marker); }
+
+.papier-dialog {
+  width: min(760px, calc(100vw - 28px));
+  max-height: min(88vh, 820px);
+  margin: auto;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  filter: drop-shadow(8px 16px 16px rgba(34,21,13,.42));
+}
+.papier-dialog::backdrop { background: rgba(36,25,17,.63); backdrop-filter: blur(2px); }
+.papier-dialog > form {
+  max-height: min(88vh, 820px);
+  overflow: auto;
+  padding: 29px 34px 25px;
+  background:
+    linear-gradient(100deg, rgba(72,51,28,.08), transparent 22%, rgba(255,255,255,.14)),
+    url("assets/papier-zerknittert.webp") center / cover,
+    #f3ead6;
+  clip-path: polygon(.5% 1%, 99% 0, 100% 96%, 95% 100%, 84% 98%, 73% 100%, 61% 98.5%, 49% 100%, 36% 98%, 23% 100%, 12% 98%, 1% 99%);
+}
+.papier-dialog.klein { width: min(570px, calc(100vw - 28px)); }
+.dialog-kopf { display: flex; align-items: start; justify-content: space-between; gap: 20px; padding-bottom: 14px; border-bottom: 3px solid var(--tinte); }
+.dialog-kopf small { font: 700 13px/1 var(--lesbar); text-transform: uppercase; letter-spacing: .1em; }
+.dialog-kopf h2 { margin: 3px 0 0; font: 400 38px/1 var(--eding); }
+.dialog-schliessen { width: 43px; height: 43px; padding: 0; border: 3px solid var(--tinte); border-radius: 50%; background: transparent; font: 700 31px/34px var(--marker); transform: rotate(3deg); }
+.formular-inhalt { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 22px; padding: 23px 2px; }
+.voll { grid-column: 1 / -1; }
+.feld textarea { min-height: 92px; resize: vertical; }
+.feld em { color: var(--tinte-weich); font-style: normal; font-weight: 500; }
+.bereich-feld { align-content: start; }
+.feld-link { justify-self: start; padding: 5px 1px 2px; border-bottom: 2px solid; font: 700 14px/1 var(--marker); }
+.bereich-neu-zeile { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+.bereich-neu-zeile[hidden] { display: none; }
+.bereich-neu-zeile button { padding: 8px 12px 5px; border-bottom: 3px solid; font: 700 14px/1 var(--marker); }
+fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+.zustandigkeitswahl,
+.personenwahl,
+.farbwahl { display: grid; gap: 9px; }
+.zustandigkeitswahl > div,
+.personenwahl > div,
+.farbwahl > div { display: flex; flex-wrap: wrap; gap: 9px; }
+.zustandigkeitswahl label input,
+.personenwahl label input,
+.farbwahl label input { position: absolute; opacity: 0; pointer-events: none; }
+.zustandigkeitswahl label > span,
+.personenwahl label > span,
+.farbwahl label > span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 42px;
+  padding: 6px 11px;
+  border: 2px solid rgba(48,41,34,.45);
+  background: rgba(255,255,255,.18);
+  font: 700 14px/1 var(--marker);
+}
+.zustandigkeitswahl label input:checked + span,
+.personenwahl label input:checked + span,
+.farbwahl label input:checked + span { border: 3px solid var(--tinte); background: rgba(230,194,95,.42); transform: rotate(-1deg); }
+.alle-familie { display: block; width: max-content; margin-bottom: 2px; }
+.farbwahl .farbe { min-width: 65px; justify-content: center; }
+.farbwahl .gelb { background: #f3d56e; }
+.farbwahl .rosa { background: #e6aaa6; }
+.farbwahl .blau { background: #a7cbd8; }
+.farbwahl .gruen, .farbwahl .salbei { background: #b4cc99; }
+.farbwahl .creme { background: #eee0bf; }
+.farbwahl .himmel { background: #b5ced6; }
+.formular-mehr { border-top: 2px dashed rgba(46,39,32,.4); border-bottom: 2px dashed rgba(46,39,32,.4); }
+.formular-mehr > summary { display: flex; align-items: center; justify-content: space-between; padding: 11px 2px; list-style: none; font: 700 17px/1 var(--marker); }
+.formular-mehr-inhalt { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 22px; padding: 8px 0 20px; }
+.dialog-fuss { display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 12px; padding-top: 16px; border-top: 3px solid var(--tinte); }
+.dialog-fuss button,
+.mitglied-neu > button { min-height: 43px; padding: 10px 16px 7px; border-bottom: 3px solid var(--tinte); font: 700 16px/1 var(--marker); }
+.dialog-fuss .papier-speichern,
+.mitglied-neu > button { background: #efd16c; clip-path: polygon(2% 3%, 98% 0, 100% 92%, 93% 100%, 4% 96%); box-shadow: 2px 4px 4px rgba(58,38,20,.18); }
+.dialog-fuss .loeschen-knopf { color: #862e26; border-color: #862e26; }
+.mitglieder-verwalten { display: grid; gap: 8px; padding: 20px 0; }
+.mitglied-zeile { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px; padding: 6px 2px; border-bottom: 2px dashed rgba(46,39,32,.3); }
+.mitglied-zeile button { width: 36px; height: 36px; padding: 8px; border: 0; border-bottom: 2px solid; background: transparent; }
+.mitglied-neu { display: grid; grid-template-columns: 1fr 120px auto; align-items: end; gap: 11px; padding: 4px 0 22px; }
+.familienname-bearbeiten { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 11px; padding: 20px 0 10px; border-bottom: 2px dashed rgba(43,36,29,.28); }
+.familienname-bearbeiten > button { min-height: 43px; padding: 10px 16px 7px; }
+.einstellungen-inhalt { display: grid; gap: 15px; padding: 25px 2px; }
+.sync-einstellung { display: flex; align-items: center; gap: 12px; }
+.sync-einstellung .sync-punkt { width: 14px; height: 14px; border-radius: 50%; background: #bb8c37; }
+.sync-einstellung strong,
+.sync-einstellung small { display: block; }
+.einstellungen-inhalt button { justify-self: start; padding: 8px 2px 5px; border-bottom: 3px solid; font: 700 17px/1 var(--marker); }
+
+.toast {
+  position: fixed;
+  z-index: 1001;
+  left: 50%;
+  bottom: 24px;
+  min-width: 250px;
+  max-width: calc(100vw - 32px);
+  padding: 14px 22px;
+  opacity: 0;
+  pointer-events: none;
+  text-align: center;
+  background: url("assets/papier-zerknittert.webp") center / cover, #f1d477;
+  clip-path: polygon(1% 5%, 99% 0, 100% 91%, 93% 100%, 4% 96%);
+  box-shadow: 4px 8px 12px rgba(39,25,15,.32);
+  font: 700 17px/1.2 var(--marker);
+  transform: translate(-50%, 20px) rotate(-1deg);
+  transition: opacity .2s ease, transform .2s ease;
+}
+.toast.sichtbar { opacity: 1; transform: translate(-50%, 0) rotate(-1deg); }
+
+/* Version 2: ausschließlich die fünf markierten Anpassungen der Referenz */
+.nur-vorlesen {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.brett-buehne { padding-top: 102px; }
+.brett-rahmen::before,
+.brett-rahmen::after { z-index: 4; }
+.brett-flaeche { z-index: 5; overflow: visible; }
+
+.logo-magnet {
+  z-index: 12;
+  left: 35px;
+  top: 43px;
+  width: 132px;
+  height: 127px;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  filter: drop-shadow(6px 10px 6px rgba(54, 29, 13, .36));
+  transform: rotate(-4deg);
+}
+.logo-magnet::before,
+.logo-magnet::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: url("assets/mach-ma-logo.png") center / 100% 100% no-repeat;
+}
+.logo-magnet::before { clip-path: polygon(8% 10%, 84.5% 4%, 93% 87.5%, 14% 94.5%); }
+.logo-magnet::after { clip-path: circle(8.8% at 46% 9.2%); }
+
+.familien-dach {
+  z-index: 10;
+  top: -91px;
+  left: 50%;
+  width: calc(100% + 62px);
+  height: 132px;
+  padding: 52px 70px 13px;
+  transform: translateX(-50%) rotate(-.15deg);
+  clip-path: polygon(50% 0, 100% 67%, 97% 72%, 92% 72%, 91% 100%, 9% 100%, 8% 72%, 3% 73%, 0 67%);
+  filter: drop-shadow(0 10px 6px rgba(72, 28, 16, .45));
+}
+.familien-dach::before {
+  content: "";
+  position: absolute;
+  inset: 8px -8px -8px;
+  z-index: -1;
+  background: #76251e;
+  clip-path: polygon(50% 0, 100% 67%, 91% 75%, 90% 100%, 10% 100%, 9% 75%, 0 67%);
+  opacity: .56;
+  transform: translate(7px, 8px) rotate(.7deg);
+}
+.familien-dach::after {
+  left: 10%;
+  right: 10%;
+  bottom: 8px;
+}
+.familien-dach span { font-size: clamp(35px, 3.8vw, 58px); }
+.familien-dach small { margin-top: 1px; font-size: 10px; }
+
+.papier-kalender {
+  top: 150px;
+  bottom: auto;
+  min-height: 0;
+  height: auto;
+  padding-bottom: 21px;
+}
+.kalender-aufgaben { min-height: 0; }
+.kalender-wechsel {
+  position: static;
+  margin-top: 15px;
+}
+
+.tageszettel-bereich { top: 125px; }
+.tages-label { margin-bottom: 12px; }
+.tageszettel-raster { padding-top: 10px; }
+.brett-navigation { top: 176px; }
+
+.notizzettel.erledigt {
+  min-height: 92px;
+  height: 92px;
+  padding: 35px 18px 15px;
+  opacity: .72;
+  filter: grayscale(.2);
+  clip-path: polygon(1% 2%, 99% 1%, 100% 70%, 96% 74%, 91% 68%, 86% 80%, 80% 69%, 74% 82%, 68% 70%, 62% 79%, 56% 69%, 50% 82%, 44% 70%, 38% 79%, 32% 68%, 26% 81%, 20% 70%, 14% 79%, 8% 69%, 3% 76%, 0 70%);
+  transform: rotate(.8deg) translateY(7px);
+}
+.notizzettel.erledigt::after {
+  content: "";
+  position: absolute;
+  left: 2%;
+  right: 2%;
+  bottom: 17px;
+  height: 6px;
+  opacity: .55;
+  background: repeating-linear-gradient(90deg, rgba(255, 250, 224, .7) 0 2px, transparent 2px 5px);
+}
+.notizzettel.erledigt .notiz-bearbeiten,
+.notizzettel.erledigt .notiz-schild,
+.notizzettel.erledigt > p,
+.notizzettel.erledigt .notiz-fuss,
+.notizzettel.erledigt .notiz-haken { display: none; }
+.notizzettel.erledigt .pin { display: block; }
+.notizzettel.erledigt h3 {
+  margin: 0;
+  overflow: hidden;
+  color: #3f3a34;
+  font-size: 20px;
+  line-height: 1.05;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 1180px) {
+  .brett-flaeche { min-height: 820px; }
+  .familien-dach { width: 500px; }
+  .papier-kalender { width: 265px; }
+  .tageszettel-bereich { left: 330px; right: 190px; }
+  .brett-navigation { width: 126px; right: 24px; }
+  .einstellungen-papier { right: 24px; width: 124px; }
+  .tageszettel-raster { grid-template-columns: repeat(2, minmax(190px, 1fr)); gap: 26px; }
+  .notizzettel { min-height: 213px; }
+  .detailansicht { right: 177px; }
+  .aufgaben-raster { grid-template-columns: repeat(2, minmax(220px, 1fr)); }
+}
+
+@media (max-width: 860px) {
+  .brett-buehne { padding: 8px; align-items: start; }
+  .brett-rahmen { min-height: 0; padding: 14px; }
+  .brett-flaeche { min-height: 1470px; overflow: visible; }
+  .logo-magnet { left: 18px; top: 17px; width: 132px; }
+  .familien-dach { top: 18px; left: auto; right: 18px; width: calc(100% - 182px); height: 125px; padding: 52px 35px 15px; transform: rotate(.3deg); }
+  .familien-dach span { font-size: clamp(27px, 7vw, 44px); }
+  .papier-kalender { left: 20px; right: 20px; top: 165px; bottom: auto; width: auto; height: 515px; min-height: 0; padding-left: clamp(24px, 8vw, 70px); padding-right: clamp(24px, 8vw, 70px); }
+  .kalender-aufgaben { min-height: 205px; }
+  .tageszettel-bereich { left: 20px; right: 20px; top: 715px; bottom: auto; }
+  .tageszettel-raster { grid-template-columns: repeat(2, minmax(0, 1fr)); max-height: 470px; overflow: auto; }
+  .brett-navigation { position: absolute; top: 1245px; left: 23px; right: 165px; width: auto; grid-template-columns: repeat(2, minmax(120px, 170px)); gap: 24px; }
+  .nav-zettel { min-height: 115px; }
+  .einstellungen-papier { bottom: 25px; right: 27px; }
+  .detailansicht { inset: 165px 20px 175px; }
+  .detail-papier { padding: 22px 20px 35px; }
+  .detail-kopf { grid-template-columns: auto 1fr; }
+  .detail-kopf > div { text-align: left; }
+  .detail-kopf .papier-hinzufuegen { grid-column: 1 / -1; justify-self: start; }
+  .filter-zeile { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .aufgaben-raster, .projekte-wand { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  .brett-rahmen { padding: 11px; }
+  .brett-flaeche { min-height: 1650px; }
+  .logo-magnet { left: 10px; top: 12px; width: 118px; min-height: 92px; padding-top: 50px; }
+  .logo-magnet strong { font-size: 19px; }
+  .familien-dach { right: 8px; width: calc(100% - 135px); height: 112px; padding: 46px 18px 12px; }
+  .familien-dach small { display: none; }
+  .familien-dach span { font-size: clamp(23px, 7vw, 35px); }
+  .papier-kalender { top: 140px; left: 12px; right: 12px; height: 540px; padding: 27px 18px 74px; }
+  .kalender-datum strong { font-size: 70px; }
+  .tageszettel-bereich { top: 710px; left: 12px; right: 12px; }
+  .tages-label { min-width: 0; width: 100%; flex-wrap: wrap; gap: 4px 12px; }
+  .tages-label span { font-size: 19px; }
+  .tageszettel-raster { grid-template-columns: 1fr; max-height: 690px; padding-left: 14px; padding-right: 14px; }
+  .notizzettel { min-height: 215px; }
+  .brett-navigation { top: 1425px; left: 20px; right: 20px; grid-template-columns: repeat(2, 1fr); }
+  .einstellungen-papier { right: 50%; bottom: 19px; transform: translateX(50%) rotate(1.5deg); }
+  .detailansicht { inset: 140px 11px 195px; }
+  .detail-papier { padding: 18px 15px 28px; }
+  .detail-kopf { gap: 12px; }
+  .detail-kopf h1 { font-size: 34px; }
+  .papier-zurueck { font-size: 15px; }
+  .filter-zeile, .formular-inhalt, .formular-mehr-inhalt { grid-template-columns: 1fr; }
+  .filter-zeile > *, .formular-inhalt > *, .formular-mehr-inhalt > * { grid-column: 1; }
+  .aufgaben-raster { grid-template-columns: 1fr; padding-inline: 0; }
+  .papier-dialog > form { padding: 22px 18px 20px; }
+  .dialog-fuss { grid-template-columns: 1fr 1fr; }
+  .dialog-fuss span { display: none; }
+  .dialog-fuss button { padding-inline: 9px; }
+  .mitglied-neu { grid-template-columns: 1fr; }
+  .familienname-bearbeiten { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}
+
+@media (max-width: 1180px) {
+  .familien-dach { width: calc(100% + 50px); }
+}
+
+@media (max-width: 860px) {
+  .brett-buehne { padding: 82px 8px 8px; }
+  .logo-magnet { left: 17px; top: 38px; width: 122px; height: 117px; min-height: 0; padding: 0; }
+  .familien-dach {
+    top: -74px;
+    left: 50%;
+    right: auto;
+    width: calc(100% + 25px);
+    height: 116px;
+    padding: 45px 38px 11px;
+    transform: translateX(-50%) rotate(-.15deg);
+  }
+  .familien-dach span { font-size: clamp(27px, 7vw, 43px); }
+  .papier-kalender {
+    top: 170px;
+    height: auto;
+    min-height: 0;
+    padding-bottom: 21px;
+  }
+  .kalender-aufgaben { min-height: 0; }
+  .tageszettel-bereich { top: 615px; }
+  .brett-navigation { top: 1210px; }
+}
+
+@media (max-width: 560px) {
+  .brett-buehne { padding-top: 72px; }
+  .logo-magnet { left: 9px; top: 35px; width: 108px; height: 104px; padding: 0; }
+  .familien-dach { top: -65px; width: calc(100% + 18px); height: 103px; padding: 41px 22px 9px; }
+  .familien-dach span { font-size: clamp(23px, 7.5vw, 34px); }
+  .papier-kalender { top: 151px; }
+  .tageszettel-bereich { top: 600px; }
+  .brett-navigation { top: 1370px; }
+}
+
+/* Schnelle Größen- und Kalenderkorrektur */
+.logo-magnet {
+  left: 27px;
+  top: 31px;
+  width: 166px;
+  height: 160px;
+}
+.papier-kalender {
+  left: 27px;
+  width: 345px;
+  padding-top: 47px;
+  filter:
+    drop-shadow(5px 6px 0 #e8e1d3)
+    drop-shadow(6px 7px 0 #d2c6b2)
+    drop-shadow(9px 12px 9px rgba(52, 29, 15, .28));
+}
+.kalender-ringe {
+  top: 7px;
+  z-index: 3;
+}
+.kalender-wechsel {
+  grid-template-columns: 50px 50px;
+  justify-content: space-between;
+}
+.tageszettel-bereich { left: 411px; }
+.notizzettel.erledigt {
+  opacity: 1;
+  filter: drop-shadow(5px 8px 5px rgba(50, 28, 14, .3));
+}
+.kalender-eintrag.erledigt .kalender-text { opacity: 1; }
+
+@media (max-width: 1180px) and (min-width: 861px) {
+  .logo-magnet { width: 148px; height: 143px; }
+  .papier-kalender { width: 302px; }
+  .tageszettel-bereich { left: 358px; }
+}
+
+@media (max-width: 860px) {
+  .logo-magnet { left: 14px; top: 31px; width: 142px; height: 137px; }
+  .papier-kalender { left: 18px; right: 18px; width: auto; padding-top: 47px; }
+  .tageszettel-bereich { left: 20px; }
+}
+
+@media (max-width: 560px) {
+  .logo-magnet { left: 7px; top: 29px; width: 126px; height: 121px; }
+  .papier-kalender { left: 10px; right: 10px; }
+  .tageszettel-bereich { left: 10px; }
+}
+
+/* Tablet: PC-Aufbau in kompakter Form mit größeren Berührungsflächen */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .brett-buehne {
+    min-height: 100vh;
+    padding: 88px 10px 12px;
+    place-items: start center;
+  }
+  .brett-rahmen {
+    width: 100%;
+    min-height: 820px;
+    padding: 18px;
+  }
+  .brett-flaeche {
+    min-height: 780px;
+    overflow: visible;
+  }
+  .familien-dach {
+    top: -76px;
+    left: 50%;
+    right: auto;
+    width: calc(100% + 28px);
+    height: 120px;
+    padding: 47px 42px 11px;
+    transform: translateX(-50%) rotate(-.15deg);
+  }
+  .familien-dach span { font-size: clamp(30px, 5.4vw, 48px); }
+  .logo-magnet {
+    left: 12px;
+    top: 42px;
+    width: 118px;
+    height: 114px;
+    padding: 0;
+  }
+  .papier-kalender {
+    left: 15px;
+    right: auto;
+    top: 164px;
+    bottom: auto;
+    width: clamp(215px, 28vw, 280px);
+    height: auto;
+    min-height: 0;
+    padding: 43px 18px 18px;
+  }
+  .kalender-aufgaben { min-height: 0; }
+  .kalender-wechsel { position: static; margin-top: 14px; }
+  .tageszettel-bereich {
+    left: clamp(250px, 33vw, 338px);
+    right: 112px;
+    top: 145px;
+    bottom: 22px;
+  }
+  .tageszettel-raster {
+    grid-template-columns: repeat(2, minmax(150px, 1fr));
+    max-height: none;
+    overflow: visible;
+    gap: 24px 18px;
+    padding: 10px 2px 20px;
+  }
+  .notizzettel { min-height: 205px; padding-inline: 19px; }
+  .brett-navigation {
+    top: 176px;
+    bottom: auto;
+    left: auto;
+    right: 11px;
+    width: 88px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+  .nav-zettel {
+    width: 88px;
+    min-height: 102px;
+    padding: 31px 8px 10px;
+  }
+  .nav-zettel strong { font-size: 18px; }
+  .nav-zettel svg { width: 28px; height: 28px; }
+  .einstellungen-papier {
+    right: 12px;
+    bottom: 17px;
+    width: 88px;
+    min-height: 82px;
+    padding: 16px 8px 10px;
+  }
+  .einstellungen-papier svg { width: 35px; height: 35px; }
+  .einstellungen-papier span { font-size: 13px; }
+  .detailansicht {
+    inset: 150px 108px 20px 15px;
+  }
+  .detail-papier { padding: 22px 22px 36px; }
+  .detail-kopf {
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
+  }
+  .detail-kopf > div { text-align: center; }
+  .detail-kopf .papier-hinzufuegen {
+    grid-column: auto;
+    justify-self: end;
+  }
+  .aufgaben-raster { grid-template-columns: repeat(2, minmax(190px, 1fr)); }
+  .projekte-wand { grid-template-columns: repeat(2, minmax(210px, 1fr)); }
+}
+
+/* Handy: eine feste, nicht scrollende Startseite; Listen scrollen nur innerhalb ihrer Ansicht */
+@media (max-width: 600px) {
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+  .brett-buehne {
+    width: 100%;
+    height: 100dvh;
+    min-height: 0;
+    padding: 0;
+    display: block;
+    overflow: hidden;
+  }
+  .brett-rahmen {
+    width: 100%;
+    height: 100dvh;
+    min-height: 0;
+    padding: 8px;
+    border-width: 1px;
+    border-radius: 30px 27px 32px 28px;
+    box-shadow: inset 0 0 0 3px #d7a86f, inset 0 0 0 6px #7e4b28;
+  }
+  .brett-rahmen::before { inset: 4px; border-radius: 25px; }
+  .brett-rahmen::after { inset: 8px; }
+  .brett-flaeche {
+    width: 100%;
+    height: calc(100dvh - 16px);
+    min-height: 0;
+    overflow: hidden;
+    border-radius: 23px 21px 25px 22px;
+  }
+  .familien-dach {
+    top: -13px;
+    left: 50%;
+    right: auto;
+    width: calc(100% + 18px);
+    height: 108px;
+    padding: 40px 25px 9px 105px;
+    transform: translateX(-50%) rotate(-.15deg);
+  }
+  .familien-dach span {
+    font-size: clamp(24px, 8vw, 34px);
+    text-align: center;
+  }
+  .familien-dach small { display: none; }
+  .logo-magnet {
+    left: 7px;
+    top: 48px;
+    width: 104px;
+    height: 100px;
+    min-height: 0;
+    padding: 0;
+  }
+  .tagesansicht { inset: 0; }
+  .papier-kalender {
+    left: 14px;
+    right: 14px;
+    top: clamp(137px, 18dvh, 164px);
+    bottom: auto;
+    width: auto;
+    height: clamp(330px, calc(100dvh - 315px), 470px);
+    min-height: 0;
+    padding: 39px 17px 13px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: rotate(-.25deg);
+  }
+  .kalender-ringe { top: 5px; left: 18px; right: 18px; }
+  .kalender-ringe span { width: 12px; height: 32px; border-width: 3px; }
+  .kalender-monat { font-size: 16px; }
+  .kalender-datum strong {
+    margin: -2px 0 -6px;
+    font-size: clamp(56px, 17vw, 68px);
+  }
+  .kalender-datum > span:last-child { font-size: 19px; }
+  .kalender-linie { margin: 10px 2px 6px; }
+  .kalender-aufgaben {
+    min-height: 0;
+    flex: 1 1 auto;
+    gap: 1px;
+    overflow: hidden;
+  }
+  .kalender-eintrag {
+    grid-template-columns: 1fr 29px;
+    min-height: 39px;
+    padding: 3px 1px 4px 5px;
+  }
+  .kalender-text span { font-size: 10px; }
+  .kalender-text strong { font-size: 15px; }
+  .kalender-haken { width: 26px; height: 26px; border-width: 3px; font-size: 17px; line-height: 21px; }
+  .kalender-leer { margin: 15px 5px; font-size: 16px; }
+  .kalender-wechsel {
+    position: static;
+    flex: 0 0 auto;
+    margin-top: 8px;
+    grid-template-columns: 47px 47px;
+  }
+  .kalender-wechsel button { min-height: 42px; }
+  .tageszettel-bereich { display: none; }
+  .brett-navigation {
+    top: auto;
+    bottom: 15px;
+    left: 14px;
+    right: 14px;
+    width: auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 17px;
+  }
+  .nav-zettel,
+  .nav-zettel.projekte-nav {
+    width: 100%;
+    min-height: clamp(92px, 14dvh, 116px);
+    padding: 31px 12px 12px;
+    transform: rotate(-1.2deg);
+  }
+  .nav-zettel.projekte-nav { transform: rotate(1.1deg); }
+  .nav-zettel svg { width: 31px; height: 31px; }
+  .nav-zettel strong { font-size: 20px; }
+  .nav-zettel small { right: 13px; bottom: 10px; }
+  .einstellungen-papier {
+    z-index: 20;
+    top: 91px;
+    right: 10px;
+    bottom: auto;
+    width: 62px;
+    min-height: 62px;
+    padding: 13px 8px 8px;
+    transform: rotate(3deg);
+  }
+  .einstellungen-papier::before { width: 23px; height: 12px; }
+  .einstellungen-papier svg { width: 34px; height: 34px; margin: 0 auto; }
+  .einstellungen-papier span { display: none; }
+  .sync-mini { display: none; }
+
+  body[data-ansicht="aufgaben"] .brett-navigation,
+  body[data-ansicht="projekte"] .brett-navigation,
+  body[data-ansicht="aufgaben"] .einstellungen-papier,
+  body[data-ansicht="projekte"] .einstellungen-papier { display: none; }
+
+  .detailansicht,
+  .detailansicht.aktiv {
+    position: absolute;
+    inset: 155px 8px 8px;
+    z-index: 15;
+  }
+  .detail-papier {
+    width: 100%;
+    height: 100%;
+    padding: 9px 9px 26px;
+    overflow: auto;
+    overscroll-behavior: contain;
+    background: transparent;
+    clip-path: none;
+    box-shadow: none;
+  }
+  .detail-kopf {
+    position: sticky;
+    z-index: 8;
+    top: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px 12px;
+    padding: 11px 12px 13px;
+    border: 0;
+    background:
+      linear-gradient(100deg, rgba(255,255,255,.12), rgba(73,52,30,.08)),
+      url("assets/papier-zerknittert.webp") center / cover,
+      #f4eddd;
+    clip-path: polygon(1% 3%, 98% 0, 100% 91%, 94% 100%, 5% 96%, 0 10%);
+    filter: drop-shadow(3px 6px 5px rgba(52,29,15,.25));
+  }
+  .detail-kopf > div { text-align: left; }
+  .detail-kopf h1 { font-size: 31px; }
+  .detail-kopf p { font-size: 12px; }
+  .papier-zurueck { align-self: center; font-size: 0; width: 43px; height: 43px; padding: 8px; border: 2px solid var(--tinte); }
+  .papier-zurueck svg { width: 24px; height: 24px; }
+  .detail-kopf .papier-hinzufuegen {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-height: 45px;
+    justify-content: center;
+    justify-self: stretch;
+    font-size: 17px;
+  }
+  .filter-falte {
+    margin: 12px 4px 14px;
+    padding: 0 9px 8px;
+    background: rgba(244,237,221,.74);
+    clip-path: polygon(1% 4%, 99% 0, 100% 92%, 95% 100%, 4% 96%, 0 10%);
+  }
+  .filter-zeile { grid-template-columns: 1fr 1fr; gap: 9px; }
+  .filter-zeile label:last-of-type { grid-column: 1 / -1; }
+  .filter-zeile button { justify-self: start; }
+  .aufgaben-gruppe { margin-top: 12px; border-top-color: rgba(35,28,22,.55); }
+  .aufgaben-gruppe > summary {
+    padding: 10px 7px 7px;
+    color: #231b15;
+    font-size: 22px;
+  }
+  .aufgaben-raster {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    padding: 13px 10px 24px;
+  }
+  .aufgaben-raster .notizzettel {
+    width: 100%;
+    min-height: 188px;
+    padding: 34px 21px 56px;
+  }
+  .aufgaben-raster .notizzettel.erledigt {
+    min-height: 92px;
+    height: 92px;
+    padding: 35px 18px 15px;
+  }
+  .projekt-filter { margin: 13px 0 18px; }
+  .projekte-wand {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    padding: 0 10px 25px;
+  }
+  .projekt-gross { padding: 25px 21px 22px; }
+  .leer-projekte { padding: 28px 14px; }
+  .papier-dialog { max-height: 94dvh; }
+  .papier-dialog > form { max-height: 94dvh; padding: 22px 18px 20px; }
+}
